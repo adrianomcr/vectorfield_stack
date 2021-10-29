@@ -1,0 +1,33 @@
+
+#Parameters for the espeleo_planning package
+
+# Curve number
+N_curve: 5
+# 1 -> Ellipse
+# 2 -> Eigth like curve
+# 3 -> Square like curve
+# 4 -> Sine curve
+# 5 -> Smooth eigth like curve
+
+# Number of points to be sampled
+N_points: 100
+
+# Stretch factor of the curve in the x direction
+a: 1.5
+# Stretch factor of the curve in the y direction
+b: 1.0
+# Rotation of the curve around the z axis (in dregrees)
+phi: 0.0
+# Displacement in the x direction (meters)
+cx: 0.0
+# Displacement in the y direction (meters)
+cy: 0.0
+
+
+#Flag to indicate if the path is closed or not
+closed_path_flag: True
+#Number of points to be inserted in between each pais of points of the received trajectory
+insert_n_points: 1
+#Number of points to use in the average filter (it is forced to be an odd number) - if 0 the path is not filtered
+filter_path_n_average: 1
+
