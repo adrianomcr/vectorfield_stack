@@ -2,15 +2,16 @@
 #Parameters for the espeleo_planning package
 
 # Curve number
-N_curve: 5
+N_curve: 3
 # 1 -> Ellipse
 # 2 -> Eigth like curve
 # 3 -> Square like curve
 # 4 -> Sine curve
 # 5 -> Smooth eigth like curve
+# 6 -> Amoeba like
 
 # Number of points to be sampled
-N_points: 100
+N_points: 200
 
 # Stretch factor of the curve in the x direction
 a: 1.5

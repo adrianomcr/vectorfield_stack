@@ -221,7 +221,7 @@ class distancefield_class():
 
                 if (Do < self.D_hist):
                     self.D_hist = Do
-                print (Do, self.D_hist)
+                # print (Do, self.D_hist)
 
 
                 if(Do<self.switch_dist and (self.closest[0]*Vx+self.closest[1]*Vy+self.closest[2]*Vz)<0):
@@ -235,7 +235,7 @@ class distancefield_class():
 
                     # alpha = 1.0-Do/self.switch_dist #used for a smooth transition
                     alpha = 1
-                    print(alpha)
+                    # print(alpha)
                     T_dot_gad_D2 = T[0]*grad_D2[0] + T[1]*grad_D2[1] + T[2]*grad_D2[2]
                     T2 = [T[0] - alpha*T_dot_gad_D2*grad_D2[0], T[1] - alpha*T_dot_gad_D2*grad_D2[1], T[2] - alpha*T_dot_gad_D2*grad_D2[2]]
                     norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)

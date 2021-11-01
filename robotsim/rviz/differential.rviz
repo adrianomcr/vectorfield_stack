@@ -6,6 +6,10 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /MarkerArray1
+        - /Marker1
+        - /MarkerArray2
+        - /MarkerArray3
       Splitter Ratio: 0.5
     Tree Height: 539
   - Class: rviz/Selection
@@ -57,12 +61,12 @@ Visualization Manager:
       Marker Topic: /visualization_path
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /integrator/robot
+      Marker Topic: /differential/robot
       Name: Marker
       Namespaces:
         "": true
@@ -70,7 +74,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /integrator/obstacles
+      Marker Topic: /differential/obstacles
       Name: MarkerArray
       Namespaces:
         "": true
@@ -78,7 +82,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /integrator/history
+      Marker Topic: /differential/history
       Name: MarkerArray
       Namespaces:
         "": true
@@ -112,7 +116,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.0409770011901855
+      Distance: 4.729134559631348
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -128,9 +132,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7647969722747803
+      Pitch: 0.8197969794273376
       Target Frame: <Fixed Frame>
-      Yaw: 4.371774673461914
+      Yaw: 4.1517720222473145
     Saved: ~
 Window Geometry:
   Displays:

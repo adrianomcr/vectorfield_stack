@@ -1,0 +1,18 @@
+
+
+
+
+state_0: [0.1, 0.1, 0.0]
+robot_radius: 0.15
+robot_height: 0.10
+
+obtscles_pos: [[-1,-1],[0,1],[1,0],[1,1]]
+obtscles_r: [0.2, 0.1, 0.1, 0.1]
+
+
+
+
+
+
+
+
