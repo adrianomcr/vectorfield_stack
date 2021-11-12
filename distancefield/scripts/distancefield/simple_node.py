@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -262,20 +262,20 @@ class simple_node(object):
     #     self.vec_field_obj.set_obstacle_point((data.x, data.y))
 
 
-    def callback_trajectory(self, data):
-        """Callback to obtain the trajectory to be followed by the robot
-        :param data: trajectory ROS message
-        """
+    # def callback_trajectory(self, data):
+    #     """Callback to obtain the trajectory to be followed by the robot
+    #     :param data: trajectory ROS message
+    #     """
 
-        traj_points = []
-        for k in range(len(data.path.points)):
-            p = data.path.points[k]
-            traj_points.append((p.x, p.y))
+    #     traj_points = []
+    #     for k in range(len(data.path.points)):
+    #         p = data.path.points[k]
+    #         traj_points.append((p.x, p.y))
 
-        rospy.loginfo("New path received (%d points) is closed?:%s", len(traj_points), data.closed_path_flag)
+    #     rospy.loginfo("New path received (%d points) is closed?:%s", len(traj_points), data.closed_path_flag)
 
-        self.vec_field_obj.set_trajectory(traj_points, data.insert_n_points, data.filter_path_n_average,
-                                          data.closed_path_flag)
+    #     self.vec_field_obj.set_trajectory(traj_points, data.insert_n_points, data.filter_path_n_average,
+    #                                       data.closed_path_flag)
 
 
 

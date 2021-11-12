@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -215,17 +215,19 @@ class distancefield_class():
             if(self.flag_follow_obstacle):
                 # print(self.closest)
 
-                Do = math.sqrt(self.closest[0]**2 + self.closest[1]**2 + self.closest[2]**2)
+                closest_vec = [self.closest[0]-self.pos[0], self.closest[1]-self.pos[1], self.closest[2]-self.pos[2]]
 
-                closest_hat = [self.closest[0]/(Do+1e-8), self.closest[1]/(Do+1e-8), self.closest[2]/(Do+1e-8)]
+                Do = math.sqrt(closest_vec[0]**2 + closest_vec[1]**2 + closest_vec[2]**2)
+
+                closest_hat = [closest_vec[0]/(Do+1e-8), closest_vec[1]/(Do+1e-8), closest_vec[2]/(Do+1e-8)]
 
                 if (Do < self.D_hist):
                     self.D_hist = Do
                 # print (Do, self.D_hist)
 
 
-                if(Do<self.switch_dist and (self.closest[0]*Vx+self.closest[1]*Vy+self.closest[2]*Vz)<0):
-                    D_vec2 = [self.closest[0] - closest_hat[0]*self.epsilon, self.closest[1] - closest_hat[1]*self.epsilon, self.closest[2] - closest_hat[2]*self.epsilon]
+                if(Do<self.switch_dist and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
+                    D_vec2 = [-(closest_vec[0] - closest_hat[0]*self.epsilon), -(closest_vec[1] - closest_hat[1]*self.epsilon), -(closest_vec[2] - closest_hat[2]*self.epsilon)]
                     D2 = math.sqrt(D_vec2[0]**2 + D_vec2[1]**2 + D_vec2[2]**2)
                     grad_D2 = [D_vec2[0]/D2, D_vec2[1]/D2, D_vec2[2]/D2]
 

@@ -2,14 +2,14 @@
 
 vector_field:
     vr: 0.5 # reference forward speed for the vector field
-    kf: 3.0 # convergence gain of the vector field
+    kf: 5.0 # convergence gain of the vector field
     # is_forward_motion: True # flag to invert the motion of the espeleorobo (move backwards or forward)
     reverse_direction: False # flag to invert the direction the curve will be followed
 
 topics:
     pose_topic_name: "integrator/pose" # name of the topic in which the pose will be obtained
     pose_topic_type: "Pose" # Options: 'TFMessage', 'Pose' or 'Odometry'
-    cmd_vel_topic_name: "integrator/vel" # name of the topic in which the forward and angular velocities will be published
+    cmd_vel_topic_name: "integrator/vel" # name of the topic in which the linear velocities will be published
     path_topic_name: "example_path" # name of the topic in which the path will be published
 
 obstacle_avoidance:
