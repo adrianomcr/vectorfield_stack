@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from geometry_msgs.msg import Twist, Polygon, Point
 from nav_msgs.msg import Odometry
@@ -145,7 +145,7 @@ def refference_trajectory_3(N):
         # Save the computed point
         traj[0].append(x_ref)
         traj[1].append(y_ref)
-        traj[2].append(0.5)
+        traj[2].append(0.0)
 
     return (traj)
 # ----------  ----------  ----------  ----------  ----------
@@ -262,8 +262,8 @@ def refference_trajectory_6(N):
         p = p + dp
 
         # Compute a point of the "rectangular" in a local frame
-        x_ref0 = cos(p);
-        y_ref0 = sin(p);
+        x_ref0 = a*cos(p);
+        y_ref0 = b*sin(p);
         z_ref0 = sin(6*p)*(a+b)/10
 
         # Rotate and displace the point
@@ -434,7 +434,6 @@ def trajectory():
     # Generate one of the curve types
     if curve_number == 1:
         traj = refference_trajectory_1(number_of_samples)
-
     elif curve_number == 2:
         traj = refference_trajectory_2(number_of_samples)
     elif curve_number == 3:

@@ -15,9 +15,9 @@
 
 
     <!-- Run the node that controls the robot with vector fields -->
-    <!-- <node pkg="distancefield" name="simple_node" type="simple_node.py" args="" output="screen">
-        <rosparam command="load" file="$(find distancefield)/config/basic_params.yaml" />
-    </node> -->
+    <node pkg="ground_robot" name="differential_node" type="differential_node.py" args="" output="screen">
+        <rosparam command="load" file="$(find ground_robot)/config/differential_params.yaml" />
+    </node>
 
 </launch>
 
