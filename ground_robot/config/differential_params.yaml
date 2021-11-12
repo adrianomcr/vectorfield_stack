@@ -1,0 +1,20 @@
+
+
+vector_field:
+    vr: 0.5 # reference forward speed for the vector field
+    kf: 5.0 # convergence gain of the vector field
+    reverse_direction: False # flag to invert the direction the curve will be followed
+    d_feedback: 0.1 # distance of the controlled point of the feedback linearization controller
+    move_backwards: False # flag to make the robot move backwards
+
+topics:
+    pose_topic_name: "differential/pose" # name of the topic in which the pose will be obtained
+    pose_topic_type: "Pose" # Options: 'TFMessage', 'Pose' or 'Odometry'
+    cmd_vel_topic_name: "differential/cmd_vel" # name of the topic in which the forward and angular velocities will be published
+    path_topic_name: "example_path" # name of the topic in which the path will be published
+
+obstacle_avoidance:
+    flag_follow_obstacle: False # flag to enable the robot to follow an obstacle when it s blocking the vector field
+    epsilon: 0.25 # reference distance between the robot and the path being followed
+    switch_dist: 0.5 # distance from which the robot will start to follow the obstacle
+    obstacle_point_topic_name: "differential/closest_point" # name of the topic in which the laser data will be obtained
