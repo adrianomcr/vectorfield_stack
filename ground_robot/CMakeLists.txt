@@ -10,6 +10,7 @@ project(ground_robot)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  distancefield
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES ground_robot
-#  CATKIN_DEPENDS roscpp rospy
+ CATKIN_DEPENDS roscpp rospy distancefield
 #  DEPENDS system_lib
 )
 
