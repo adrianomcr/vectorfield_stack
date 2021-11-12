@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -90,23 +90,27 @@ class integrator_node(object):
                     o_close = o
                     D_close = D
 
-            D_vec_close = [self.pos[0]-self.obtscles_pos[o_close][0], self.pos[1]-self.obtscles_pos[o_close][1], self.pos[2]-self.obtscles_pos[o_close][2]]
+            # Publish vector
+            D_vec_close = [self.obtscles_pos[o_close][0]-self.pos[0], self.obtscles_pos[o_close][1]-self.pos[1], self.obtscles_pos[o_close][2]-self.pos[2]]
             D = sqrt(D_vec_close[0]**2 + D_vec_close[1]**2 + D_vec_close[2]**2)
             D_hat = [D_vec_close[0]/(D+1e-8), D_vec_close[1]/(D+1e-8), D_vec_close[2]/(D+1e-8)]
             D = D - self.obtscles_r[o_close]
             # D_vec_close = [D_hat[0]*D, D_hat[1]*D, D_hat[2]*D]
             if D>0:
                 D_vec_close = [D_vec_close[0]-D_hat[0]*self.obtscles_r[o_close], D_vec_close[1]-D_hat[1]*self.obtscles_r[o_close], D_vec_close[2]-D_hat[2]*self.obtscles_r[o_close]]
+                close_point_world = [self.pos[0] + D_hat[0]*D, self.pos[1] + D_hat[1]*D, self.pos[2] + D_hat[2]*D]
             else:
                 D_vec_close = [0.0,0.0,0.0]
+                close_point_world = [self.pos[0], self.pos[1], self.pos[2]]
 
-
-            point_msg.x = D_vec_close[0]
-            point_msg.y = D_vec_close[1]
-            point_msg.z = D_vec_close[2]
-            # point_msg.x = self.pos[0]-self.obtscles_pos[o_close][0]
-            # point_msg.y = self.pos[1]-self.obtscles_pos[o_close][1]
-            # point_msg.z = self.pos[2]-self.obtscles_pos[o_close][2]
+            # # Publish vector
+            # point_msg.x = D_vec_close[0]
+            # point_msg.y = D_vec_close[1]
+            # point_msg.z = D_vec_close[2]
+            # Publish point
+            point_msg.x = close_point_world[0]
+            point_msg.y = close_point_world[1]
+            point_msg.z = close_point_world[2]
             self.pub_closest.publish(point_msg)
 
 
@@ -140,6 +144,36 @@ class integrator_node(object):
 
             # Publish marker
             self.pub_rviz_robot.publish(marker_robot)
+
+
+            #Publish robot marker to rviz
+            marker_closest = Marker()
+
+            marker_closest.header.frame_id = "world"
+            marker_closest.header.stamp = rospy.Time.now()
+            marker_closest.id = 0
+            marker_closest.type = marker_closest.SPHERE
+            marker_closest.action = marker_closest.ADD
+            marker_closest.scale.x = self.robot_radius
+            marker_closest.scale.y = self.robot_radius
+            marker_closest.scale.z = self.robot_radius
+            #Color of the marker
+            marker_closest.color.a = 1.0
+            marker_closest.color.r = 1.0
+            marker_closest.color.g = 1.0
+            marker_closest.color.b = 1.0
+            # Position of the marker
+            marker_closest.pose.position.x = close_point_world[0]
+            marker_closest.pose.position.y = close_point_world[1]
+            marker_closest.pose.position.z = close_point_world[2]
+            # Orientation of the marker
+            marker_closest.pose.orientation.x = 0.0
+            marker_closest.pose.orientation.y = 0.0
+            marker_closest.pose.orientation.z = 0.0
+            marker_closest.pose.orientation.w = 1.0
+
+            # Publish marker
+            self.pub_rviz_closest.publish(marker_closest)
 
 
 
@@ -259,6 +293,7 @@ class integrator_node(object):
         self.pub_pose = rospy.Publisher("/integrator/pose", Pose, queue_size=1)
         self.pub_closest = rospy.Publisher("/integrator/closest_point", Point, queue_size=1)
         self.pub_rviz_robot = rospy.Publisher("/integrator/robot", Marker, queue_size=1)
+        self.pub_rviz_closest = rospy.Publisher("/integrator/closest_marker", Marker, queue_size=1)
         self.pub_rviz_obst = rospy.Publisher("/integrator/obstacles", MarkerArray, queue_size=1)
         self.pub_rviz_hist = rospy.Publisher("/integrator/history", MarkerArray, queue_size=1)
 
