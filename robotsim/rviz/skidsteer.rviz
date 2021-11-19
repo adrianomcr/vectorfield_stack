@@ -62,7 +62,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /differential/obstacles
+      Marker Topic: /skidsteer/obstacles
       Name: MarkerArray
       Namespaces:
         "": true
@@ -70,7 +70,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /differential/history
+      Marker Topic: /skidsteer/history
       Name: MarkerArray
       Namespaces:
         "": true
@@ -78,7 +78,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /differential/closest_marker
+      Marker Topic: /skidsteer/closest_marker
       Name: Marker
       Namespaces:
         "": true
@@ -86,7 +86,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /differential/robot
+      Marker Topic: /skidsteer/robot
       Name: MarkerArray
       Namespaces:
         "": true
