@@ -1,0 +1,22 @@
+
+
+
+
+state_0: [0.1, 0.1, 0.0]
+robot_length: 0.4
+robot_width: 0.25
+robot_height: 0.10
+robot_a: 0.18
+robot_b: 0.11
+robot_r: 0.075
+
+obtscles_pos: [[-1,-1],[0,1],[1,0],[1,1]]
+obtscles_r: [0.2, 0.1, 0.1, 0.1]
+
+
+
+
+
+
+
+
