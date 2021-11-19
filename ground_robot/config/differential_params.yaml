@@ -13,8 +13,9 @@ topics:
     cmd_vel_topic_name: "differential/cmd_vel" # name of the topic in which the forward and angular velocities will be published
     path_topic_name: "example_path" # name of the topic in which the path will be published
 
+#Collision avoidance considering the closest point in the body frame - specific for ground robots
 obstacle_avoidance:
-    flag_follow_obstacle: False # flag to enable the robot to follow an obstacle when it s blocking the vector field
-    epsilon: 0.25 # reference distance between the robot and the path being followed
-    switch_dist: 0.5 # distance from which the robot will start to follow the obstacle
-    obstacle_point_topic_name: "differential/closest_point" # name of the topic in which the laser data will be obtained
+    flag_follow_obstacle: True # flag to enable the robot to follow an obstacle when it s blocking the vector field
+    epsilon: 0.35 # reference distance between the robot and the path being followed
+    switch_dist: 0.6 # distance from which the robot will start to follow the obstacle
+    obstacle_point_topic_name: "differential/closest_point_body" # name of the topic in which the laser data will be obtained

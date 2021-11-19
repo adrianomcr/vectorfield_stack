@@ -9,8 +9,10 @@ from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
-from math import cos, sin, sqrt
-
+from math import cos, sin, sqrt, pi
+import numpy as np
+import scipy as sp
+import scipy.spatial
 
 
 
@@ -54,6 +56,7 @@ class differential_node(object):
 
         pose_msg = Pose()
         point_msg = Point()
+        point_msg2 = Point()
 
 
         count1 = 0
@@ -75,7 +78,7 @@ class differential_node(object):
 
 
 
-            #Compute closest point
+            #Compute closest point - with respect to the world frame
             n_obst = min([len(self.obtscles_r), len(self.obtscles_pos)])
             D_close = float("inf")
             o_close = 0
@@ -106,20 +109,42 @@ class differential_node(object):
             # Publish point
             point_msg.x = close_point_world[0]
             point_msg.y = close_point_world[1]
-            point_msg.z = 0.0
-            self.pub_closest.publish(point_msg)
+            point_msg.z = self.robot_height/2.0
+            self.pub_closest_world.publish(point_msg2)
 
+
+
+
+            #Compute closest point - with respect to the robots frame
+
+            p_cw = [[close_point_world[0]],[close_point_world[1]],[1]]
+            H_bw = np.matrix([[cos(self.state[2]),-sin(self.state[2]), self.state[0]],[sin(self.state[2]),cos(self.state[2]), self.state[1]],[0, 0, 1]])
+            p_cb = H_bw**(-1)*p_cw
+
+            point_msg2.x = p_cb[0,0]
+            point_msg2.y = p_cb[1,0]
+            point_msg2.z = self.robot_height/2.0
+            self.pub_closest_body.publish(point_msg2)
+            # print ("\33[95mp_cb = [%f, %f]\33[0m" % (point_msg2.x, point_msg2.y))
+
+
+
+            #########################################
+
+            robot_marker_array = MarkerArray()
+            
 
 
 
             #Publish robot marker to rviz
             marker_robot = Marker()
-
             marker_robot.header.frame_id = "world"
             marker_robot.header.stamp = rospy.Time.now()
             marker_robot.id = 0
             marker_robot.type = marker_robot.CYLINDER
             marker_robot.action = marker_robot.ADD
+            marker_robot.lifetime = rospy.Duration(3)
+            # Size of robot
             marker_robot.scale.x = 2*self.robot_radius
             marker_robot.scale.y = 2*self.robot_radius
             marker_robot.scale.z = self.robot_height
@@ -137,13 +162,87 @@ class differential_node(object):
             marker_robot.pose.orientation.y = 0.0
             marker_robot.pose.orientation.z = sin(self.state[2]/2.0)
             marker_robot.pose.orientation.w = cos(self.state[2]/2.0)
-
-            # Publish marker
-            self.pub_rviz_robot.publish(marker_robot)
-
+            # Append marker to array
+            robot_marker_array.markers.append(marker_robot)
 
 
             #Publish robot marker to rviz
+            marker_w1 = Marker()
+            marker_w1.header.frame_id = "world"
+            marker_w1.header.stamp = rospy.Time.now()
+            marker_w1.id = 1
+            marker_w1.type = marker_w1.CYLINDER
+            marker_w1.action = marker_w1.ADD
+            marker_w1.lifetime = rospy.Duration(3)
+            # Size of robot
+            marker_w1.scale.x = self.robot_height
+            marker_w1.scale.y = self.robot_height
+            marker_w1.scale.z = self.robot_height/2.0
+            #Color of the marker
+            marker_w1.color.a = 0.99
+            marker_w1.color.r = 0.0
+            marker_w1.color.g = 0.0
+            marker_w1.color.b = 0.0
+            # Position of the marker
+            marker_w1.pose.position.x = self.state[0] + self.robot_radius*cos(self.state[2]-pi/2.0)
+            marker_w1.pose.position.y = self.state[1] + self.robot_radius*sin(self.state[2]-pi/2.0)
+            marker_w1.pose.position.z = self.robot_height/2.0
+            # Orientation of the marker
+            Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
+            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
+            qw1 = Rw1.as_quat()
+            marker_w1.pose.orientation.x = qw1[0]
+            marker_w1.pose.orientation.y = qw1[1]
+            marker_w1.pose.orientation.z = qw1[2]
+            marker_w1.pose.orientation.w = qw1[3]
+            # Append marker to array
+            robot_marker_array.markers.append(marker_w1)
+
+            #Publish robot marker to rviz
+            marker_w2 = Marker()
+            marker_w2.header.frame_id = "world"
+            marker_w2.header.stamp = rospy.Time.now()
+            marker_w2.id = 2
+            marker_w2.type = marker_w2.CYLINDER
+            marker_w2.action = marker_w2.ADD
+            marker_w2.lifetime = rospy.Duration(3)
+            # Size of robot
+            marker_w2.scale.x = self.robot_height
+            marker_w2.scale.y = self.robot_height
+            marker_w2.scale.z = self.robot_height/2.0
+            #Color of the marker
+            marker_w2.color.a = 0.99
+            marker_w2.color.r = 0.0
+            marker_w2.color.g = 0.0
+            marker_w2.color.b = 0.0
+            # Position of the marker
+            marker_w2.pose.position.x = self.state[0] + self.robot_radius*cos(self.state[2]+pi/2.0)
+            marker_w2.pose.position.y = self.state[1] + self.robot_radius*sin(self.state[2]+pi/2.0)
+            marker_w2.pose.position.z = self.robot_height/2.0
+            # Orientation of the marker
+            Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
+            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
+            qw1 = Rw1.as_quat()
+            marker_w2.pose.orientation.x = qw1[0]
+            marker_w2.pose.orientation.y = qw1[1]
+            marker_w2.pose.orientation.z = qw1[2]
+            marker_w2.pose.orientation.w = qw1[3]
+            # Append marker to array
+            robot_marker_array.markers.append(marker_w2)
+
+            # Publish marker
+            # self.pub_rviz_robot_w1.publish(marker_w1)
+
+            # Publish marker
+            self.pub_rviz_robot.publish(robot_marker_array)
+
+
+
+            #########################################
+
+
+
+            #Publish closest point to rviz
             marker_closest = Marker()
 
             marker_closest.header.frame_id = "world"
@@ -151,6 +250,8 @@ class differential_node(object):
             marker_closest.id = 0
             marker_closest.type = marker_closest.SPHERE
             marker_closest.action = marker_closest.ADD
+            marker_closest.lifetime = rospy.Duration(3)
+            #Size of sphere
             marker_closest.scale.x = self.robot_radius
             marker_closest.scale.y = self.robot_radius
             marker_closest.scale.z = self.robot_radius
@@ -186,7 +287,7 @@ class differential_node(object):
                     marker.id = i
                     marker.type = marker.CYLINDER
                     marker.action = marker.ADD
-                    # Size of sphere
+                    # Size of cylinder
                     marker.scale.x = 2*self.obtscles_r[i]
                     marker.scale.y = 2*self.obtscles_r[i]
                     marker.scale.z = self.robot_height*2
@@ -231,6 +332,7 @@ class differential_node(object):
                 marker.id = i
                 marker.type = marker.SPHERE
                 marker.action = marker.ADD
+                marker.lifetime = rospy.Duration(3)
                 # Size of sphere
                 marker.scale.x = 2*self.robot_radius/3.0
                 marker.scale.y = 2*self.robot_radius/3.0
@@ -289,11 +391,15 @@ class differential_node(object):
 
         # publishers
         self.pub_pose = rospy.Publisher("/differential/pose", Pose, queue_size=1)
-        self.pub_closest = rospy.Publisher("/differential/closest_point", Point, queue_size=1)
-        self.pub_rviz_robot = rospy.Publisher("/differential/robot", Marker, queue_size=1)
+        self.pub_closest_world = rospy.Publisher("/differential/closest_point_world", Point, queue_size=1)
+        self.pub_closest_body = rospy.Publisher("/differential/closest_point_body", Point, queue_size=1)
+        self.pub_rviz_robot = rospy.Publisher("/differential/robot", MarkerArray, queue_size=1)
         self.pub_rviz_closest = rospy.Publisher("/differential/closest_marker", Marker, queue_size=1)
         self.pub_rviz_obst = rospy.Publisher("/differential/obstacles", MarkerArray, queue_size=1)
         self.pub_rviz_hist = rospy.Publisher("/differential/history", MarkerArray, queue_size=1)
+
+
+        # self.pub_rviz_robot_w1 = rospy.Publisher("/differential/robot_w1", Marker, queue_size=1)
 
         # subscribers
         rospy.Subscriber("/differential/cmd_vel", Twist, self.callback_vel)
@@ -308,6 +414,7 @@ class differential_node(object):
         vel = [data.linear.x, data.angular.z]
 
         self.vel = vel
+
 
 
 

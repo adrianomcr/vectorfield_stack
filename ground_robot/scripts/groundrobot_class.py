@@ -23,7 +23,7 @@ class groundrobot_class():
         #Obstacle follower parameters
         self.epsilon = epsilon
         self.switch_dist = switch_dist
-        self.closest = [0,0,0]
+        self.closest_world = [0,0,0]
         self.flag_follow_obstacle = flag_follow_obstacle
 
         # controller constants
@@ -43,7 +43,8 @@ class groundrobot_class():
         self.D_hist = 1000 #temp
 
         #Vector field object
-        self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, False, 0.5, 1.0)
+        # self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, False, 0.5, 1.0)
+        self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
 
 
 
@@ -57,7 +58,7 @@ class groundrobot_class():
     def feedback_linearization(self,f):
         psi = self.state[2]
 
-        print("\33[96mself.state: %f, %f, %f\33[0m" % (self.state[0], self.state[1], self.state[2]))
+        #print("\33[96mself.state: %f, %f, %f\33[0m" % (self.state[0], self.state[1], self.state[2]))
 
         v_x = math.cos(psi) * f[0] + math.sin(psi) * f[1]
         omega_z = (-math.sin(psi) / self.d_feedback) * f[0] + (math.cos(psi) / self.d_feedback) * f[1]
@@ -86,6 +87,13 @@ class groundrobot_class():
         d_pos = [self.state[0] + self.d_feedback*math.cos(self.state[2]), self.state[1] + self.d_feedback*math.sin(self.state[2])]
         self.vec_field_obj.set_pos([d_pos[0], d_pos[1], 0.0])
         # print("\33[96mset_state\33[0m")
+
+
+
+    def set_closest(self, point):
+        self.closest_world = point
+        # self.rpy = rpy
+        # self.quat = quat
 
 
     # def set_closest(self, point):

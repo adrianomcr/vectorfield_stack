@@ -79,7 +79,7 @@ class integrator_node(object):
 
 
 
-            #Compute closest point
+            #Compute closest point - with respect to the world frame
             n_obst = min([len(self.obtscles_r), len(self.obtscles_pos)])
             D_close = float("inf")
             o_close = 0
@@ -124,6 +124,8 @@ class integrator_node(object):
             marker_robot.id = 0
             marker_robot.type = marker_robot.SPHERE
             marker_robot.action = marker_robot.ADD
+            marker_robot.lifetime = rospy.Duration(3)
+            # Size of robot
             marker_robot.scale.x = 2*self.robot_radius
             marker_robot.scale.y = 2*self.robot_radius
             marker_robot.scale.z = 2*self.robot_radius
@@ -154,6 +156,8 @@ class integrator_node(object):
             marker_closest.id = 0
             marker_closest.type = marker_closest.SPHERE
             marker_closest.action = marker_closest.ADD
+            marker_closest.lifetime = rospy.Duration(3)
+            #Size of sphere
             marker_closest.scale.x = self.robot_radius
             marker_closest.scale.y = self.robot_radius
             marker_closest.scale.z = self.robot_radius
@@ -235,6 +239,7 @@ class integrator_node(object):
                 marker.id = i
                 marker.type = marker.SPHERE
                 marker.action = marker.ADD
+                marker.lifetime = rospy.Duration(3)
                 # Size of sphere
                 marker.scale.x = 2*self.robot_radius/3.0
                 marker.scale.y = 2*self.robot_radius/3.0

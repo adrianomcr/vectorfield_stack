@@ -26,7 +26,7 @@ class distancefield_class():
         #Obstacle follower parameters
         self.epsilon = epsilon
         self.switch_dist = switch_dist
-        self.closest = [0,0,0]
+        self.closest_world = [0,0,0]
         self.flag_follow_obstacle = flag_follow_obstacle
 
         # controller constants
@@ -47,47 +47,17 @@ class distancefield_class():
         self.D_hist = 1000 #temp
 
 
-    # def __init__(self, v_r, k_f, reverse_direction):
 
-    #     # base variables
-    #     self.pos = [0, 0, 0]
-    #     #self.rpy = [0, 0, 0]
-    #     #self.quat = [1, 0, 0, 0]
-    #     self.traj = []
-    #     self.state_k = 0
-    #     self.state_k_delta = 10
-
-    #     #Obstacle follower parameters
-    #     self.flag_follow_obstacle = False
-
-    #     # controller constants
-    #     self.v_r = v_r
-    #     self.k_f = k_f
-    #     # self.d_feedback = d_feedback
-
-    #     # flags
-    #     # self.is_forward_motion_flag = is_forward_motion_flag
-    #     # self.flag_follow_obstacle = flag_follow_obstacle
-    #     # self.closed_path_flag = False
-    #     self.reverse_direction = reverse_direction
-
-
-
-
-    # def set_pos(self, pos, rpy):
-    #def set_pos(self, pos, quat):
     def set_pos(self, pos):
         self.pos = pos
         # self.rpy = rpy
         # self.quat = quat
 
+
     def set_closest(self, point):
-        self.closest = point
+        self.closest_world = point
         # self.rpy = rpy
         # self.quat = quat
-
-
-
 
 
     def is_ready(self):
@@ -127,6 +97,14 @@ class distancefield_class():
                 d = d_temp
 
         rospy.loginfo("New path received by the controller (%d points)", len(self.traj))
+
+
+    def get_GH_follower(self, delta):
+
+        # Gain functions
+        G_ = -(2 / math.pi) * math.atan(self.k_f * delta)  # convergence
+        H_ = math.sqrt(1 - G_ ** 2)  # circulation
+        return G_, H_
 
 
 
@@ -213,9 +191,9 @@ class distancefield_class():
 
             # print (self.flag_follow_obstacle)
             if(self.flag_follow_obstacle):
-                # print(self.closest)
+                # print(self.closest_world)
 
-                closest_vec = [self.closest[0]-self.pos[0], self.closest[1]-self.pos[1], self.closest[2]-self.pos[2]]
+                closest_vec = [self.closest_world[0]-self.pos[0], self.closest_world[1]-self.pos[1], self.closest_world[2]-self.pos[2]]
 
                 Do = math.sqrt(closest_vec[0]**2 + closest_vec[1]**2 + closest_vec[2]**2)
 

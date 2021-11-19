@@ -2,7 +2,7 @@
 
 
 
-state_0: [1.1, 0.1, 0.0]
+state_0: [0.1, 0.1, 0.0]
 robot_radius: 0.15
 robot_height: 0.10
 

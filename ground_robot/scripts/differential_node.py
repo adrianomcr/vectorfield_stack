@@ -9,7 +9,7 @@ from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
-from math import cos, sin
+from math import cos, sin, sqrt, atan2
 
 
 # from distancefield.import_me_if_you_can import say_it_works
@@ -50,12 +50,13 @@ class differential_node(object):
         self.cmd_vel_topic_name = None
         self.obstacle_point_topic_name = None
 
-        # pObstacle avoidance variables
+        # Obstacle avoidance variables
         self.flag_follow_obstacle = None
         self.epsilon = None
         self.switch_dist = None
-        self.obstacle_point_topic_name = None
         self.closest = [1000,1000,1000]
+        self.closest_world = [1000,1000,1000]
+        
 
         # obtain the parameters
         self.vr = 0.0
@@ -93,16 +94,41 @@ class differential_node(object):
         while not rospy.is_shutdown():
 
             self.ground_robot_obj.set_state(self.state)
-            # if(self.flag_follow_obstacle):
-            #     self.vec_field_obj.set_closest(self.closest)
+            
 
             if self.ground_robot_obj.vec_field_obj.is_ready():
+
+                if(self.flag_follow_obstacle):
+                    self.ground_robot_obj.vec_field_obj.set_closest(self.closest_world)
 
 
                 # [Vx,Vy,Vz,terminated] = self.vec_field_obj.vec_field_path()
                 [Vx,Wz] = self.ground_robot_obj.get_vw()
-                print("\33[96mVx: %f Wz: %f\33[0m" % (Vx, Wz))
-                print("")
+                #print("\33[96mVx: %f Wz: %f\33[0m" % (Vx, Wz))
+                #print("")
+
+                # print(self.flag_follow_obstacle)
+            # if(self.flag_follow_obstacle):
+
+            #     closest_vec = [self.closest_world[0]-self.pos[0], self.closest_world[1]-self.pos[1], self.closest_world[2]-self.pos[2]]
+
+            #     Do = math.sqrt(closest_vec[0]**2 + closest_vec[1]**2 + closest_vec[2]**2)
+
+            #     closest_hat = [closest_vec[0]/(Do+1e-8), closest_vec[1]/(Do+1e-8), closest_vec[2]/(Do+1e-8)]
+
+            #     if (Do < self.D_hist):
+            #         self.D_hist = Do
+            #     # print (Do, self.D_hist)
+
+
+            #     if(Do<self.switch_dist and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
+
+
+
+                #IDENTIFY CLOSEST POINT
+
+                #CALL FUNCTION FO CONTOUR
+
 
 
                 vel_msg.linear.x = Vx
@@ -153,7 +179,8 @@ class differential_node(object):
         rospy.Subscriber(self.path_topic_name, Path, self.callback_path)
 
         if(self.flag_follow_obstacle):
-            rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest)
+            rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest_body)
+
 
         # rospy.Subscriber(self.obstacle_point_topic_name, Point, self.obstacle_point_cb)
 
@@ -181,9 +208,16 @@ class differential_node(object):
         rospy.loginfo("flag_follow_obstacle:%s, epsilon:%s, switch_dist:%s",
                       self.flag_follow_obstacle, self.epsilon, self.switch_dist)
 
-    def callback_closest(self,data):
+    def callback_closest_body(self,data):
         self.closest = [data.x, data.y, data.z]
-        # print ("callback_closest")
+
+
+        # COMPUTE WORLD POINT FROM THE BODY POINT
+        r = sqrt(data.x*data.x + data.y*data.y)
+        theta = atan2(data.y,data.x)
+
+        self.closest_world = [self.state[0]+r*cos(self.state[2]+theta), self.state[1]+r*sin(self.state[2]+theta), 0.0+data.z]
+
 
     def callback_path(self, data):
         """Callback to obtain the trajectory to be followed by the robot
