@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
@@ -156,7 +156,7 @@ class differential_node(object):
         # parameters (description in yaml file)
         self.vr = float(rospy.get_param("~vector_field/vr", 1.0))
         self.kf = float(rospy.get_param("~vector_field/kf", 5.0))
-        self.is_forward_motion = rospy.get_param("~vector_field/reverse_direction", False)
+        self.reverse_direction = rospy.get_param("~vector_field/reverse_direction", False)
         self.d_feedback = float(rospy.get_param("~groundrobot/d_feedback", 0.1))
         self.move_backwards = rospy.get_param("~groundrobot/move_backwards", False)
 

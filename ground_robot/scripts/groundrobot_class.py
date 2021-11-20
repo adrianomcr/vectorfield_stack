@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -69,22 +69,29 @@ class groundrobot_class():
         return v_x, omega_z
 
 
-    def get_wheels_diferential(self,b,r):
+    def get_wheels_diferential(self,b):
 
-        [vr, vl] = get_wheels_skidsteer(0,b,r)
+        [vr, vl] = self.get_wheels_skidsteer(0,b)
         return vr, vl
 
 
-    def get_wheels_skidsteer(self, a, b, r):
-        vr = 0
-        vl = 0
+    def get_wheels_skidsteer(self, a, b):
+
+        [vx, wz] = self.get_vw()
+        vr = 1.0*vx + ((a**2 + b**2)/b)*wz
+        vl = 1.0*vx - ((a**2 + b**2)/b)*wz
+
         return vr, vl
 
 
     def set_state(self, state):
         self.state = state
 
-        d_pos = [self.state[0] + self.d_feedback*math.cos(self.state[2]), self.state[1] + self.d_feedback*math.sin(self.state[2])]
+        if self.move_backwards:
+            d_pos = [self.state[0] - self.d_feedback*math.cos(self.state[2]), self.state[1] - self.d_feedback*math.sin(self.state[2])]
+        else:
+            d_pos = [self.state[0] + self.d_feedback*math.cos(self.state[2]), self.state[1] + self.d_feedback*math.sin(self.state[2])]
+        
         self.vec_field_obj.set_pos([d_pos[0], d_pos[1], 0.0])
         # print("\33[96mset_state\33[0m")
 

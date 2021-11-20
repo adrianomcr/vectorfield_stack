@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
 
 import rospy
+from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Twist, Pose, Point
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
@@ -15,15 +16,8 @@ from math import cos, sin, sqrt, atan2
 # from distancefield.import_me_if_you_can import say_it_works
 
 
-# import rviz_helper
-# import vec_field_controller
 from distancefield.msg import Path
-# import distancefield_class
-# import distancefield
-# from distancefield import distancefield_class
-# import distancefield.distancefield_class
 import groundrobot_class
-
 import distancefield.distancefield_class
 
 
@@ -47,7 +41,8 @@ class skidsteer_node(object):
         # names and type of topics
         self.pose_topic_name = None
         self.pose_topic_type = None
-        self.cmd_vel_topic_name = None
+        # self.cmd_vel_topic_name = None
+        self.cmd_wheels_topic_name = None
         self.obstacle_point_topic_name = None
 
         # Obstacle avoidance variables
@@ -64,9 +59,12 @@ class skidsteer_node(object):
         self.reverse_direction = False
         self.d_feedback = 0.1
         self.move_backwards = False
+        self.a = 0.2
+        self.b = 0.1
 
         # publishers
-        self.pub_cmd_vel = None
+        # self.pub_cmd_vel = None
+        self.pub_wheels_vel = None
         self.pub_rviz_ref = None
         self.pub_rviz_curve = None
 
@@ -88,7 +86,8 @@ class skidsteer_node(object):
         """
         rate = rospy.Rate(self.freq)
 
-        vel_msg = Twist()
+        # vel_msg = Twist()
+        wheels_msg = Float32MultiArray()
 
 
         while not rospy.is_shutdown():
@@ -102,38 +101,17 @@ class skidsteer_node(object):
                     self.ground_robot_obj.vec_field_obj.set_closest(self.closest_world)
 
 
-                # [Vx,Vy,Vz,terminated] = self.vec_field_obj.vec_field_path()
-                [Vx,Wz] = self.ground_robot_obj.get_vw()
-                #print("\33[96mVx: %f Wz: %f\33[0m" % (Vx, Wz))
-                #print("")
 
-                # print(self.flag_follow_obstacle)
-            # if(self.flag_follow_obstacle):
-
-            #     closest_vec = [self.closest_world[0]-self.pos[0], self.closest_world[1]-self.pos[1], self.closest_world[2]-self.pos[2]]
-
-            #     Do = math.sqrt(closest_vec[0]**2 + closest_vec[1]**2 + closest_vec[2]**2)
-
-            #     closest_hat = [closest_vec[0]/(Do+1e-8), closest_vec[1]/(Do+1e-8), closest_vec[2]/(Do+1e-8)]
-
-            #     if (Do < self.D_hist):
-            #         self.D_hist = Do
-            #     # print (Do, self.D_hist)
+                # [Vx,Wz] = self.ground_robot_obj.get_vw()
+                # vel_msg.linear.x = Vx
+                # vel_msg.angular.z = Wz
+                # self.pub_cmd_vel.publish(vel_msg)
 
 
-            #     if(Do<self.switch_dist and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
-
-
-
-                #IDENTIFY CLOSEST POINT
-
-                #CALL FUNCTION FO CONTOUR
-
-
-
-                vel_msg.linear.x = Vx
-                vel_msg.angular.z = Wz
-                self.pub_cmd_vel.publish(vel_msg)
+                # [vr,vl] = self.ground_robot_obj.get_wheels_diferential(self.b)
+                [vr,vl] = self.ground_robot_obj.get_wheels_skidsteer(self.a, self.b)
+                wheels_msg.data = [vr,vr,vl,vl]
+                self.pub_cmd_wheels.publish(wheels_msg)
 
             else:
                 rospy.loginfo_once("\33[93mWaiting path message\33[0m")
@@ -156,13 +134,16 @@ class skidsteer_node(object):
         # parameters (description in yaml file)
         self.vr = float(rospy.get_param("~vector_field/vr", 1.0))
         self.kf = float(rospy.get_param("~vector_field/kf", 5.0))
-        self.is_forward_motion = rospy.get_param("~vector_field/reverse_direction", False)
+        self.reverse_direction = rospy.get_param("~vector_field/reverse_direction", False)
         self.d_feedback = float(rospy.get_param("~groundrobot/d_feedback", 0.1))
         self.move_backwards = rospy.get_param("~groundrobot/move_backwards", False)
+        self.a = rospy.get_param("~groundrobot/a", 0.2)
+        self.b = rospy.get_param("~groundrobot/b", 0.1)
 
         self.pose_topic_name = rospy.get_param("~topics/pose_topic_name", "tf")
         self.pose_topic_type = rospy.get_param("~topics/pose_topic_type", "TFMessage")
-        self.cmd_vel_topic_name = rospy.get_param("~topics/cmd_vel_topic_name", "cmd_vel")
+        # self.cmd_vel_topic_name = rospy.get_param("~topics/cmd_vel_topic_name", "cmd_vel")
+        self.cmd_wheels_topic_name = rospy.get_param("~topics/cmd_wheels_topic_name", "wheels_speeds")
         self.path_topic_name = rospy.get_param("~topics/path_topic_name", "example_path")
 
         self.flag_follow_obstacle = rospy.get_param("~obstacle_avoidance/flag_follow_obstacle", False)
@@ -171,7 +152,8 @@ class skidsteer_node(object):
         self.obstacle_point_topic_name = rospy.get_param("~obstacle_avoidance/obstacle_point_topic_name", "/closest_obstacle_point")
 
         # publishers
-        self.pub_cmd_vel = rospy.Publisher(self.cmd_vel_topic_name, Twist, queue_size=1)
+        # self.pub_cmd_vel = rospy.Publisher(self.cmd_vel_topic_name, Twist, queue_size=1)
+        self.pub_cmd_wheels = rospy.Publisher(self.cmd_wheels_topic_name, Float32MultiArray, queue_size=1)
         self.pub_rviz_ref = rospy.Publisher("/visualization_ref_vel", Marker, queue_size=1)
         self.pub_rviz_curve = rospy.Publisher("/visualization_trajectory", MarkerArray, queue_size=1)
 
@@ -199,9 +181,12 @@ class skidsteer_node(object):
         rospy.loginfo("Vector field control configured:")
         rospy.loginfo("vr: %s, kf: %s", self.vr, self.kf)
         rospy.loginfo("d: %s, move_backwards: %s", self.d_feedback, self.move_backwards)
+        rospy.loginfo("a: %s, b: %s", self.a, self.b)
         rospy.loginfo("reverse_direction:%s", self.reverse_direction)
-        rospy.loginfo("pose_topic_name:%s, pose_topic_type:%s, cmd_vel_topic_name:%s",
-                      self.pose_topic_name, self.pose_topic_type, self.cmd_vel_topic_name)
+        # rospy.loginfo("pose_topic_name:%s, pose_topic_type:%s, cmd_vel_topic_name:%s, cmd_wheels_topic_name:%s",
+                      # self.pose_topic_name, self.pose_topic_type, self.cmd_vel_topic_name, self.cmd_wheels_topic_name)
+        rospy.loginfo("pose_topic_name:%s, pose_topic_type:%s, cmd_wheels_topic_name:%s",
+                      self.pose_topic_name, self.pose_topic_type, self.cmd_wheels_topic_name)
         rospy.loginfo("flag_follow_obstacle:%s",
                       self.flag_follow_obstacle)
         rospy.loginfo("obstacle_point_topic_name:%s", self.obstacle_point_topic_name)

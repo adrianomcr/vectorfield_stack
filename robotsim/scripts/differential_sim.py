@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
@@ -11,8 +11,8 @@ from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, pi
 import numpy as np
-import scipy as sp
-import scipy.spatial
+# import scipy as sp
+# import scipy.spatial
 
 
 
@@ -132,9 +132,6 @@ class differential_node(object):
             #########################################
 
             robot_marker_array = MarkerArray()
-            
-
-
 
             #Publish robot marker to rviz
             marker_robot = Marker()
@@ -188,13 +185,13 @@ class differential_node(object):
             marker_w1.pose.position.y = self.state[1] + self.robot_radius*sin(self.state[2]-pi/2.0)
             marker_w1.pose.position.z = self.robot_height/2.0
             # Orientation of the marker
-            Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
+            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
             # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
-            qw1 = Rw1.as_quat()
-            marker_w1.pose.orientation.x = qw1[0]
-            marker_w1.pose.orientation.y = qw1[1]
-            marker_w1.pose.orientation.z = qw1[2]
-            marker_w1.pose.orientation.w = qw1[3]
+            # qw1 = Rw1.as_quat()
+            marker_w1.pose.orientation.x = cos(self.state[2]/2.0)*sin(pi/4)
+            marker_w1.pose.orientation.y = sin(self.state[2]/2.0)*sin(pi/4)
+            marker_w1.pose.orientation.z = sin(self.state[2]/2.0)*cos(pi/4)
+            marker_w1.pose.orientation.w = cos(self.state[2]/2.0)*cos(pi/4)
             # Append marker to array
             robot_marker_array.markers.append(marker_w1)
 
@@ -220,18 +217,49 @@ class differential_node(object):
             marker_w2.pose.position.y = self.state[1] + self.robot_radius*sin(self.state[2]+pi/2.0)
             marker_w2.pose.position.z = self.robot_height/2.0
             # Orientation of the marker
-            Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
+            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
             # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
-            qw1 = Rw1.as_quat()
-            marker_w2.pose.orientation.x = qw1[0]
-            marker_w2.pose.orientation.y = qw1[1]
-            marker_w2.pose.orientation.z = qw1[2]
-            marker_w2.pose.orientation.w = qw1[3]
+            # qw1 = Rw1.as_quat()
+            marker_w2.pose.orientation.x = cos(self.state[2]/2.0)*sin(pi/4)
+            marker_w2.pose.orientation.y = sin(self.state[2]/2.0)*sin(pi/4)
+            marker_w2.pose.orientation.z = sin(self.state[2]/2.0)*cos(pi/4)
+            marker_w2.pose.orientation.w = cos(self.state[2]/2.0)*cos(pi/4)
             # Append marker to array
             robot_marker_array.markers.append(marker_w2)
 
-            # Publish marker
-            # self.pub_rviz_robot_w1.publish(marker_w1)
+
+            #Publish robot marker to rviz
+            marker_arrow = Marker()
+            marker_arrow.header.frame_id = "world"
+            marker_arrow.header.stamp = rospy.Time.now()
+            marker_arrow.id = 3
+            marker_arrow.type = marker_arrow.ARROW
+            marker_arrow.action = marker_arrow.ADD
+            marker_arrow.lifetime = rospy.Duration(3)
+            # Size of robot
+            marker_arrow.scale.x = self.robot_radius*1.5
+            marker_arrow.scale.y = self.robot_radius/4.0
+            marker_arrow.scale.z = self.robot_radius/4.0
+            #Color of the marker
+            marker_arrow.color.a = 0.99
+            marker_arrow.color.r = 0.0
+            marker_arrow.color.g = 0.0
+            marker_arrow.color.b = 1.0
+            # Position of the marker
+            marker_arrow.pose.position.x = self.state[0] - (self.robot_radius*1.5/2.0)*cos(self.state[2])
+            marker_arrow.pose.position.y = self.state[1] - (self.robot_radius*1.5/2.0)*sin(self.state[2])
+            marker_arrow.pose.position.z = self.robot_height/2.0
+            # Orientation of the marker
+            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
+            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
+            # qw1 = Rw1.as_quat()
+            marker_arrow.pose.orientation.x = 0
+            marker_arrow.pose.orientation.y = 0
+            marker_arrow.pose.orientation.z = sin(self.state[2]/2.0)
+            marker_arrow.pose.orientation.w = cos(self.state[2]/2.0)
+            # Append marker to array
+            robot_marker_array.markers.append(marker_arrow)
+
 
             # Publish marker
             self.pub_rviz_robot.publish(robot_marker_array)
