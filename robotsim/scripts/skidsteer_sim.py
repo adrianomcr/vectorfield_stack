@@ -111,7 +111,7 @@ class skidsteer_node(object):
             point_msg.x = close_point_world[0]
             point_msg.y = close_point_world[1]
             point_msg.z = self.robot_height/2.0
-            self.pub_closest_world.publish(point_msg2)
+            self.pub_closest_world.publish(point_msg)
 
 
 
@@ -510,15 +510,6 @@ class skidsteer_node(object):
         rospy.Subscriber("/skidsteer/wheels_speeds", Float32MultiArray, self.callback_wheels)
 
 
-
-
-    def callback_vel(self, data):
-        """Callback to get the reference velocity for the robot
-        :param data: pose ROS message
-        """
-        vel = [data.linear.x, data.angular.z]
-
-        self.vel = vel
 
 
     def callback_vel(self, data):
