@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import rospy
+from std_msgs.msg import String
 from geometry_msgs.msg import Twist, Polygon, Point
 from nav_msgs.msg import Odometry
 from math import sqrt, atan2, exp, atan, cos, sin, acos, pi, asin, atan2
@@ -10,7 +11,7 @@ import tf
 from tf2_msgs.msg import TFMessage
 import numpy as np
 import sys
-from distancefield.msg import Path
+from distancefield.msg import Path, PathEq
 
 
 """
@@ -20,6 +21,47 @@ Instituto Tecnologico Vale (ITV)
 Contact:
 Adriano M. C. Rezende, <adrianomcr18@gmail.com>
 """
+
+
+# Function to generate an ellipse path
+def refference_trajectory_0(N):
+
+    # global u_lim
+    global u_i, u_f
+    global equation_str
+
+
+
+    # Parameter
+    # print ("\33[96m")
+    # print (u_lim)
+    # print ("\33[0m")
+    # du = u_lim[1]/N
+    # u = u_lim[0]-du
+
+    du = u_f/N
+    u = u_i-du
+
+    # Loop to sample the curve
+    traj = [[],[],[]]
+    for k in range(N):
+
+        # Increment parameter
+        u = u + du
+
+        point = eval(equation_str)
+
+        # Save the computed point
+        traj[0].append(point[0])
+        traj[1].append(point[1])
+        traj[2].append(point[2])
+
+    return (traj)
+
+# ----------  ----------  ----------  ----------  ----------
+
+
+
 
 
 # Function to generate an ellipse path
@@ -385,6 +427,7 @@ def send_curve_to_rviz(traj,pub_rviz):
         marker.id = k
         marker.type = marker.SPHERE
         marker.action = marker.ADD
+        marker.lifetime = rospy.Duration(3)
         # Size of sphere
         marker.scale.x = 0.03
         marker.scale.y = 0.03
@@ -426,13 +469,16 @@ def trajectory():
 
     # pub_traj = rospy.Publisher("/espeleo/traj_points", Polygon, queue_size=10)
     pub_traj = rospy.Publisher("/example_path", Path, queue_size=10)
+    pub_traj_equation = rospy.Publisher("/example_path_equation", PathEq, queue_size=10)
     pub_rviz_curve = rospy.Publisher("/visualization_path", MarkerArray, queue_size=1)
 
     # Wait a bit
     rate = rospy.Rate(freq)
 
     # Generate one of the curve types
-    if curve_number == 1:
+    if curve_number == 0:
+        traj = refference_trajectory_0(number_of_samples)
+    elif curve_number == 1:
         traj = refference_trajectory_1(number_of_samples)
     elif curve_number == 2:
         traj = refference_trajectory_2(number_of_samples)
@@ -453,12 +499,24 @@ def trajectory():
     # Create message with the points of the curve
     traj_msg = create_traj_msg(traj)
 
+
     # Wait a bit
     rate.sleep()
 
     sleep(2.0)
     # Publish the message
-    pub_traj.publish(traj_msg)
+    if (curve_number==0):
+        # str_msg = String()
+        # str_msg.data = equation_str
+        # pub_traj_equation.publish(str_msg)
+        eq_msg = PathEq()
+        eq_msg.closed_path_flag = closed_path_flag
+        eq_msg.u_i = u_i
+        eq_msg.u_f = u_f
+        eq_msg.equation = equation_str
+        pub_traj_equation.publish(eq_msg)
+    else:
+        pub_traj.publish(traj_msg)
 
     print ("\33[92m----------------------------\33[0m")
     print ("\33[92mCurve created and publhished\33[0m")
@@ -479,7 +537,7 @@ def read_params():
     # Input parameters
     global curve_number, number_of_samples, a, b, phi, cx, cy
     global closed_path_flag, insert_n_points, filter_path_n_average
-
+    global u_i, u_f, equation_str
 
     # Obtain the parameters
     # try:
@@ -493,6 +551,19 @@ def read_params():
     closed_path_flag = bool(rospy.get_param("~closed_path_flag"))
     insert_n_points = int(rospy.get_param("~insert_n_points"))
     filter_path_n_average = int(rospy.get_param("~filter_path_n_average"))
+
+    # u_lim = rospy.get_param("~u_lim")
+    u_i = float(rospy.get_param("~u_i"))
+    u_f = float(rospy.get_param("~u_f"))
+    equation_str = rospy.get_param("~equation")
+
+    # u_i = eval("u_i")
+    # u_i = eval("u_i")
+
+    # print ("u_lim: ", u_lim)
+    print ("u_i: ", u_i)
+    print ("u_f: ", u_f)
+    print ("equation_str: ", equation_str)
 
     print("\n\33[92mParameters loaded:\33[0m")
     print("\33[94mnumber_of_samples: " +  str(number_of_samples) +"\33[0m")

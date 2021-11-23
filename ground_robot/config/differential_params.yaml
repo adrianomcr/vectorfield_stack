@@ -13,7 +13,8 @@ topics:
     pose_topic_name: "differential/pose" # name of the topic in which the pose will be obtained
     pose_topic_type: "Pose" # Options: 'TFMessage', 'Pose' or 'Odometry'
     cmd_vel_topic_name: "differential/cmd_vel" # name of the topic in which the forward and angular velocities will be published
-    path_topic_name: "example_path" # name of the topic in which the path will be published
+    path_topic_name: "example_path" # name of the topic in which the path will be published (points form)
+    path_equation_topic_name: "example_path_equation" # name of the topic in which the path will be published (equation form)
 
 #Collision avoidance considering the closest point in the body frame - specific for ground robots
 obstacle_avoidance:

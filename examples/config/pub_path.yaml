@@ -2,7 +2,8 @@
 #Parameters for the espeleo_planning package
 
 # Curve number
-N_curve: 3
+N_curve: 0
+# 0 -> Generic parametric equation
 # 1 -> Ellipse
 # 2 -> Eigth like curve
 # 3 -> Square like curve
@@ -23,6 +24,20 @@ phi: 0.0
 cx: 0.0
 # Displacement in the y direction (meters)
 cy: 0.0
+
+
+
+#These string parameters respect the python syntax - only used when N_curve = 0
+# u_i: 0
+# u_f: 1
+# equation: "[2*cos(2*pi*u), 1.5*sin(2*pi*u), 0.0]"
+# equation: "[2*cos(2*pi*u)*sin(2*pi*u), 1.5*sin(2*pi*u), 0.0]"
+
+u_i: 0
+u_f: 6.283185307179586
+equation: "[2*cos(u), 1.5*sin(u), 0.0]"
+
+
 
 
 #Flag to indicate if the path is closed or not
