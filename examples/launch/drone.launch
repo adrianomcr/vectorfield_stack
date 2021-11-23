@@ -15,9 +15,9 @@
 
 
     <!-- Run the node that controls the robot with vector fields -->
-    <!-- <node pkg="ground_robot" name="skidsteer_node" type="skidsteer_node.py" args="" output="screen">
-        <rosparam command="load" file="$(find ground_robot)/config/skidsteer_params.yaml" />
-    </node> -->
+    <node pkg="quad_robot" name="quad_node" type="quad_node.py" args="" output="screen">
+        <rosparam command="load" file="$(find quad_robot)/config/quad_params.yaml" />
+    </node>
 
 </launch>
 

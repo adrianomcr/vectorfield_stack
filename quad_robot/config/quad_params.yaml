@@ -1,0 +1,24 @@
+
+
+vector_field:
+    vr: 0.5 # reference forward speed for the vector field
+    kf: 2.0 # convergence gain of the vector field
+    reverse_direction: False # flag to invert the direction the curve will be followed
+
+quadrobot:
+    m: 1.0 # mass
+    kv: 3.0 # gain of the velocity error
+    kw: 5.0 # gain of the orientation error
+
+topics:
+    pose_topic_name: "drone/odom" # name of the topic in which the pose will be obtained
+    pose_topic_type: "Odometry" # Options: 'Odometry'
+    acrorate_cmd_topic_name: "drone/acrorate" # name of the topic in which the forward and angular velocities will be published
+    path_topic_name: "example_path" # name of the topic in which the path will be published
+
+#Collision avoidance considering the closest point in the body frame - specific for ground robots
+obstacle_avoidance:
+    flag_follow_obstacle: True # flag to enable the robot to follow an obstacle when it s blocking the vector field
+    epsilon: 0.6 # reference distance between the robot and the path being followed
+    switch_dist: 0.9 # distance from which the robot will start to follow the obstacle
+    obstacle_point_topic_name: "drone/closest_point_body" # name of the topic in which the laser data will be obtained
