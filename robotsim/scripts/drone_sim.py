@@ -122,7 +122,7 @@ class drone_node(object):
 
 
 
-    #Function to convert euler angles to a quaternion
+    #Function to convert rotation matrix to a quaternion
     def rotm2quat(self, R):
 
         tr = R[0][0]+R[1][1]+R[2][2];
@@ -359,7 +359,7 @@ class drone_node(object):
             odom_msg.child_frame_id = "world"
             odom_msg.pose.pose.position.x = self.state[0]
             odom_msg.pose.pose.position.y = self.state[1]
-            odom_msg.pose.pose.position.y = self.state[2]
+            odom_msg.pose.pose.position.z = self.state[2]
             odom_msg.pose.pose.orientation.x = self.state[4]
             odom_msg.pose.pose.orientation.y = self.state[5]
             odom_msg.pose.pose.orientation.z = self.state[6]
@@ -744,46 +744,6 @@ class drone_node(object):
                 # Publish marker
                 self.pub_rviz_closest.publish(marker_closest)
 
-
-                #Publish obstacles markers to rviz
-                count1 = count1 + 1
-                if (count1 > self.freq):
-                    count1 = 0
-
-                    points_marker = MarkerArray()
-                    for i in range(min([len(self.obtscles_r), len(self.obtscles_pos)])):
-                        marker = Marker()
-                        marker.header.frame_id = "world"
-                        marker.header.stamp = rospy.Time.now()
-                        marker.id = i
-                        marker.type = marker.SPHERE
-                        marker.action = marker.ADD
-                        # Size of sphere
-                        marker.scale.x = 2*self.obtscles_r[i]
-                        marker.scale.y = 2*self.obtscles_r[i]
-                        marker.scale.z = 2*self.obtscles_r[i]
-                        # Color and transparency
-                        marker.color.a = 0.7
-                        marker.color.r = 1.0
-                        marker.color.g = 0.0
-                        marker.color.b = 0.0
-                        # Pose
-                        marker.pose.orientation.x = 0.0
-                        marker.pose.orientation.y = 0.0
-                        marker.pose.orientation.z = 0.0
-                        marker.pose.orientation.w = 1.0
-
-                        marker.pose.position.x = self.obtscles_pos[i][0]
-                        marker.pose.position.y = self.obtscles_pos[i][1]
-                        marker.pose.position.z = self.obtscles_pos[i][2]
-
-                        # Append marker to array
-                        points_marker.markers.append(marker)
-
-                    # Publish marker array
-                    self.pub_rviz_obst.publish(points_marker)
-
-
                 #Publish robots history to rviz
                 delta = 0.05
                 approx_len = 3.0
@@ -829,6 +789,45 @@ class drone_node(object):
                 self.pub_rviz_hist.publish(points_marker)
 
             #end count2
+
+            #Publish obstacles markers to rviz
+            count1 = count1 + 1
+            if (count1 > self.freq):
+                count1 = 0
+
+                points_marker = MarkerArray()
+                for i in range(min([len(self.obtscles_r), len(self.obtscles_pos)])):
+                    marker = Marker()
+                    marker.header.frame_id = "world"
+                    marker.header.stamp = rospy.Time.now()
+                    marker.id = i
+                    marker.type = marker.SPHERE
+                    marker.action = marker.ADD
+                    marker.lifetime = rospy.Duration(3)
+                    # Size of sphere
+                    marker.scale.x = 2*self.obtscles_r[i]
+                    marker.scale.y = 2*self.obtscles_r[i]
+                    marker.scale.z = 2*self.obtscles_r[i]
+                    # Color and transparency
+                    marker.color.a = 0.7
+                    marker.color.r = 1.0
+                    marker.color.g = 0.0
+                    marker.color.b = 0.0
+                    # Pose
+                    marker.pose.orientation.x = 0.0
+                    marker.pose.orientation.y = 0.0
+                    marker.pose.orientation.z = 0.0
+                    marker.pose.orientation.w = 1.0
+
+                    marker.pose.position.x = self.obtscles_pos[i][0]
+                    marker.pose.position.y = self.obtscles_pos[i][1]
+                    marker.pose.position.z = self.obtscles_pos[i][2]
+
+                    # Append marker to array
+                    points_marker.markers.append(marker)
+
+                # Publish marker array
+                self.pub_rviz_obst.publish(points_marker)
 
 
             # rate.sleep()

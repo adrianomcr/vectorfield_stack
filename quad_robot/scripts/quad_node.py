@@ -13,10 +13,13 @@ from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, atan2
 import numpy as np
 
+
+import time
+
 # from distancefield.import_me_if_you_can import say_it_works
 
 
-from distancefield.msg import Path
+from distancefield.msg import Path, PathEq
 import quadrobot_class
 import distancefield.distancefield_class
 
@@ -79,9 +82,12 @@ class quad_node(object):
 
         # vel_msg = Twist()
         wheels_msg = Float32MultiArray()
+        acrorate_msg = Quaternion()
 
+        time.sleep(2)
 
         while not rospy.is_shutdown():
+
 
             self.quad_robot_obj.set_state(self.state)
             
@@ -91,6 +97,14 @@ class quad_node(object):
                 if(self.flag_follow_obstacle):
                     self.quad_robot_obj.vec_field_obj.set_closest(self.closest_world)
 
+                self.quad_robot_obj.control_step()
+                [tau, omega] = self.quad_robot_obj.get_acrorate()
+
+                acrorate_msg.w = tau
+                acrorate_msg.x = omega[0]
+                acrorate_msg.y = omega[1]
+                acrorate_msg.z = omega[2]
+                self.pub_acrorate.publish(acrorate_msg)
 
                 # [vr,vl] = self.quad_robot_obj.get_wheels_skidsteer(self.a, self.b)
                 # wheels_msg.data = [vr,vr,vl,vl]
@@ -126,6 +140,7 @@ class quad_node(object):
         self.pose_topic_type = rospy.get_param("~topics/pose_topic_type", "Odometry")
         self.acrorate_cmd_topic_name = rospy.get_param("~topics/acrorate_cmd_topic_name", "wheels_speeds")
         self.path_topic_name = rospy.get_param("~topics/path_topic_name", "example_path")
+        self.path_equation_topic_name = rospy.get_param("~topics/path_equation_topic_name", "example_path_equation")
 
         self.flag_follow_obstacle = rospy.get_param("~obstacle_avoidance/flag_follow_obstacle", False)
         self.epsilon = rospy.get_param("~obstacle_avoidance/epsilon", 0.5)
@@ -140,6 +155,7 @@ class quad_node(object):
 
         # # subscribers
         rospy.Subscriber(self.path_topic_name, Path, self.callback_path)
+        rospy.Subscriber(self.path_equation_topic_name, PathEq, self.callback_path_equation)
 
         if(self.flag_follow_obstacle):
             rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest_body)
@@ -196,6 +212,17 @@ class quad_node(object):
 
 
 
+    def callback_path_equation(self, data):
+        """Callback to obtain the trajectory to be followed by the robot
+        :param data: trajectory ROS message
+        """
+
+        rospy.loginfo("New path received (equation) is closed?:%s", data.closed_path_flag)
+
+        self.quad_robot_obj.vec_field_obj.set_equation(data.equation, data.u_i, data.u_f, data.closed_path_flag, 200)
+
+
+
     def odometry_cb(self, data):
         """Callback to get the pose from odometry data
         :param data: odometry ROS message
@@ -206,9 +233,9 @@ class quad_node(object):
 
         vel_b = [data.twist.twist.linear.x, data.twist.twist.linear.y, data.twist.twist.linear.z]
 
-        # R_bw = self.quad_robot_obj.quat2rotm(quat)
-        # vel_w = np.matrix(R_bw)*np.matrix(vel_b).transpose()
-        # vel_w = vel_w.transpose().tolist()[0]
+        R_bw = self.quat2rotm(quat)
+        vel_w = np.matrix(R_bw)*np.matrix(vel_b).transpose()
+        vel_w = vel_w.transpose().tolist()[0]
 
         self.state[0] = pos[0]
         self.state[1] = pos[1]
@@ -219,12 +246,25 @@ class quad_node(object):
         self.state[5] = quat[2]
         self.state[6] = quat[3]
 
-        self.state[7] = vel_b[0]
-        self.state[8] = vel_b[1]
-        self.state[9] = vel_b[2]
+        self.state[7] = vel_w[0]
+        self.state[8] = vel_w[1]
+        self.state[9] = vel_w[2]
         
 
+    # Unit quaternion to rotation matrix
+    def quat2rotm(self,q):
+        # w x y z
 
+        qw = q[0]
+        qx = q[1]
+        qy = q[2]
+        qz = q[3]
+
+        Rot = [[1-2*(qy*qy+qz*qz), 2*(qx*qy-qz*qw), 2*(qx*qz+qy*qw)],
+               [2*(qx*qy+qz*qw), 1-2*(qx*qx+qz*qz), 2*(qy*qz-qx*qw)],
+               [2*(qx*qz-qy*qw), 2*(qy*qz+qx*qw), 1-2*(qx*qx+qy*qy)]]; #this was checked on matlab
+               
+        return Rot
 
 
 if __name__ == '__main__':

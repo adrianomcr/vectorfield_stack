@@ -263,7 +263,7 @@ class distancefield_class():
 
         u_star = self.golden_search(pos,self.state_u-self.state_u_delta,self.state_u+self.state_u_delta)
         self.state_u = u_star
-        print(self.state_u)
+        # print(self.state_u)
         if(self.state_u>self.u_f):
             self.state_u = self.state_u-(self.u_f-self.u_i)
         elif(self.state_u<self.u_i):

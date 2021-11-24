@@ -387,6 +387,7 @@ class skidsteer_node(object):
                     marker.id = i
                     marker.type = marker.CYLINDER
                     marker.action = marker.ADD
+                    marker.lifetime = rospy.Duration(3)
                     # Size of cylinder
                     marker.scale.x = 2*self.obtscles_r[i]
                     marker.scale.y = 2*self.obtscles_r[i]

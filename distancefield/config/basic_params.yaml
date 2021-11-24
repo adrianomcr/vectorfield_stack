@@ -11,6 +11,7 @@ topics:
     pose_topic_type: "Pose" # Options: 'TFMessage', 'Pose' or 'Odometry'
     cmd_vel_topic_name: "integrator/vel" # name of the topic in which the linear velocities will be published
     path_topic_name: "example_path" # name of the topic in which the path will be published
+    path_equation_topic_name: "example_path_equation" # name of the topic in which the path will be published (equation form)
 
 #Collision avoidance considering the closest point in the world frame - works in 3D
 obstacle_avoidance:

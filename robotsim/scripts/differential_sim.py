@@ -37,9 +37,12 @@ class differential_node(object):
 
         # publishers
         self.pub_pose = None
+        self.pub_closest_world = None
+        self.pub_closest_body = None
         self.pub_rviz_robot = None
+        self.pub_rviz_closest = None
         self.pub_rviz_obst = None
-
+        self.pub_rviz_hist = None
 
 
         self.init_node()
@@ -75,7 +78,6 @@ class differential_node(object):
             pose_msg.orientation.w = cos(self.state[2]/2.0)
             
             self.pub_pose.publish(pose_msg)
-
 
 
             #Compute closest point - with respect to the world frame
@@ -315,6 +317,7 @@ class differential_node(object):
                     marker.id = i
                     marker.type = marker.CYLINDER
                     marker.action = marker.ADD
+                    marker.lifetime = rospy.Duration(3)
                     # Size of cylinder
                     marker.scale.x = 2*self.obtscles_r[i]
                     marker.scale.y = 2*self.obtscles_r[i]

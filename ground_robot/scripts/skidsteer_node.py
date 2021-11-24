@@ -16,7 +16,7 @@ from math import cos, sin, sqrt, atan2
 # from distancefield.import_me_if_you_can import say_it_works
 
 
-from distancefield.msg import Path
+from distancefield.msg import Path, PathEq
 import groundrobot_class
 import distancefield.distancefield_class
 
@@ -145,6 +145,7 @@ class skidsteer_node(object):
         # self.cmd_vel_topic_name = rospy.get_param("~topics/cmd_vel_topic_name", "cmd_vel")
         self.cmd_wheels_topic_name = rospy.get_param("~topics/cmd_wheels_topic_name", "wheels_speeds")
         self.path_topic_name = rospy.get_param("~topics/path_topic_name", "example_path")
+        self.path_equation_topic_name = rospy.get_param("~topics/path_equation_topic_name", "example_path_equation")
 
         self.flag_follow_obstacle = rospy.get_param("~obstacle_avoidance/flag_follow_obstacle", False)
         self.epsilon = rospy.get_param("~obstacle_avoidance/epsilon", 0.5)
@@ -159,6 +160,7 @@ class skidsteer_node(object):
 
         # # subscribers
         rospy.Subscriber(self.path_topic_name, Path, self.callback_path)
+        rospy.Subscriber(self.path_equation_topic_name, PathEq, self.callback_path_equation)
 
         if(self.flag_follow_obstacle):
             rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest_body)
@@ -218,6 +220,15 @@ class skidsteer_node(object):
 
         self.ground_robot_obj.vec_field_obj.set_trajectory(traj_points, data.insert_n_points, data.filter_path_n_average,data.closed_path_flag)
 
+
+    def callback_path_equation(self, data):
+        """Callback to obtain the trajectory to be followed by the robot
+        :param data: trajectory ROS message
+        """
+
+        rospy.loginfo("New path received (equation) is closed?:%s", data.closed_path_flag)
+
+        self.ground_robot_obj.vec_field_obj.set_equation(data.equation, data.u_i, data.u_f, data.closed_path_flag, 200)
 
     def tf_cb(self, data, frame_id="os1_imu_odom"):
         """Callback function to get the pose of the robot via a TF message

@@ -17,6 +17,7 @@ topics:
     #cmd_vel_topic_name: "skidsteer/cmd_vel" # name of the topic in which the forward and angular velocities will be published
     cmd_wheels_topic_name: "skidsteer/wheels_speeds" # name of the topic in which the rigth and left speeds will be piblished
     path_topic_name: "example_path" # name of the topic in which the path will be published
+    path_equation_topic_name: "example_path_equation" # name of the topic in which the path will be published (equation form)
 
 #Collision avoidance considering the closest point in the body frame - specific for ground robots
 obstacle_avoidance:
