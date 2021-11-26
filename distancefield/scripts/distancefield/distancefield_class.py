@@ -7,7 +7,8 @@ from enum import Enum
 from itertools import groupby
 from math import pi, sqrt, cos, sin, tan, atan
 
-
+global exp_as_func
+global u_trick
 
 class distancefield_class():
 
@@ -31,6 +32,8 @@ class distancefield_class():
         self.state_u_delta = 0.02
         self.u_i = 0.0
         self.u_f = 1.0
+        self.exp_as_func = None
+        self.u_trick = [0]
 
         #Obstacle follower parameters
         self.epsilon = epsilon
@@ -168,6 +171,15 @@ class distancefield_class():
 
 
 
+        eq_aux = self.equation_str.replace("u","u_trick[0]")
+        print("\33[96m" + eq_aux + "\33[0m")
+        
+        global exp_as_func
+        global u_trick
+        u_trick = [0]
+        # self.exp_as_func = eval('lambda: ' + self.equation_str)
+        exp_as_func = eval('lambda: ' + eq_aux)
+
         rospy.loginfo("New path received by the controller (equation)")
 
 
@@ -175,8 +187,15 @@ class distancefield_class():
 
     def sample_curve(self, u):
 
+        global exp_as_func
+        global u_trick
 
-        r = eval(self.equation_str)
+        # r = eval(self.equation_str) #slow?
+
+        u_trick[0] = u
+        r = exp_as_func() #fast
+
+        # print (self.exp_as_func)
 
         return r
 
@@ -219,11 +238,12 @@ class distancefield_class():
 
 
         k=0;
-        while(bl-al > 0.000001):
+        while(bl-al > 0.00001):
 
             k = k+1;
-            if (k==200):
+            if (k==50):
                 break
+
 
             if(func_a > func_b):
                 al = s_a
@@ -243,8 +263,7 @@ class distancefield_class():
             func_b = self.get_norm(dist_vec)
     
         u_star = (al+bl)/2;
-
-        # D = sqrt((x - self.equation_samples[self.state_k][0]) ** 2 + (y - self.equation_samples[self.state_k][1]) ** 2 + (z - self.equation_samples[self.state_k][2]) ** 2)
+        # print (k)
 
         return u_star
 

@@ -49,6 +49,7 @@ def refference_trajectory_0(N):
         # Increment parameter
         u = u + du
 
+        # u_trick = [u]
         point = eval(equation_str)
 
         # Save the computed point

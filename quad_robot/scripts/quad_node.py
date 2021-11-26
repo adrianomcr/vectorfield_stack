@@ -32,7 +32,7 @@ class quad_node(object):
 
     def __init__(self):
 
-        self.freq = 90.0  # Frequency of field computation in Hz
+        self.freq = 70.0  # Frequency of field computation in Hz
 
         self.state = [0,0,0, 1,0,0,0, 0,0,0]  # Robot position and orientation
 
@@ -75,6 +75,7 @@ class quad_node(object):
 
 
 
+
     def run(self):
         """Execute the controller loop
         """
@@ -97,7 +98,8 @@ class quad_node(object):
                 if(self.flag_follow_obstacle):
                     self.quad_robot_obj.vec_field_obj.set_closest(self.closest_world)
 
-                self.quad_robot_obj.control_step()
+                # self.quad_robot_obj.control_step()
+                self.quad_robot_obj.control_step_parallel()
                 [tau, omega] = self.quad_robot_obj.get_acrorate()
 
                 acrorate_msg.w = tau

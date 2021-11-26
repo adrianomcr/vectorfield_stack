@@ -25,7 +25,7 @@ class drone_node(object):
 
     def __init__(self):
 
-        self.freq = 200.0  # Frequency to simulate the simple drone robot
+        self.freq = 100.0  # Frequency to simulate the simple drone robot
 
         # self.vel = [0.0, 0.0] #vx and wz
         self.tau = 9.81
