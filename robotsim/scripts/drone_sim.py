@@ -12,8 +12,8 @@ from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, pi
 import numpy as np
-import scipy as sp
-import scipy.spatial
+#import scipy as sp
+#import scipy.spatial
 
 
 
@@ -249,11 +249,11 @@ class drone_node(object):
             # count0 = count0 + 1
             # print("\33[96mfreq: %f\33[0m" % ((count0)/(rospy.Time.now().to_sec()-t_0)))
 
-            t = rospy.Time.now().to_sec() - t_0
-            if(t < count_freq*(1.0/self.freq)):
-                # print ("\ta")
-                continue
-            count_freq = count_freq + 1
+            # t = rospy.Time.now().to_sec() - t_0
+            # if(t < count_freq*(1.0/self.freq)):
+            #     # print ("\ta")
+            #     continue
+            # count_freq = count_freq + 1
             # print ("b")
             # print (t)
 
@@ -830,7 +830,7 @@ class drone_node(object):
                 self.pub_rviz_obst.publish(points_marker)
 
 
-            # rate.sleep()
+            rate.sleep()
 
 
 
