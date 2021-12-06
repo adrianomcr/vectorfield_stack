@@ -12,9 +12,6 @@ from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, pi
 import numpy as np
-import scipy as sp
-import scipy.spatial
-
 
 
 class skidsteer_node(object):

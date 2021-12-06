@@ -9,12 +9,16 @@ from math import pi, sqrt, cos, sin, tan, atan
 
 global exp_as_func
 global u_trick
+# u_trick = [0]
 
 class distancefield_class():
 
 
     # def __init__(self, v_r, k_f, epsilon, switch_dist, is_forward_motion_flag, flag_follow_obstacle):
     def __init__(self, v_r, k_f, reverse_direction, flag_follow_obstacle, epsilon, switch_dist):
+
+        global u_trick
+        global exp_as_func
 
         # base variables
         self.pos = [0, 0, 0]
@@ -34,6 +38,9 @@ class distancefield_class():
         self.u_f = 1.0
         self.exp_as_func = None
         self.u_trick = [0]
+
+        exp_as_func = False
+        u_trick = [0]
 
         #Obstacle follower parameters
         self.epsilon = epsilon
@@ -76,7 +83,7 @@ class distancefield_class():
 
 
         if (self.flag_from_equation):
-            return True
+            return exp_as_func
         else:
             return True if self.traj and len(self.traj) > 0 else False
 
