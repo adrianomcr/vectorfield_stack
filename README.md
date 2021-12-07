@@ -2,15 +2,14 @@
 Navigation control algorithms based on artificial vector fields
 
 
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/images/field_illustration.png)
 
-This ROS stack ...
 
+This ROS stack provides packages to perform the navigation control of a robot by using an artificial vector field strategy. The image above illustrates the method. Given a desired reference path, the vector field guides the robot towards the curve, which is then followed. The core of the navigation control is a vector field based on the Euclidean distance function, specific packages import the field and perform the control of different robot types.
 
 
 
 ## Available packages
-
-
 
 
 ### distancefield
@@ -21,7 +20,7 @@ This package contains a vector field based navigation algorithm. The vector fiel
 
 The implementation also incorporates the ability to deviate from detected obstacles.
 
-More details on the distancefield package [here](distancefield/README.md).
+More details on the distancefield package [here](distancefield).
 
 
 
