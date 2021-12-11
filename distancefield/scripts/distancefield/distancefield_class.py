@@ -208,16 +208,17 @@ class distancefield_class():
 
 
 
-    def get_norm(self, arr):
+    # @staticmethod
+    # def get_norm(self, arr):
 
 
-        n = 0
-        for k in range(len(arr)):
-            n = n + arr[k]**2
+    #     n = 0
+    #     for k in range(len(arr)):
+    #         n = n + arr[k]**2
 
-        n = sqrt(n)
+    #     n = sqrt(n)
 
-        return n
+    #     return n
 
 
 
@@ -273,6 +274,22 @@ class distancefield_class():
         # print (k)
 
         return u_star
+
+
+
+
+
+
+    # def get_GH_follower(self, delta):
+
+    #     # Gain functions
+    #     G_ = -(2 / math.pi) * math.atan(self.k_f * delta)  # convergence
+    #     H_ = math.sqrt(1 - G_ ** 2)  # circulation
+    #     return G_, H_
+
+
+
+
 
 
 
@@ -355,7 +372,6 @@ class distancefield_class():
                 G2 = -(2 / math.pi) * math.atan(self.k_f * D2)  # convergence
                 H2 = math.sqrt(1 - G2 ** 2)  # circulation
 
-
                 # alpha = 1.0-Do/self.switch_dist #used for a smooth transition
                 alpha = 1
                 # print(alpha)
@@ -379,24 +395,6 @@ class distancefield_class():
 
 
 
-    def get_GH_follower(self, delta):
-
-        # Gain functions
-        G_ = -(2 / math.pi) * math.atan(self.k_f * delta)  # convergence
-        H_ = math.sqrt(1 - G_ ** 2)  # circulation
-        return G_, H_
-
-
-
-    def vec_field_path(self):
-
-
-        Vx, Vy, Vz, reached_endpoint = self.compute_field_at_p(self.pos)
-
-        return Vx, Vy, Vz, reached_endpoint
-
-
-
 
 
     def field_from_points(self, pos):
@@ -405,7 +403,6 @@ class distancefield_class():
         local_traj = self.traj
         size_traj = len(local_traj)
         reached_endpoint = False
-
 
         # Compute the closest ponit on the curve
         # Consider only the points in the vicinity of the current closest point (robustness)
@@ -520,8 +517,6 @@ class distancefield_class():
                 # print("Close to obstacle")
 
 
-
-
         # Stop the robot if the it reached the end of a open path
         if not self.closed_path_flag:
             if k_min == size_traj - 1:
@@ -542,7 +537,6 @@ class distancefield_class():
 
 
 
-
     def compute_field_at_p(self, pos):
         """Compute the vector field that will guide the robot through a path
         :return:
@@ -553,8 +547,6 @@ class distancefield_class():
             Vx, Vy, Vz, reached_endpoint = self.field_from_equation(pos)
         else:
             Vx, Vy, Vz, reached_endpoint = self.field_from_points(pos)
-
-
         
 
         return Vx, Vy, Vz, reached_endpoint
@@ -562,6 +554,30 @@ class distancefield_class():
 
 
 
+
+    def vec_field_path(self):
+
+
+        Vx, Vy, Vz, reached_endpoint = self.compute_field_at_p(self.pos)
+
+        return Vx, Vy, Vz, reached_endpoint
+
+
+
+
+
+
+
+    @staticmethod
+    def get_norm(arr):
+
+        n = 0
+        for k in range(len(arr)):
+            n = n + arr[k]**2
+
+        n = sqrt(n)
+
+        return n
 
 
 
