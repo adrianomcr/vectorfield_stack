@@ -50,7 +50,7 @@ The image below shows some of the simulated robots:
 This package uses the distancefield package to support a controller for ground robots. It can be used to control a diferential drive or a skid-steering robot. Two types of input controls are available, (i) linear and angular speeds, and (ii) wheels speeds. It can be checked with the differential and skid-steering robots available in the robotsim package.
 
 
-More details on the ground_robot package [here](ground_robot/README.md).
+More details on the ground_robot package [here](ground_robot).
 
 
 
@@ -62,14 +62,14 @@ This package uses the distancefield package to support a controller for quadcopt
 
 [2] Adriano M. C. Rezende, Vinicius M. Gonçalves, Arthur H. D. Nunes and Luciano C. A. Pimenta, **Robust quadcopter control with artificial vector fields,** 2020 IEEE International Conference on Robotics and Automation (ICRA), 2020, pp. 6381-6387, doi: 10.1109/ICRA40945.2020.9196605. Online: <https://ieeexplore.ieee.org/document/9196605>
 
-More details on the ground_robot package [here](quad_robot/README.md).
+More details on the ground_robot package [here](quad_robot).
 
 
 ### examples
 
 This package contains some files (launch, yaml, ...) that exemplify how the control codes can be used. The examples use the simulators provided in the package robotsim.
 
-More details on the examples package [here](examples/README.md).
+More details on the examples package [here](examples).
 
 
 
