@@ -7,9 +7,16 @@ This package contains a vector field based navigation algorithm. The vector fiel
 The implementation also incorporates the ability to deviate from detected obstacles.
 
 
-## distancefield_class
+## distancefield_class (python)
 
-This is a implementation of the Euclidean distance vector field.
+This class is a implementation of the Euclidean distance vector field.
+
+The cureve that will be followed can be defined in 2 ways; (i) by using a sequence o points; or (ii) by using a parametric equation. See the methods `set_trajectory` ena `set_equation`.
+
+A simple way to use this class is to define an object (consctructor method `distancefield_class`), set the curve (`set_trajectory` or `set_equation`) and compute the vector field at a given point of space (method `compute_field_at_p`).
+
+The available methods are listed below.
+
 
 
 ### Methods
@@ -130,8 +137,42 @@ Method that returns the `original_traj` smoothened with an average filter with p
 
 ## simple_node
 
+This ROS node has an implementation. This node can be used to control an integrator robot. It means that the robot is holonomic and responds to llinear velocity commands.
+
+See the packege package [examples](../examples) for instruction in how to launch this node.
+
+
+### Parameters
+
+Below is the list of ROS parameters that the node requires:
+
+- `vr` (`float`): norm of the velocity of the field
+- `kf` (`float`): convergence gain of the vector field
+- `reverse_direction` (`bool`): flag to make the vector field follow the curve in the opposite direction
+
+- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `epsilon` (`float`): distance that a close obstacle will be followed
+- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `obstacle_point_topic_name` (`string`): name of the topic in which the closest point of the obstacles are published
+
+- `pose_topic_name` (`string`): name of the topic in which the robot's pose is published
+- `pose_topic_type` (`string`): type of the topic in which the robot's pose is published (`TFMessage`, `Pose`, `Odometry`)
+- `cmd_vel_topic_name` (`string`): name of the topic in which the node publishes command velocities
+- `path_topic_name` (`string`): name of the topic in which the path (sequence of points) is published
+- `path_equation_topic_name` (`string`): name of the topic in which the path (equation) is published
+
+
+
 ### Topics
 
+
+- `/path_topic_name`  (message type: `distancefield_msgs/Path`): Subscribe to this topic to get a path represented as a sequence of points
+- `/path_equation_topic_name`  (message type: `distancefield_msgs/PathEq`): Subscribe to this topic to get a path represented by a parametric equation
+- `/obstacle_point_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest colidable point written in the world reference frame.
+- `/pose_topic_type`  (message type: `tf2_msgs/TFMessage` or `geometry_msgs/Pose` or `nav_msgs/Odometry`): Subscribe to this topic to get the robot's position
+
+
+- `cmd_vel_topic_name`  (message type: `geometry_msgs/Twist`): Topic in which the the velocity command is published (linear velocity)
 
 
 
