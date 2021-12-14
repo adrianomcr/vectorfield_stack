@@ -145,7 +145,7 @@ class skidsteer_node(object):
         # self.cmd_vel_topic_name = rospy.get_param("~topics/cmd_vel_topic_name", "cmd_vel")
         self.cmd_wheels_topic_name = rospy.get_param("~topics/cmd_wheels_topic_name", "wheels_speeds")
         self.path_topic_name = rospy.get_param("~topics/path_topic_name", "example_path")
-        self.path_equation_topic_name = rospy.get_param("~topics/path_equation_topic_name", "example_path_equation")
+        self.obstacle_point_body_topic_name = rospy.get_param("~topics/obstacle_point_body_topic_name", "example_path_equation")
 
         self.flag_follow_obstacle = rospy.get_param("~obstacle_avoidance/flag_follow_obstacle", False)
         self.epsilon = rospy.get_param("~obstacle_avoidance/epsilon", 0.5)
@@ -160,7 +160,7 @@ class skidsteer_node(object):
 
         # # subscribers
         rospy.Subscriber(self.path_topic_name, Path, self.callback_path)
-        rospy.Subscriber(self.path_equation_topic_name, PathEq, self.callback_path_equation)
+        rospy.Subscriber(self.obstacle_point_body_topic_name, PathEq, self.callback_path_equation)
 
         if(self.flag_follow_obstacle):
             rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest_body)

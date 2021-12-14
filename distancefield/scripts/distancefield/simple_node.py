@@ -118,7 +118,7 @@ class simple_node(object):
         # parameters (description in yaml file)
         self.vr = float(rospy.get_param("~vector_field/vr", 1.0))
         self.kf = float(rospy.get_param("~vector_field/kf", 5.0))
-        self.is_forward_motion = rospy.get_param("~vector_field/reverse_direction", False)
+        self.reverse_direction = rospy.get_param("~vector_field/reverse_direction", False)
 
         self.pose_topic_name = rospy.get_param("~topics/pose_topic_name", "tf")
         self.pose_topic_type = rospy.get_param("~topics/pose_topic_type", "TFMessage")

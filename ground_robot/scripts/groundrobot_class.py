@@ -48,6 +48,28 @@ class groundrobot_class():
 
 
 
+
+
+    def set_state(self, state):
+        self.state = state
+
+        #For the vector field, consider the distance of the control point
+        if self.move_backwards:
+            d_pos = [self.state[0] - self.d_feedback*math.cos(self.state[2]), self.state[1] - self.d_feedback*math.sin(self.state[2])]
+        else:
+            d_pos = [self.state[0] + self.d_feedback*math.cos(self.state[2]), self.state[1] + self.d_feedback*math.sin(self.state[2])]
+        
+        self.vec_field_obj.set_pos([d_pos[0], d_pos[1], 0.0])
+        # print("\33[96mset_state\33[0m")
+
+
+
+    def set_closest(self, point):
+        self.closest_world = point
+        # self.rpy = rpy
+        # self.quat = quat
+
+
     def get_vw(self):
         [fx,fy,fz,terminate] = self.vec_field_obj.vec_field_path()
         f = [fx,fy]
@@ -84,23 +106,6 @@ class groundrobot_class():
         return vr, vl
 
 
-    def set_state(self, state):
-        self.state = state
-
-        if self.move_backwards:
-            d_pos = [self.state[0] - self.d_feedback*math.cos(self.state[2]), self.state[1] - self.d_feedback*math.sin(self.state[2])]
-        else:
-            d_pos = [self.state[0] + self.d_feedback*math.cos(self.state[2]), self.state[1] + self.d_feedback*math.sin(self.state[2])]
-        
-        self.vec_field_obj.set_pos([d_pos[0], d_pos[1], 0.0])
-        # print("\33[96mset_state\33[0m")
-
-
-
-    def set_closest(self, point):
-        self.closest_world = point
-        # self.rpy = rpy
-        # self.quat = quat
 
 
     # def set_closest(self, point):
