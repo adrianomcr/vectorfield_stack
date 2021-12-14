@@ -132,7 +132,7 @@ The parameters of the skidsteer_node are the same as the paramaters of the diffe
 - `a` (`float`): horizontal distance from the robot's senter to the front (or back) wheels' shafts
 - `b` (`float`): horizontal distance from the robot's senter to the right (or left) wheels' shafts
 
-Check these parameters in the file [config/differential_params.yaml](config/skidsteer_params.yaml).
+Check these parameters in the file [config/skidsteer_params.yaml](config/skidsteer_params.yaml).
 
 
 ### Topics
