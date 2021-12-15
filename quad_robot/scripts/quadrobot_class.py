@@ -406,7 +406,10 @@ class quadrobot_class():
 
         #end
 
+        
 
+    def get_acrorate(self):
+        return self.tau, self.omega
 
 
 
@@ -439,8 +442,7 @@ class quadrobot_class():
         self.closest_world = point
 
 
-    def get_acrorate(self):
-        return self.tau, self.omega
+
 
 
 

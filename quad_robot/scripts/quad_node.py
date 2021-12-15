@@ -99,7 +99,8 @@ class quad_node(object):
                     self.quad_robot_obj.vec_field_obj.set_closest(self.closest_world)
 
                 # self.quad_robot_obj.control_step()
-                self.quad_robot_obj.control_step_parallel()
+                # self.quad_robot_obj.control_step_parallel()
+                self.quad_robot_obj.control_step()
                 [tau, omega] = self.quad_robot_obj.get_acrorate()
 
                 acrorate_msg.w = tau

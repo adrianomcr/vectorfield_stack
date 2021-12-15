@@ -9,7 +9,7 @@ This package uses the distancefield package to support a controller for ground r
 
 This class is a implementation of controllers for wheeled ground robots. The controllers are disigned upon the vector field implemented in the distancefield package (check it [here](../distancefield)). <strong>The groundrobot_class object has a member of the distancefield_class called `vec_field_obj`</strong>.
 
-Currently, tht groundrobot_class supports two types of robots, the differential drive, and the skid-steer. See the image below:
+Currently, the groundrobot_class supports two types of robots, the differential drive, and the skid-steer. See the image below:
 
 ![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/ground_robot/images/groundrobots.png)
 
@@ -63,6 +63,8 @@ Method to compute the linear velocities of the right and left wheels of a differ
 #### `get_wheels_skidsteer(self, a, b):`
 
 Method to compute the linear velocities of the right and left wheels of a skid-steer robot with parameters `a` and `b` (see image above). It assumes that the robot is in the state previously defined with the method `set_state`. It returns a list with two elements, the right and left speeds.
+
+
 
 
 
