@@ -11,7 +11,7 @@ This class is a implementation of controllers for wheeled ground robots. The con
 
 Currently, tht groundrobot_class supports two types of robots, the differential drive, and the skid-steer. See the image below:
 
-![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/ground_robot/images/field_illustration.png)
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/ground_robot/images/groundrobots.png)
 
 The available methods are listed below.
 
