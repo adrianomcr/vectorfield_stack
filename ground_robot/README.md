@@ -108,13 +108,13 @@ Check these parameters in the file [config/differential_params.yaml](config/diff
 ### Topics
 
 
-- `/path_topic_name`  (message type: `distancefield_msgs/Path`): Subscribe to this topic to get a path represented as a sequence of points
-- `/path_equation_topic_name`  (message type: `distancefield_msgs/PathEq`): Subscribe to this topic to get a path represented by a parametric equation
-- `/obstacle_point_body_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest colidable point written in the <strong>body</strong> reference frame.
-- `/pose_topic_type`  (message type: `tf2_msgs/TFMessage` or `geometry_msgs/Pose` or `nav_msgs/Odometry`): Subscribe to this topic to get the robot's position
+- `path_topic_name`  (message type: `distancefield_msgs/Path`): Subscribe to this topic to get a path represented as a sequence of points
+- `path_equation_topic_name`  (message type: `distancefield_msgs/PathEq`): Subscribe to this topic to get a path represented by a parametric equation
+- `obstacle_point_body_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest colidable point written in the <strong>body</strong> reference frame.
+- `pose_topic_type`  (message type: `tf2_msgs/TFMessage` or `geometry_msgs/Pose` or `nav_msgs/Odometry`): Subscribe to this topic to get the robot's pose
 
 
-- `cmd_vel_topic_name`  (message type: `geometry_msgs/Twist`): Topic in which the the velocity command is published (linear velocity)
+- `cmd_vel_topic_name`  (message type: `geometry_msgs/Twist`): Topic in which the velocity command is published (linear velocity)
 
 
 
@@ -139,8 +139,10 @@ Check these parameters in the file [config/skidsteer_params.yaml](config/skidste
 
 ### Topics
 
-The topics of the skidsteer_node are the same as the topics of the differential_node above.
+The topics of the skidsteer_node are almost the same as the topics of the differential_node above. The only change is the replacement of the topic `cmd_vel_topic_name` by the topic `cmd_wheels_topic_name`, which has the following structure:
 
+
+- `cmd_wheels_topic_name`  (message type: `std_msgs/Float32MultiArray`): Topic in which the command speeds for the four wheels are published. The array has the order: front right, back right, back left, front left
 
 
 

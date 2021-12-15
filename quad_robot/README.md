@@ -68,7 +68,7 @@ Method that returns a rotation matrix equivalent to a quaternion `q`.
 
 #### `control_step_parallel(self):`
 
-<font color="red"> This method is inactive </span>
+<em>This method is inactive</em>
 
 
 #### `control_step(self):`
@@ -123,11 +123,6 @@ Method that returns a quatrnion equivalent to the matrix `R`.
 
 
 
-### TODO
-
-- Add saturation
-
-
 
 
 
@@ -143,9 +138,59 @@ This ROS node has an implementation that can be used to control a quadcopter tha
 It can be tested with drone_sim node available in the [robotsim](../robotsim) package. See the package [examples](../examples) for instruction in how to launch this simulation.
 
 
+- `Kv` (`float`): gain of the action proportional to the velocity error (field x drone velocity)
+- `Kw` (`float`): gain of the action proportional to the orientaion error (orientation_ref x drone orientation)
+
+
+
+### Parameters
+
+
+- `vr` (`float`): norm of the velocity of the field
+- `kf` (`float`): convergence gain of the vector field
+- `reverse_direction` (`bool`): flag to make the vector field follow the curve in the opposite direction
+- `m` (`float`): mass of the drone
+- `kv` (`float`): gain of the action proportional to the velocity error
+- `kw` (`float`): gain of the action proportional to the orientaion error
+
+- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `epsilon` (`float`): distance that a close obstacle will be followed
+- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `obstacle_point_topic_name` (`string`): name of the topic in which the closest point of the obstacles are published
+
+- `pose_topic_name` (`string`): name of the topic in which the robot's pose is published
+- `pose_topic_type` (`string`): type of the topic in which the robot's pose is published (`TFMessage`, `Pose`, `Odometry`)
+- `acrorate_cmd_topic_name` (`string`): name of the topic in which acrorate commands are published
+- `path_topic_name` (`string`): name of the topic in which the path (sequence of points) is published
+- `path_equation_topic_name` (`string`): name of the topic in which the path (equation) is published
+
+
+Check these parameters in the file [config/quad_params.yaml](config/quad_params.yaml).
 
 
 
 
 
 
+### Topics
+
+
+- `path_topic_name`  (message type: `distancefield_msgs/Path`): Subscribe to this topic to get a path represented as a sequence of points
+- `path_equation_topic_name`  (message type: `distancefield_msgs/PathEq`): Subscribe to this topic to get a path represented by a parametric equation
+- `obstacle_point_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest colidable point written in the <strong>world</strong> reference frame.
+- `pose_topic_type`  (message type: `nav_msgs/Odometry`): Subscribe to this topic to get the robot's states
+
+
+- `acrorate_cmd_topic_name`  (message type: `geometry_msgs/Quaternion`): Topic in which the acrorate command is published. The real quaternion element q<sub>w</sub> corresponds to the total thrust, while the imaginary elements [q<sub>x</sub> q<sub>y</sub> q<sub>z</sub>] correspond to the angular body rates.
+
+
+
+
+
+
+
+## TODO
+
+- Add saturation in the class
+
+- Add ROS message for the acrorate command
