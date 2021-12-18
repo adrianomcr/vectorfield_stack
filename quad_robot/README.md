@@ -138,11 +138,6 @@ This ROS node has an implementation that can be used to control a quadcopter tha
 It can be tested with drone_sim node available in the [robotsim](../robotsim) package. See the package [examples](../examples) for instruction in how to launch this simulation.
 
 
-- `Kv` (`float`): gain of the action proportional to the velocity error (field x drone velocity)
-- `Kw` (`float`): gain of the action proportional to the orientaion error (orientation_ref x drone orientation)
-
-
-
 ### Parameters
 
 

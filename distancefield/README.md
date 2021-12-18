@@ -185,7 +185,7 @@ Below is the list of ROS parameters that the node requires:
 - `path_topic_name` (`string`): name of the topic in which the path (sequence of points) is published
 - `path_equation_topic_name` (`string`): name of the topic in which the path (equation) is published
 
-
+Check these parameters in the file [config/basic_params.yaml](config/basic_params.yaml).
 
 ### Topics
 

@@ -43,6 +43,9 @@ The image below shows some of the simulated robots:
 
 ![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/images/sim_robots.png)
 
+More details on the robotsim package [here](robotsim).
+
+
 
 ### ground_robot
 
