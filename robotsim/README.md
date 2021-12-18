@@ -18,6 +18,8 @@ Below, the nodes relative to each simulator are explained:
 
 ## integrator_sim.py
 
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/robotsim/images/integrator.png)
+
 This node simulates a 3D integrator robot. The equation of the robot model is:
 
 ![formula](https://render.githubusercontent.com/render/math?math=\dot{x}=u)
@@ -42,6 +44,7 @@ Check these parameters in the file [config/integrator_sim.yaml](config/integrato
 ### Topics
 
 - `/integrator/pose`  (message type: `geometry_msgs/Pose`): Topic in which the robot's position is published.
+
 - `/integrator/closest_point`  (message type: `geometry_msgs/Point`): Topic in which the closest obstacle point (in the <strong>world</strong> frame) is published.
 
 - `/integrator/robot`  (message type: `visualization_msgs/Marker`): Topic in which the a marker that represents the robot is published. In can be seen in rviz.
@@ -52,14 +55,25 @@ Check these parameters in the file [config/integrator_sim.yaml](config/integrato
 
 - `/integrator/history`  (message type: `visualization_msgs/MarkerArray`): Topic in which the past history of the robot's position is published. In can be seen in rviz.
 
-- `/integrator/vel`  (message type: `geometry_msgs/Twist`): Topic that the node subscripes to in order to get a linear velocity command for the robot. This velocity is in the world frame.
+- `/integrator/vel`  (message type: `geometry_msgs/Twist`): Topic that the node subscribes to in order to get a linear velocity command for the robot. This velocity is in the world frame.
+
+
+
+
+
+
+
+
+
 
 
 
 
 ## differential_sim.py
 
-This node simulates a diferential drive robot. The equation of the robot model is:
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/robotsim/images/differential.png)
+
+This node simulates a differential drive robot. The equation of the robot model is:
 
 ![formula](https://render.githubusercontent.com/render/math?math=\dot{x}=v\cos(\theta)) \
 ![formula](https://render.githubusercontent.com/render/math?math=\dot{y}=v\sin(\theta)) \
@@ -70,8 +84,46 @@ where `[x, y]` is the robot's position, `θ` is the robot's yaw angle, `v` is th
 The simulation can be visualized in rviz. For that, use the configuration file `rviz/differential.rviz`.
 
 
+### Parameters
+
+- `state_0` (`float list`): array with the initial state of the robot `[x, y, θ]`
+- `robot_radius` (`float`): radius of the robot
+- `robot_height` (`float`): height of the robot
+
+- `obtscles_pos` (`float list of list`): list of 2D position of cylindrical obstacles
+- `obtscles_r` (`float list`): list of the radius of the cylindrical obstacles
+
+Check these parameters in the file [config/differential_sim.yaml](config/differential_sim.yaml).
+
+
+
+### Topics
+
+- `/differential/pose`  (message type: `geometry_msgs/Pose`): Topic in which the robot's pose is published.
+
+- `/differential/pub_closest_world`  (message type: `geometry_msgs/Point`): Topic in which the closest obstacle point (in the <strong>world</strong> frame) is published.
+
+- `/differential/pub_closest_body`  (message type: `geometry_msgs/Point`): Topic in which the closest obstacle point (in the <strong>body</strong> frame) is published.
+
+- `/differential/robot`  (message type: `visualization_msgs/MarkerArray`): Topic in which the markers that represent the robot are published. In can be seen in rviz.
+
+- `/differential/closest_marker`  (message type: `visualization_msgs/Marker`): Topic in which the a marker that represents the closest colidable point is published. In can be seen in rviz.
+
+- `/differential/obstacles`  (message type: `visualization_msgs/MarkerArray`): Topic in which the markers that represent the obstacles are published. In can be seen in rviz.
+
+- `/differential/history`  (message type: `visualization_msgs/MarkerArray`): Topic in which the past history of the robot's position is published. In can be seen in rviz.
+
+- `/differential/cmd_vel`  (message type: `geometry_msgs/Twist`): Topic that the node subscribes to in order to get a linear and angular speed commands for the robot.
+
+
+
+
+
+
 
 ## skidsteer_sim.py
+
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/robotsim/images/skidsteer.png)
 
 This node simulates a skid steering robot with four wheels. The kinematic equation of the robot model is equal to the equation of the diferential drive robot. However, here the velocities `v` and `ω` are defined from the right (v<sub>r</sub>) and left (v<sub>l</sub>) wheels speeds according to:
 
@@ -83,12 +135,41 @@ where `a` and `b` are the geometric parameters of the robot (see [here](../groun
 The simulation can be visualized in rviz. For that, use the configuration file `rviz/skidsteer.rviz`.
 
 
+### Parameters
+
+- `state_0` (`float list`): array with the initial state of the robot `[x, y, θ]`
+- `robot_length` (`float`): length of the robot
+- `robot_width` (`float`): width of the robot
+- `robot_height` (`float`): height of the robot
+
+- `robot_a` (`float`): half of the longitudinal distance between the wheels
+- `robot_b` (`float`): half of the lateral distance between the wheels
+- `robot_r` (`float`): radius of the wheels
+
+- `obtscles_pos` (`float list of list`): list of 2D position of cylindrical obstacles
+- `obtscles_r` (`float list`): list of the radius of the cylindrical obstacles
+
+Check these parameters in the file [config/skidsteer_sim.yaml](config/skidsteer_sim.yaml).
+
+
+### Topics
+
+The topics that the node `skidsteer_sim.py` publishes are the same as the ones the node `differential_sim.py` publishes. The only difference in the prexix, which changes from /differential to /skidsteer.
+
+The topics the node subscribes to are below:
+
+- `/differential/cmd_vel`  (message type: `geometry_msgs/Twist`): Topic that the node subscribes to in order to get a linear and angular speed commands for the robot.
+
+- `/differential/wheels_speeds`  (message type: `std_msgs/Float32MultiArray`): Topic that the node subscribes to in order to get a speed commands for each of the four wheels.
+
+
 
 
 
 
 ## drone_sim.py
 
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/robotsim/images/drone.png)
 
 This node simulates a drone operating in the acro mode. As control inputs, it receives the total thrust force and the angular body rates. The equations that describe the robot's dynamics are:
 
@@ -101,5 +182,38 @@ This node simulates a drone operating in the acro mode. As control inputs, it re
 where `x` is the drone position, `v` is the velocity in the world frame and `R` is a rotation matrix representing the drone's orientation. The unit vector `ẑ` points up and f<sub>d</sub> is a drag force. The control inputs arethe total thrust `τ` and the angular speeds `ω`, written in the body frame. Finally, `S(ω)` is the skew-stmetric matrix.
 
 The simulation can be visualized in rviz. For that, use the configuration file `rviz/drone.rviz`.
+
+
+### Parameters
+
+- `state_0` (`float list`): array with the initial state of the robot `[x,y,z, qw,qx,qy,qz, vx,vy,vz]`
+- `robot_arm_len` (`float`): distance between the each motor and the drone's center
+- `robot_m` (`float`): mass of the drone
+- `obtscles_pos` (`float list of list`): list of 3D position of spherical obstacles
+- `obtscles_r` (`float list`): list of the radius of the spherical obstacles
+
+Check these parameters in the file [config/drone_sim.yaml](config/drone_sim.yaml).
+
+
+
+### Topics
+
+- `/drone/pose`  (message type: `geometry_msgs/Pose`): Topic in which the robot's pose is published.
+
+- `/drone/odom`  (message type: `nav_msgs/Odometry`): Topic in which the robot's pose and speeds are published.
+
+- `/drone/pub_closest_world`  (message type: `geometry_msgs/Point`): Topic in which the closest obstacle point (in the <strong>world</strong> frame) is published.
+
+- `/drone/pub_closest_body`  (message type: `geometry_msgs/Point`): Topic in which the closest obstacle point (in the <strong>body</strong> frame) is published.
+
+- `/drone/robot`  (message type: `visualization_msgs/MarkerArray`): Topic in which the markers that represent the robot are published. In can be seen in rviz.
+
+- `/drone/closest_marker`  (message type: `visualization_msgs/Marker`): Topic in which the a marker that represents the closest colidable point is published. In can be seen in rviz.
+
+- `/drone/obstacles`  (message type: `visualization_msgs/MarkerArray`): Topic in which the markers that represent the obstacles are published. In can be seen in rviz.
+
+- `/drone/history`  (message type: `visualization_msgs/MarkerArray`): Topic in which the past history of the robot's position is published. In can be seen in rviz.
+
+- `/drone/acrorate`  (message type: `geometry_msgs/Quaternion`): Topic that the node subscribes to in order to get the acrorate commands for the robot. The real element component of the quaternion is the total thrust, while the imaginary ones are the body rates.
 
 
