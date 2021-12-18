@@ -1,6 +1,6 @@
 # robotsim
 
-This package provides simple implementations of several robots. The objective of this package is to enable simple examples of the use of the control packages of this stack.
+This package provides simple implementations of several robots. The objective of this package is to enable simple examples of the use of the control packages of this stack. The simulators rely only on basic ROS features, do not requiring none complex installation. The simulation can be visualized in rviz by using provided configuration files.
 
 The following robot types are available:
 
@@ -61,7 +61,6 @@ Check these parameters in the file [config/integrator_sim.yaml](config/integrato
 
 This node simulates a diferential drive robot. The equation of the robot model is:
 
-<!-- ![formula](https://render.githubusercontent.com/render/math?math=\begin{equation}%20\begin{array}{l}%20\dot{x}%20=%20v\cos(\theta)%20\\%20\dot{y}%20=%20v\sin(\theta)%20\\%20\dot{\theta}%20=%20\omega%20\end{array}%20\end{equation}) -->
 ![formula](https://render.githubusercontent.com/render/math?math=\dot{x}=v\cos(\theta)) \
 ![formula](https://render.githubusercontent.com/render/math?math=\dot{y}=v\sin(\theta)) \
 ![formula](https://render.githubusercontent.com/render/math?math=\dot{\theta}=\omega)
@@ -74,6 +73,33 @@ The simulation can be visualized in rviz. For that, use the configuration file `
 
 ## skidsteer_sim.py
 
+This node simulates a skid steering robot with four wheels. The kinematic equation of the robot model is equal to the equation of the diferential drive robot. However, here the velocities `v` and `ω` are defined from the right (v<sub>r</sub>) and left (v<sub>l</sub>) wheels speeds according to:
+
+![formula](https://render.githubusercontent.com/render/math?math=v=0.5\cdot(v_r%2Bv_l)) \
+![formula](https://render.githubusercontent.com/render/math?math=\omega=[b/(2a^2%2B2b^2)]\cdot(v_r-v_l))
+
+where `a` and `b` are the geometric parameters of the robot (see [here](../ground_robot))
+
+The simulation can be visualized in rviz. For that, use the configuration file `rviz/skidsteer.rviz`.
+
+
+
+
 
 
 ## drone_sim.py
+
+
+This node simulates a drone operating in the acro mode. As control inputs, it receives the total thrust force and the angular body rates. The equations that describe the robot's dynamics are:
+
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/robotsim/images/drone_eq.png)
+
+<!-- ![formula](https://render.githubusercontent.com/render/math?math=\dot{x}=v) \ -->
+<!-- ![formula](https://render.githubusercontent.com/render/math?math=\dot{v}=1) \ -->
+<!-- ![formula](https://render.githubusercontent.com/render/math?math=\dot{q}=1) -->
+
+where `x` is the drone position, `v` is the velocity in the world frame and `R` is a rotation matrix representing the drone's orientation. The unit vector `ẑ` points up and f<sub>d</sub> is a drag force. The control inputs arethe total thrust `τ` and the angular speeds `ω`, written in the body frame. Finally, `S(ω)` is the skew-stmetric matrix.
+
+The simulation can be visualized in rviz. For that, use the configuration file `rviz/drone.rviz`.
+
+

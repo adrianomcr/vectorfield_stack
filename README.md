@@ -26,7 +26,7 @@ More details on the distancefield package [here](distancefield).
 
 ### robotsim
 
-This package provides simple implementations of several robots. The objective of this package is to enable simple examples of the use of the control packages of this stack.
+This package provides simple implementations of several robots. The objective of this package is to enable simple examples of the use of the control packages of this stack. The simulators rely only on basic ROS features, do not requiring none complex installation. The simulation can be visualized in rviz by using provided configuration files.
 
 The following robot types are available:
 
