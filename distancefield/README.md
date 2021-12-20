@@ -159,7 +159,7 @@ Method that returns the `original_traj` smoothened with an average filter with p
 
 
 
-## simple_node
+## simple_node.py
 
 This ROS node has an implementation that can be used to control an integrator robot. It means that the robot is holonomic and responds to llinear velocity commands. Basically, it subscribes to a topic to get the robot's position, computes the vector field, and publishes the velocity in a command topic.
 

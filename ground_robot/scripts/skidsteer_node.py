@@ -65,8 +65,8 @@ class skidsteer_node(object):
         # publishers
         # self.pub_cmd_vel = None
         self.pub_wheels_vel = None
-        self.pub_rviz_ref = None
-        self.pub_rviz_curve = None
+        # self.pub_rviz_ref = None
+        # self.pub_rviz_curve = None
 
 
         self.init_node()
@@ -155,8 +155,8 @@ class skidsteer_node(object):
         # publishers
         # self.pub_cmd_vel = rospy.Publisher(self.cmd_vel_topic_name, Twist, queue_size=1)
         self.pub_cmd_wheels = rospy.Publisher(self.cmd_wheels_topic_name, Float32MultiArray, queue_size=1)
-        self.pub_rviz_ref = rospy.Publisher("/visualization_ref_vel", Marker, queue_size=1)
-        self.pub_rviz_curve = rospy.Publisher("/visualization_trajectory", MarkerArray, queue_size=1)
+        # self.pub_rviz_ref = rospy.Publisher("/visualization_ref_vel", Marker, queue_size=1)
+        # self.pub_rviz_curve = rospy.Publisher("/visualization_trajectory", MarkerArray, queue_size=1)
 
         # # subscribers
         rospy.Subscriber(self.path_topic_name, Path, self.callback_path)

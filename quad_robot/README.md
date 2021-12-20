@@ -131,7 +131,7 @@ Method that returns a quatrnion equivalent to the matrix `R`.
 
 
 
-## quad_node
+## quad_node.py
 
 This ROS node has an implementation that can be used to control a quadcopter that responds to acrorate (total thrust and angular rates) commands. Basically, it subscribes to a topic to get the robot's state, computes the control inputs for the drone, and publishes the result in a command topic.
 

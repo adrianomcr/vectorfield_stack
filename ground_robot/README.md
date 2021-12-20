@@ -74,7 +74,7 @@ Method to compute the linear velocities of the right and left wheels of a skid-s
 
 
 
-## differential_node
+## differential_node.py
 
 This ROS node has an implementation that can be used to control a differential drive robot. Basically, it subscribes to a topic to get the robot's pose, computes the vector field and the associate linear and angular speeds for the robot, and publishes the result in a command topic.
 
@@ -119,7 +119,7 @@ Check these parameters in the file [config/differential_params.yaml](config/diff
 
 
 
-## skidsteer_node
+## skidsteer_node.py
 
 This ROS node has an implementation that can be used to control a skid-steering robot. Basically, it subscribes to a topic to get the robot's pose, computes the vector field, and publishes the right and left wheels speeds in a command topic. The difference between this node and the differential_node is that, now, the node actuates directli on the speed of the wheels.
 

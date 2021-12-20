@@ -2,6 +2,11 @@
 <launch>
 
 
+    <!--Run rviz-->
+    <node pkg = "rviz" name = "rviz" type = "rviz" args="-d $(find robotsim)/rviz/integrator.rviz">
+    </node>
+
+
     <!--Run the node that will generate an example trajectory-->
     <node pkg = "robotsim" name = "robot" type = "integrator_sim.py" args="" output="screen">
         <rosparam command="load" file="$(find robotsim)/config/integrator_sim.yaml" />
