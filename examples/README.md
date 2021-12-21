@@ -1,6 +1,6 @@
 # examples
 
-This package contains some files (launch, yaml, ...) that exemplify how the control codes can be used. The examples use the simulators provided in the package robotsim. It also provides a useful node  that publishes example paths to be followed by the robot.
+This package contains some files (launch, yaml, ...) that exemplify how the control codes can be used. The examples use the simulators provided in the package robotsim. It also provides a useful node that publishes example paths to be followed by the robot.
 
 
 
@@ -23,11 +23,11 @@ Everything can be configured via ROS parameters.
 
 	0 &#8594; Generic parametric equation. Publishes an equation (PathEq). The remaining option publishes a sequence of points (Path). \
 	1 &#8594; Ellipse. \
-	2 &#8594; Eigth like curve. \
-	3 &#8594; Square like curve. \
+	2 &#8594; Eight-like curve. \
+	3 &#8594; Square-like curve. \
 	4 &#8594; Sine curve. \
-	5 &#8594; Smooth eigth like curve. \
-	6 &#8594; Amoeba like.
+	5 &#8594; Smooth eight-like curve. \
+	6 &#8594; Amoeba-like curve.
 
 
 - `N_points` (`int`): number of points to be sampled
@@ -35,7 +35,7 @@ Everything can be configured via ROS parameters.
 
 - `closed_path_flag` (`bool`): flag to indicate if the path is closed or not
 
-- `insert_n_points` (`int`): number of points to be inserted in between each pais of points of the received trajectory
+- `insert_n_points` (`int`): number of points to be inserted in between each pair of points of the received trajectory
 
 - `filter_path_n_average` (`int`): number of points to use in the average filter (it is forced to be an odd number) - if 0 the path is not filtered
 
@@ -69,7 +69,7 @@ Check these parameters in the file [config/pub_path.yaml](config/pub_path.yaml).
 
 ### Topics
 
-This package does not subscribe to any topic. All of its inputs come from ROS parameters. The publhished topics are:
+This package does not subscribe to any topic. All of its inputs come from ROS parameters. The published topics are:
 
 - `/example_path`  (message type: `distancefield_msgs/Path`): Topic in which a path represented as a sequence of points is published.
 
@@ -83,12 +83,12 @@ This package does not subscribe to any topic. All of its inputs come from ROS pa
 
 ## Ready launch files
 
-This package provides some launch files that can called to run simple simulations that check the control codes in the other packages of this stack.
+This package provides some launch files that can be called to run simple simulations that check the control codes in the other packages of this stack.
 
 All the launch files run the following order of nodes:
 
 - Node rviz to visualize the simulation.
-- A simulator node from packsge robotsim together with the associated parameters.
+- A simulator node from package robotsim together with the associated parameters.
 - Path generator node that publishes a sequence of points or an equation.
 - Control node, and associated parameters, according to the simulated robot
 

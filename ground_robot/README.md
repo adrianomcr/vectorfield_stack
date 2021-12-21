@@ -1,13 +1,13 @@
 # ground_robot
 
 
-This package uses the distancefield package to support a controller for ground robots. It can be used to control a diferential drive or a skid-steering robot. Two types of input controls are available, (i) linear and angular speeds, and (ii) wheels speeds. It can be checked with the differential and skid-steering robots available in the robotsim package.
+This package uses the distancefield package to support a controller for ground robots. It can be used to control a differential drive or a skid-steering robot. Two types of input controls are available, (i) linear and angular speeds, and (ii) wheels speeds. It can be checked with the differential and skid-steering robots available in the robotsim package.
 
 
 
 ## groundrobot_class (python)
 
-This class is a implementation of controllers for wheeled ground robots. The controllers are disigned upon the vector field implemented in the distancefield package (check it [here](../distancefield)). <strong>The groundrobot_class object has a member of the distancefield_class called `vec_field_obj`</strong>.
+This class is an implementation of controllers for wheeled ground robots. The controllers are designed upon the vector field implemented in the distancefield package (check it [here](../distancefield)). <strong>The groundrobot_class object has a member of the distancefield_class called `vec_field_obj`</strong>.
 
 Currently, the groundrobot_class supports two types of robots, the differential drive, and the skid-steer. See the image below:
 
@@ -26,16 +26,16 @@ Constructor method. It receives the following parameters:
 - `vr` (`float`): norm of the velocity of the field
 - `kf` (`float`): convergence gain of the vector field
 - `reverse_direction` (`bool`): flag to make the vector field follow the curve in the opposite direction
-- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `flag_follow_obstacle` (`bool`): flag to enable/disable the object follow feature
 - `epsilon` (`float`): distance that a close obstacle will be followed
-- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `switch_dist` (`float`): distance from which an obstacle starts to be followed
 - `d` (`float`): displacement of the control point used by the feedback-linearization controller
 - `move_backwards` (`bool`): flag to set the robot to move backwards
 
 
 #### `set_state(self, state):`
 
-Method to set the state of the ground robot. The arument `state` is a list with the x position, y position, and yaw angle.
+Method to set the state of the ground robot. The argument `state` is a list with the x position, y position, and yaw angle.
 
 
 
@@ -90,9 +90,9 @@ It can be tested with differential_sim node available in the [robotsim](../robot
 - `d_feedback` (`float`): distance of the control point used in the feedback linearization
 - `move_backwards` (`bool`): flag used to make the robot move backwards
 
-- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `flag_follow_obstacle` (`bool`): flag to enable/disable the object follow feature
 - `epsilon` (`float`): distance that a close obstacle will be followed
-- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `switch_dist` (`float`): distance from which an obstacle starts to be followed
 - `obstacle_point_topic_name` (`string`): name of the topic in which the closest point of the obstacles are published
 
 - `pose_topic_name` (`string`): name of the topic in which the robot's pose is published
@@ -110,7 +110,7 @@ Check these parameters in the file [config/differential_params.yaml](config/diff
 
 - `path_topic_name`  (message type: `distancefield_msgs/Path`): Subscribe to this topic to get a path represented as a sequence of points
 - `path_equation_topic_name`  (message type: `distancefield_msgs/PathEq`): Subscribe to this topic to get a path represented by a parametric equation
-- `obstacle_point_body_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest colidable point written in the <strong>body</strong> reference frame.
+- `obstacle_point_body_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest collidable point written in the <strong>body</strong> reference frame.
 - `pose_topic_type`  (message type: `tf2_msgs/TFMessage` or `geometry_msgs/Pose` or `nav_msgs/Odometry`): Subscribe to this topic to get the robot's pose
 
 
@@ -121,7 +121,7 @@ Check these parameters in the file [config/differential_params.yaml](config/diff
 
 ## skidsteer_node.py
 
-This ROS node has an implementation that can be used to control a skid-steering robot. Basically, it subscribes to a topic to get the robot's pose, computes the vector field, and publishes the right and left wheels speeds in a command topic. The difference between this node and the differential_node is that, now, the node actuates directli on the speed of the wheels.
+This ROS node has an implementation that can be used to control a skid-steering robot. Basically, it subscribes to a topic to get the robot's pose, computes the vector field, and publishes the right and left wheels speeds in a command topic. The difference between this node and the differential_node is that, now, the node actuates directly on the speed of the wheels.
 
 It can be tested with skidsteer_sim node available in the [robotsim](../robotsim) package. See the package [examples](../examples) for instruction in how to launch this simulation.
 
@@ -129,10 +129,10 @@ It can be tested with skidsteer_sim node available in the [robotsim](../robotsim
 
 ### Parameters
 
-The parameters of the skidsteer_node are the same as the paramaters of the differential_node above with the adition of the following two:
+The parameters of the skidsteer_node are the same as the parameters of the differential_node above with the addition of the following two:
 
-- `a` (`float`): horizontal distance from the robot's senter to the front (or back) wheels' shafts
-- `b` (`float`): horizontal distance from the robot's senter to the right (or left) wheels' shafts
+- `a` (`float`): horizontal distance from the robot's center to the front (or back) wheels' shafts
+- `b` (`float`): horizontal distance from the robot's center to the right (or left) wheels' shafts
 
 Check these parameters in the file [config/skidsteer_params.yaml](config/skidsteer_params.yaml).
 

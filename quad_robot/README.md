@@ -13,7 +13,7 @@ This package uses the distancefield package to support a controller for quadcopt
 ## quadrobot_class (python)
 
 
-This class is a implementation of a controller for a quadcopter robot. The controller are disigned upon the vector field implemented in the distancefield package (check it [here](../distancefield)), and makes the drone follow the vector field. <strong>The quadrobot_class object has a member of the distancefield_class called `vec_field_obj`</strong>.
+This class is an implementation of a controller for a quadcopter robot. The controller is designed upon the vector field implemented in the distancefield package (check it [here](../distancefield)), and makes the drone follow the vector field. <strong>The quadrobot_class object has a member of the distancefield_class called `vec_field_obj`</strong>.
 
 Currently, the quadrobot_class assumes a drone in the acrorate mode. It means that the control inputs are the total thrust force and the three body angular rates. The image below illustrates the robot model that the class considers:
 
@@ -35,12 +35,12 @@ Constructor method. It receives the following parameters:
 - `vr` (`float`): norm of the velocity of the field
 - `kf` (`float`): convergence gain of the vector field
 - `reverse_direction` (`bool`): flag to make the vector field follow the curve in the opposite direction
-- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `flag_follow_obstacle` (`bool`): flag to enable/disable the object follow feature
 - `epsilon` (`float`): distance that a close obstacle will be followed
-- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `switch_dist` (`float`): distance from which an obstacle starts to be followed
 - `m` (`float`): mass of the drone
 - `Kv` (`float`): gain of the action proportional to the velocity error (field x drone velocity)
-- `Kw` (`float`): gain of the action proportional to the orientaion error (orientation_ref x drone orientation)
+- `Kw` (`float`): gain of the action proportional to the orientation error (orientation_ref x drone orientation)
 
 
 
@@ -73,7 +73,7 @@ Method that returns a rotation matrix equivalent to a quaternion `q`.
 
 #### `control_step(self):`
 
-This method considers the current state of the drone and updates the internal control input variales `tau` and `omega`. To get these variables use the method `get_acrorate` described below.
+This method considers the current state of the drone and updates the internal control input variables `tau` and `omega`. To get these variables use the method `get_acrorate` described below.
 
 
 #### `get_acrorate(self):`
@@ -118,7 +118,7 @@ Method that returns a 3D axis and an angle that correspond to the axis-angle rep
 
 #### `rotm2quat(self, R):`
 
-Method that returns a quatrnion equivalent to the matrix `R`.
+Method that returns a quaternion equivalent to the matrix `R`.
 
 
 
@@ -146,11 +146,11 @@ It can be tested with drone_sim node available in the [robotsim](../robotsim) pa
 - `reverse_direction` (`bool`): flag to make the vector field follow the curve in the opposite direction
 - `m` (`float`): mass of the drone
 - `kv` (`float`): gain of the action proportional to the velocity error
-- `kw` (`float`): gain of the action proportional to the orientaion error
+- `kw` (`float`): gain of the action proportional to the orientation error
 
-- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `flag_follow_obstacle` (`bool`): flag to enable/disable the object follow feature
 - `epsilon` (`float`): distance that a close obstacle will be followed
-- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `switch_dist` (`float`): distance from which an obstacle starts to be followed
 - `obstacle_point_topic_name` (`string`): name of the topic in which the closest point of the obstacles are published
 
 - `pose_topic_name` (`string`): name of the topic in which the robot's pose is published
@@ -172,7 +172,7 @@ Check these parameters in the file [config/quad_params.yaml](config/quad_params.
 
 - `path_topic_name`  (message type: `distancefield_msgs/Path`): Subscribe to this topic to get a path represented as a sequence of points
 - `path_equation_topic_name`  (message type: `distancefield_msgs/PathEq`): Subscribe to this topic to get a path represented by a parametric equation
-- `obstacle_point_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest colidable point written in the <strong>world</strong> reference frame.
+- `obstacle_point_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest collidable point written in the <strong>world</strong> reference frame.
 - `pose_topic_type`  (message type: `nav_msgs/Odometry`): Subscribe to this topic to get the robot's states
 
 

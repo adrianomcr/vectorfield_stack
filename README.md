@@ -26,7 +26,7 @@ More details on the distancefield package [here](distancefield).
 
 ### robotsim
 
-This package provides simple implementations of several robots. The objective of this package is to enable simple examples of the use of the control packages of this stack. The simulators rely only on basic ROS features, do not requiring none complex installation. The simulation can be visualized in rviz by using provided configuration files.
+This package provides simple implementations of several robots. The objective of this package is to enable simple examples of the use of the control packages of this stack. The simulators rely only on basic ROS features and do not require any complex installation. The simulation can be visualized in rviz by using provided configuration files.
 
 The following robot types are available:
 
@@ -50,7 +50,7 @@ More details on the robotsim package [here](robotsim).
 ### ground_robot
 
 
-This package uses the distancefield package to support a controller for ground robots. It can be used to control a diferential drive or a skid-steering robot. Two types of input controls are available, (i) linear and angular speeds, and (ii) wheels speeds. It can be checked with the differential and skid-steering robots available in the robotsim package.
+This package uses the distancefield package to support a controller for ground robots. It can be used to control a differential drive or a skid-steering robot. Two types of input controls are available, (i) linear and angular speeds, and (ii) wheels speeds. It can be checked with the differential and skid-steering robots available in the robotsim package.
 
 
 More details on the ground_robot package [here](ground_robot).
@@ -77,3 +77,5 @@ More details on the examples package [here](examples).
 
 
 <!-- ## External links -->
+
+<!-- other repositories that used this stack -->

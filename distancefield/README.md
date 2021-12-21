@@ -15,16 +15,16 @@ The image below gives an idea of the vector field strategy that is implemented i
 
 ## Additional ROS messages
 
-This package has two aditional ros messages. They are used to represent paths in the form of a sequence of points or a parametric equation.
+This package has two additional ROS messages. They are used to represent paths in the form of a sequence of points or a parametric equation.
 
 ### distancefield_msgs/Path
 
 This message represents a path in the form of a sequence of points. The message fields are below:
 
 - `closed_path_flag` (`bool`):  Flag to indicate if the path is closed or not
-- `insert_n_points` (`int64`): Number of points to be inserted in between each pais of points of the received trajectory
+- `insert_n_points` (`int64`): Number of points to be inserted in between each pair of points of the received trajectory
 - `filter_path_n_average` (`int64`): Number of points to use in the average filter (it is forced to be an odd number) - if 0 the path is not filtered
-- `path` (`geometry_msgs/Polygon`): Points of the path. Uses a list of lists [[x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>],[x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>],[x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>], ...]
+- `path` (`geometry_msgs/Polygon`): Points of the path. Uses a list of lists [[x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>], [x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>], [x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>], ...]
 
 
 ### distancefield_msgs/PathEq
@@ -40,9 +40,9 @@ This message represents a path in the form of a parametric equation. The message
 
 ## distancefield_class (python)
 
-This class is a implementation of the Euclidean distance vector field.
+This class is an implementation of the Euclidean distance vector field.
 
-The curve that will be followed can be defined in 2 ways; (i) by using a sequence o points; or (ii) by using a parametric equation. See the methods `set_trajectory` ena `set_equation`.
+The curve that will be followed can be defined in 2 ways; (i) by using a sequence of points; or (ii) by using a parametric equation. See the methods `set_trajectory` and `set_equation`.
 
 A simple way to use this class is to define an object (consctructor method `distancefield_class`), set the curve (`set_trajectory` or `set_equation`) and compute the vector field at a given point of space (method `compute_field_at_p`).
 
@@ -59,9 +59,9 @@ Constructor method. It receives the following parameters:
 - `v_r` (`float`): norm of the velocity of the field
 - `k_f` (`float`): convergence gain of the vector field
 - `reverse_direction` (`bool`): flag to make the vector field follow the curve in the opposite direction
-- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `flag_follow_obstacle` (`bool`): flag to enable/disable an object contour feature
 - `epsilon` (`float`): distance that a close obstacle will be followed
-- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `switch_dist` (`float`): distance from which an obstacle starts to be followed
 
 
 #### `set_pos(self, pos):`
@@ -84,7 +84,7 @@ Method to set the trajectory to be followed by using a sequence of points. It ha
 
 - `insert_n_points (`int`)`: Number of points to be inserted in between two consecutive points.
 
-- `filter_path_n_average (`int`)`: Number considered to run a average filter and make the path smoother.
+- `filter_path_n_average (`int`)`: Number considered to run an average filter and make the path smoother.
 
 - `closed_path_flag (`bool`)`: Flag to indicate if the path is closed or cyclic (`True`) or open (`False`).
 
@@ -114,7 +114,7 @@ Method that returns the value of the parametric equation of the curve in the par
 #### `golden_search(self,pos,al,bl):`
 
 Method that returns the point on the curve (represented as a parametric equation) that is the closest to the point `pos`. 
-It implements a golden search method in the parametric interval `[al, bl]` .
+It implements a golden search method in the parametric interval `[al, bl]`.
 
 
 
@@ -138,7 +138,7 @@ Method that returns the vector field computed at the point `pos` by using a sequ
 
 #### `compute_field_at_p(self, pos):`
 
-Method that returns the vector field computed at the point `pos`. It automatically detects the type (sequence of points or parametric equation) of curve that was set.
+Method that returns the vector field computed at the point `pos`. It automatically detects the curve type (sequence of points or parametric equation) that was set.
 
 
 
@@ -151,12 +151,12 @@ Method that returns the vector field computed at the point previously defined wi
 
 #### `@staticmethod get_norm(arr):`
 
-Method to compute the norm of a vector represnted as an array `arr`.
+Method to compute the norm of a vector represented as an array `arr`.
 
 
 #### `@staticmethod insert_points(original_traj, qty_to_insert, closed_path_flag):`
 
-Method to returns a sequency of points `original_traj` with `qty_to_insert` inserted points in between each pair of original points. The `closed_path_flag` is `True` if the path is closed.
+Method to returns a sequence of points `original_traj` with `qty_to_insert` inserted points in between each pair of original points. The `closed_path_flag` is `True` if the path is closed.
 
 
 #### `@staticmethod filter_path(original_traj, filter_path_n_average, closed_path_flag):`
@@ -168,9 +168,9 @@ Method that returns the `original_traj` smoothened with an average filter with p
 
 ## simple_node.py
 
-This ROS node has an implementation that can be used to control an integrator robot. It means that the robot is holonomic and responds to llinear velocity commands. Basically, it subscribes to a topic to get the robot's position, computes the vector field, and publishes the velocity in a command topic.
+This ROS node has an implementation that can be used to control an integrator robot. It means that the robot is holonomic and responds to linear velocity commands. Basically, it subscribes to a topic to get the robot's position, computes the vector field, and publishes the velocity in a command topic.
 
-It can be tested with integrator_sim node available in the [robotsim](../robotsim) package. See the packege [examples](../examples) for instruction in how to launch this simulation.
+It can be tested with integrator_sim node available in the [robotsim](../robotsim) package. See the package [examples](../examples) for instruction in how to launch this simulation.
 
 
 ### Parameters
@@ -181,9 +181,9 @@ Below is the list of ROS parameters that the node requires:
 - `kf` (`float`): convergence gain of the vector field
 - `reverse_direction` (`bool`): flag to make the vector field follow the curve in the opposite direction
 
-- `flag_follow_obstacle` (`bool`): flag to enable/disable the obect follow feature
+- `flag_follow_obstacle` (`bool`): flag to enable/disable the object follow feature
 - `epsilon` (`float`): distance that a close obstacle will be followed
-- `switch_dist` (`float`): distance from which the an obstacle start to be followed
+- `switch_dist` (`float`): distance from which the obstacle starts to be followed
 - `obstacle_point_topic_name` (`string`): name of the topic in which the closest point of the obstacles are published
 
 - `pose_topic_name` (`string`): name of the topic in which the robot's pose is published
@@ -194,16 +194,16 @@ Below is the list of ROS parameters that the node requires:
 
 Check these parameters in the file [config/basic_params.yaml](config/basic_params.yaml).
 
-### Topics
 
+### Topics
 
 - `/path_topic_name`  (message type: `distancefield_msgs/Path`): Subscribe to this topic to get a path represented as a sequence of points
 - `/path_equation_topic_name`  (message type: `distancefield_msgs/PathEq`): Subscribe to this topic to get a path represented by a parametric equation
-- `/obstacle_point_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest colidable point written in the <strong>world</strong> reference frame.
+- `/obstacle_point_topic_name`  (message type: `std_msgs/Point`): Subscribe to this topic to get the closest collidable point written in the <strong>world</strong> reference frame.
 - `/pose_topic_type`  (message type: `tf2_msgs/TFMessage` or `geometry_msgs/Pose` or `nav_msgs/Odometry`): Subscribe to this topic to get the robot's position
 
 
-- `cmd_vel_topic_name`  (message type: `geometry_msgs/Twist`): Topic in which the the velocity command is published (linear velocity)
+- `cmd_vel_topic_name`  (message type: `geometry_msgs/Twist`): Topic in which the velocity command is published (linear velocity)
 
 
 
