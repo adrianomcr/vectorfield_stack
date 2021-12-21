@@ -6,6 +6,13 @@ This package contains a vector field based navigation algorithm. The vector fiel
 
 The implementation also incorporates the ability to deviate from detected obstacles.
 
+The image below gives an idea of the vector field strategy that is implemented in this package. On each point, the field is computed with basis on the closest point on the curve (red dots). The field (blue arrows) is composed of two components. The red arrow is a convergent action while the green arrow is a circulation action.
+
+
+![image](https://github.com/adrianomcr/vectorfield_stack/blob/main/distancefield/images/field_components.png)
+
+
+
 ## Additional ROS messages
 
 This package has two aditional ros messages. They are used to represent paths in the form of a sequence of points or a parametric equation.
