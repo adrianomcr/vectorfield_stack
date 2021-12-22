@@ -24,7 +24,7 @@ Adriano M. C. Rezende, <adrianomcr18@gmail.com>
 
 
 # Function to generate an ellipse path
-def refference_trajectory_0(N):
+def refference_path_0(N):
 
     # global u_lim
     global u_i, u_f
@@ -43,7 +43,7 @@ def refference_trajectory_0(N):
     u = u_i-du
 
     # Loop to sample the curve
-    traj = [[],[],[]]
+    path = [[],[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -53,11 +53,11 @@ def refference_trajectory_0(N):
         point = eval(equation_str)
 
         # Save the computed point
-        traj[0].append(point[0])
-        traj[1].append(point[1])
-        traj[2].append(point[2])
+        path[0].append(point[0])
+        path[1].append(point[1])
+        path[2].append(point[2])
 
-    return (traj)
+    return (path)
 
 # ----------  ----------  ----------  ----------  ----------
 
@@ -66,7 +66,7 @@ def refference_trajectory_0(N):
 
 
 # Function to generate an ellipse path
-def refference_trajectory_1(N):
+def refference_path_1(N):
 
     global a, b, phi, cx, cy
 
@@ -82,7 +82,7 @@ def refference_trajectory_1(N):
     p = -dp
 
     # Loop to sample the curve
-    traj = [[],[],[]]
+    path = [[],[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -97,11 +97,11 @@ def refference_trajectory_1(N):
         y_ref = sin(phi) * x_ref0 + cos(phi) * y_ref0 + cy * 1
 
         # Save the computed point
-        traj[0].append(x_ref)
-        traj[1].append(y_ref)
-        traj[2].append(0)
+        path[0].append(x_ref)
+        path[1].append(y_ref)
+        path[2].append(0)
 
-    return (traj)
+    return (path)
 
 # ----------  ----------  ----------  ----------  ----------
 
@@ -109,7 +109,7 @@ def refference_trajectory_1(N):
 
 
 # Function to generate an "8 like" path
-def refference_trajectory_2(N):
+def refference_path_2(N):
 
     global a, b, phi, cx, cy
 
@@ -125,7 +125,7 @@ def refference_trajectory_2(N):
     p = -dp
 
     # Loop to sample the curve
-    traj = [[],[],[]]
+    path = [[],[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -140,13 +140,13 @@ def refference_trajectory_2(N):
         y_ref = sin(phi) * x_ref0 + cos(phi) * y_ref0 + cy * 1
 
         # Save the computed point
-        traj[0].append(x_ref)
-        traj[1].append(y_ref)
-        traj[2].append(0)
+        path[0].append(x_ref)
+        path[1].append(y_ref)
+        path[2].append(0)
 
 
 
-    return (traj)
+    return (path)
 # ----------  ----------  ----------  ----------  ----------
 
 
@@ -154,7 +154,7 @@ def refference_trajectory_2(N):
 
 
 # Function to generate a "rectangular" path
-def refference_trajectory_3(N):
+def refference_path_3(N):
 
     global a, b, phi, cx, cy
 
@@ -170,7 +170,7 @@ def refference_trajectory_3(N):
     dp = 2*pi/N
     p = -dp
 
-    traj = [[],[],[]]
+    path = [[],[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -186,18 +186,18 @@ def refference_trajectory_3(N):
         y_ref = sin(phi) * x_ref0 + cos(phi) * y_ref0 + cy * 1
 
         # Save the computed point
-        traj[0].append(x_ref)
-        traj[1].append(y_ref)
-        traj[2].append(0.0)
+        path[0].append(x_ref)
+        path[1].append(y_ref)
+        path[2].append(0.0)
 
-    return (traj)
+    return (path)
 # ----------  ----------  ----------  ----------  ----------
 
 
 
 
 # Function to generate a "sinoidal" path - That is an open path
-def refference_trajectory_4(N):
+def refference_path_4(N):
 
     global a, b, phi, cx, cy
 
@@ -213,7 +213,7 @@ def refference_trajectory_4(N):
     dp = 2*pi/N
     p = -dp
 
-    traj = [[],[],[]]
+    path = [[],[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -228,11 +228,11 @@ def refference_trajectory_4(N):
         y_ref = sin(phi) * x_ref0 + cos(phi) * y_ref0 + cy * 1
 
         # Save the computed point
-        traj[0].append(x_ref)
-        traj[1].append(y_ref)
-        traj[2].append(0)
+        path[0].append(x_ref)
+        path[1].append(y_ref)
+        path[2].append(0)
 
-    return (traj)
+    return (path)
 # ----------  ----------  ----------  ----------  ----------
 
 
@@ -240,7 +240,7 @@ def refference_trajectory_4(N):
 
 
 # Function to generate a lemniscate path
-def refference_trajectory_5(N):
+def refference_path_5(N):
 
     global a, b, phi, cx, cy
 
@@ -255,7 +255,7 @@ def refference_trajectory_5(N):
     dp = 2*pi/N
     p = -dp
 
-    traj = [[],[],[]]
+    path = [[],[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -272,18 +272,18 @@ def refference_trajectory_5(N):
         z_ref = z_ref0
 
         # Save the computed point
-        traj[0].append(x_ref)
-        traj[1].append(y_ref)
-        traj[2].append(z_ref)
+        path[0].append(x_ref)
+        path[1].append(y_ref)
+        path[2].append(z_ref)
 
-    return (traj)
+    return (path)
 # ----------  ----------  ----------  ----------  ----------
 
 
 
 
 # Function to generate a amoeba like curve
-def refference_trajectory_6(N):
+def refference_path_6(N):
 
     global a, b, phi, cx, cy
 
@@ -298,7 +298,7 @@ def refference_trajectory_6(N):
     dp = 2*pi/N
     p = -dp
 
-    traj = [[],[],[]]
+    path = [[],[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -315,11 +315,11 @@ def refference_trajectory_6(N):
         z_ref = z_ref0
 
         # Save the computed point
-        traj[0].append(x_ref)
-        traj[1].append(y_ref)
-        traj[2].append(z_ref)
+        path[0].append(x_ref)
+        path[1].append(y_ref)
+        path[2].append(z_ref)
 
-    return (traj)
+    return (path)
 # ----------  ----------  ----------  ----------  ----------
 
 
@@ -327,7 +327,7 @@ def refference_trajectory_6(N):
 
 """ # CREATE HERE A NEW CURVE
 # Function to generate a "??" path
-def refference_trajectory_5(N):
+def refference_path_5(N):
 
     # Geometric parameters
     # a = ... # PLACE HERE YOUR PARAMETER
@@ -341,7 +341,7 @@ def refference_trajectory_5(N):
     dp = 2*pi/N
     p = -dp
 
-    traj = [[],[]]
+    path = [[],[]]
     for k in range(N):
 
         # Increment parameter
@@ -356,58 +356,58 @@ def refference_trajectory_5(N):
         y_ref = sin(phi) * x_ref0 + cos(phi) * y_ref0 + cy * 1
 
         # Save the computed point
-        traj[0].append(x_ref)
-        traj[1].append(y_ref)
-        traj[2].append(0)
+        path[0].append(x_ref)
+        path[1].append(y_ref)
+        path[2].append(0)
 
-    return (traj)
+    return (path)
 # ----------  ----------  ----------  ----------  ----------
 """
 
 
 # # Function to create a message of the type polygon, which will carry the points of the curve
-# def create_traj_msg(traj):
+# def create_path_msg(path):
 #
 #     # Create 'Polygon' message (array of messages of type 'Point')
-#     traj_msg = Polygon()
+#     path_msg = Polygon()
 #     p = Point()
-#     for k in range(len(traj[0])):
+#     for k in range(len(path[0])):
 #         # Create point
 #         p = Point()
 #         # Atribute values
-#         p.x = traj[0][k]
-#         p.y = traj[1][k]
+#         p.x = path[0][k]
+#         p.y = path[1][k]
 #         p.z = 0.0
 #         # Append point to polygon
-#         traj_msg.points.append(p)
+#         path_msg.points.append(p)
 #
-#     return traj_msg
+#     return path_msg
 # # ----------  ----------  ----------  ----------  ----------
 
 # Function to create a message of the type polygon, which will carry the points of the curve
-def create_traj_msg(traj):
+def create_path_msg(path):
 
     # Create 'Polygon' message (array of messages of type 'Point')
-    traj_msg = Path()
+    path_msg = Path()
     p = Point()
-    for k in range(len(traj[0])):
+    for k in range(len(path[0])):
         # Create point
         p = Point()
         # Atribute values
-        p.x = traj[0][k]
-        p.y = traj[1][k]
-        p.z = traj[2][k]
+        p.x = path[0][k]
+        p.y = path[1][k]
+        p.z = path[2][k]
         # Append point to polygon
-        traj_msg.path.points.append(p)
+        path_msg.path.points.append(p)
 
-    traj_msg.header.stamp = rospy.Time.now()
+    path_msg.header.stamp = rospy.Time.now()
 
-    traj_msg.closed_path_flag = closed_path_flag
-    traj_msg.insert_n_points = insert_n_points
-    traj_msg.filter_path_n_average = filter_path_n_average
+    path_msg.closed_path_flag = closed_path_flag
+    path_msg.insert_n_points = insert_n_points
+    path_msg.filter_path_n_average = filter_path_n_average
 
 
-    return traj_msg
+    return path_msg
 # ----------  ----------  ----------  ----------  ----------
 
 
@@ -415,13 +415,13 @@ def create_traj_msg(traj):
 
 
 # Function to send a array of markers, representing the curve, to rviz
-def send_curve_to_rviz(traj,pub_rviz):
+def send_curve_to_rviz(path,pub_rviz):
 
     # Create messsage
     points_marker = MarkerArray()
     marker = Marker()
     # Iterate over the points
-    for k in range(len(traj[0])):
+    for k in range(len(path[0])):
         marker = Marker()
         marker.header.frame_id = "world"
         marker.header.stamp = rospy.Time.now()
@@ -440,9 +440,9 @@ def send_curve_to_rviz(traj,pub_rviz):
         marker.color.b = 0.0
         # Pose
         marker.pose.orientation.w = 1.0
-        marker.pose.position.x = traj[0][k]
-        marker.pose.position.y = traj[1][k]
-        marker.pose.position.z = traj[2][k]
+        marker.pose.position.x = path[0][k]
+        marker.pose.position.y = path[1][k]
+        marker.pose.position.z = path[2][k]
         # Append marker to array
         points_marker.markers.append(marker)
 
@@ -457,7 +457,7 @@ def send_curve_to_rviz(traj,pub_rviz):
 
 
 # Rotina primaria
-def trajectory():
+def path():
     global freq
     global pub_rviz_ref, pub_rviz_pose
 
@@ -468,9 +468,8 @@ def trajectory():
 
     read_params()
 
-    # pub_traj = rospy.Publisher("/espeleo/traj_points", Polygon, queue_size=10)
-    pub_traj = rospy.Publisher("/example_path", Path, queue_size=10)
-    pub_traj_equation = rospy.Publisher("/example_path_equation", PathEq, queue_size=10)
+    pub_path = rospy.Publisher("/example_path", Path, queue_size=10)
+    pub_path_equation = rospy.Publisher("/example_path_equation", PathEq, queue_size=10)
     pub_rviz_curve = rospy.Publisher("/visualization_path", MarkerArray, queue_size=1)
 
     # Wait a bit
@@ -478,27 +477,27 @@ def trajectory():
 
     # Generate one of the curve types
     if curve_number == 0:
-        traj = refference_trajectory_0(number_of_samples)
+        path = refference_path_0(number_of_samples)
     elif curve_number == 1:
-        traj = refference_trajectory_1(number_of_samples)
+        path = refference_path_1(number_of_samples)
     elif curve_number == 2:
-        traj = refference_trajectory_2(number_of_samples)
+        path = refference_path_2(number_of_samples)
     elif curve_number == 3:
-        traj = refference_trajectory_3(number_of_samples)
+        path = refference_path_3(number_of_samples)
     elif curve_number == 4:
-        traj = refference_trajectory_4(number_of_samples)
+        path = refference_path_4(number_of_samples)
     elif curve_number == 5:
-        traj = refference_trajectory_5(number_of_samples)
+        path = refference_path_5(number_of_samples)
     elif curve_number == 6:
-        traj = refference_trajectory_6(number_of_samples)
+        path = refference_path_6(number_of_samples)
     # PLACE HERE A NEW FUNCTION
     # elif curve_number == 5:
-    #     traj = refference_trajectory_5(number_of_samples)
+    #     path = refference_path_5(number_of_samples)
     else:
         print ("Invalid curve_number !")
 
     # Create message with the points of the curve
-    traj_msg = create_traj_msg(traj)
+    path_msg = create_path_msg(path)
 
 
     # Wait a bit
@@ -509,15 +508,15 @@ def trajectory():
     if (curve_number==0):
         # str_msg = String()
         # str_msg.data = equation_str
-        # pub_traj_equation.publish(str_msg)
+        # pub_path_equation.publish(str_msg)
         eq_msg = PathEq()
         eq_msg.closed_path_flag = closed_path_flag
         eq_msg.u_i = u_i
         eq_msg.u_f = u_f
         eq_msg.equation = equation_str
-        pub_traj_equation.publish(eq_msg)
+        pub_path_equation.publish(eq_msg)
     else:
-        pub_traj.publish(traj_msg)
+        pub_path.publish(path_msg)
 
     print ("\33[92m----------------------------\33[0m")
     print ("\33[92mCurve created and publhished\33[0m")
@@ -527,7 +526,7 @@ def trajectory():
 
     # Send curve to rviz
     while not rospy.is_shutdown():
-        send_curve_to_rviz(traj, pub_rviz_curve)
+        send_curve_to_rviz(path, pub_rviz_curve)
         rate.sleep()
 
 # ---------- !! ---------- !! ---------- !! ---------- !! ----------
@@ -541,43 +540,43 @@ def read_params():
     global u_i, u_f, equation_str
 
     # Obtain the parameters
-    # try:
-    curve_number = int(rospy.get_param("~N_curve"));
-    number_of_samples = int(rospy.get_param("~N_points"));
-    a = float(rospy.get_param("~a"));
-    b = float(rospy.get_param("~b"));
-    phi = float(rospy.get_param("~phi"))*(3.1415926535/180.0);
-    cx = float(rospy.get_param("~cx"));
-    cy = float(rospy.get_param("~cy"));
-    closed_path_flag = bool(rospy.get_param("~closed_path_flag"))
-    insert_n_points = int(rospy.get_param("~insert_n_points"))
-    filter_path_n_average = int(rospy.get_param("~filter_path_n_average"))
+    try:
+        curve_number = int(rospy.get_param("~N_curve"));
+        number_of_samples = int(rospy.get_param("~N_points"));
+        a = float(rospy.get_param("~a"));
+        b = float(rospy.get_param("~b"));
+        phi = float(rospy.get_param("~phi"))*(3.1415926535/180.0);
+        cx = float(rospy.get_param("~cx"));
+        cy = float(rospy.get_param("~cy"));
+        closed_path_flag = bool(rospy.get_param("~closed_path_flag"))
+        insert_n_points = int(rospy.get_param("~insert_n_points"))
+        filter_path_n_average = int(rospy.get_param("~filter_path_n_average"))
 
-    # u_lim = rospy.get_param("~u_lim")
-    u_i = float(rospy.get_param("~u_i"))
-    u_f = float(rospy.get_param("~u_f"))
-    equation_str = rospy.get_param("~equation")
+        # u_lim = rospy.get_param("~u_lim")
+        u_i = float(rospy.get_param("~u_i"))
+        u_f = float(rospy.get_param("~u_f"))
+        equation_str = rospy.get_param("~equation")
 
-    # u_i = eval("u_i")
-    # u_i = eval("u_i")
+        # u_i = eval("u_i")
+        # u_i = eval("u_i")
 
-    # print ("u_lim: ", u_lim)
-    print ("u_i: ", u_i)
-    print ("u_f: ", u_f)
-    print ("equation_str: ", equation_str)
+        # print ("u_lim: ", u_lim)
+        print ("u_i: ", u_i)
+        print ("u_f: ", u_f)
+        print ("equation_str: ", equation_str)
 
-    print("\n\33[92mParameters loaded:\33[0m")
-    print("\33[94mnumber_of_samples: " +  str(number_of_samples) +"\33[0m")
-    print("\33[94ma: " +  str(a) +"\33[0m")
-    print("\33[94mb: " + str(b) +"\33[0m")
-    print("\33[94mphi: " + str(phi) +"\33[0m")
-    print("\33[94mcx: " + str(cx) +"\33[0m")
-    print("\33[94mcy: " + str(cy) +"\33[0m")
-    print("\33[94mclosed_path_flag: " + str(closed_path_flag) +"\33[0m")
-    print("\33[94minsert_n_points: " + str(insert_n_points) +"\33[0m")
-    print("\33[94mfilter_path_n_average: " +  str(filter_path_n_average) +"\33[0m")
-    # except:
-    #     print ("\33[41mProblem occurred when trying to read the parameters!: example_trajectories.py\33[0m")
+        print("\n\33[92mParameters loaded:\33[0m")
+        print("\33[94mnumber_of_samples: " +  str(number_of_samples) +"\33[0m")
+        print("\33[94ma: " +  str(a) +"\33[0m")
+        print("\33[94mb: " + str(b) +"\33[0m")
+        print("\33[94mphi: " + str(phi) +"\33[0m")
+        print("\33[94mcx: " + str(cx) +"\33[0m")
+        print("\33[94mcy: " + str(cy) +"\33[0m")
+        print("\33[94mclosed_path_flag: " + str(closed_path_flag) +"\33[0m")
+        print("\33[94minsert_n_points: " + str(insert_n_points) +"\33[0m")
+        print("\33[94mfilter_path_n_average: " +  str(filter_path_n_average) +"\33[0m")
+    except:
+        print ("\33[41mProblem occurred when trying to read the parameters!: example_path.py\33[0m")
 
 
 
@@ -595,7 +594,7 @@ if __name__ == '__main__':
 
 
     try:
-        trajectory()
+        path()
     except rospy.ROSInterruptException:
         pass
 

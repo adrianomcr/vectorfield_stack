@@ -24,7 +24,7 @@ class distancefield_class():
         self.pos = [0, 0, 0]
         #self.rpy = [0, 0, 0]
         #self.quat = [1, 0, 0, 0]
-        self.traj = []
+        self.path = []
         self.state_k = 0
         self.state_k_delta = 10
 
@@ -85,50 +85,50 @@ class distancefield_class():
         if (self.flag_from_equation):
             return exp_as_func
         else:
-            return True if self.traj and len(self.traj) > 0 else False
+            return True if self.path and len(self.path) > 0 else False
 
 
-    def set_trajectory(self, traj, insert_n_points, filter_path_n_average, closed_path_flag):
-        """Callback to obtain the trajectory to be followed by the robot
-        :param data: trajectory ROS message
+    def set_path(self, path, insert_n_points, filter_path_n_average, closed_path_flag):
+        """Callback to obtain the path to be followed by the robot
+        :param data: path ROS message
         """
         # self.reset()
 
         self.flag_from_equation = False
 
         # remove consecutive points and check for repeated points at the start and tail
-        traj = [x[0] for x in groupby(traj)]
-        if len(traj) > 1:
-            if traj[0] == traj[-1]:
-                traj.pop(-1)
+        path = [x[0] for x in groupby(path)]
+        if len(path) > 1:
+            if path[0] == path[-1]:
+                path.pop(-1)
 
-        self.traj = traj
+        self.path = path
         self.closed_path_flag = closed_path_flag
 
         # Insert points on the path
         if insert_n_points > 0:
-            self.traj = self.insert_points(self.traj, insert_n_points, closed_path_flag)
+            self.path = self.insert_points(self.path, insert_n_points, closed_path_flag)
 
         # Filter the points (average filter)
         if filter_path_n_average > 0:
-            self.traj = self.filter_path(self.traj, filter_path_n_average, closed_path_flag)
+            self.path = self.filter_path(self.path, filter_path_n_average, closed_path_flag)
 
         # Update the closest index - index to the closest point in the curve
         self.state_k = 0
         d = float("inf")
-        for k in range(len(self.traj)):
-            d_temp = math.sqrt((self.pos[0] - self.traj[k][0]) ** 2 + (self.pos[1] - self.traj[k][1]) ** 2 + (self.pos[2] - self.traj[k][2]) ** 2)
+        for k in range(len(self.path)):
+            d_temp = math.sqrt((self.pos[0] - self.path[k][0]) ** 2 + (self.pos[1] - self.path[k][1]) ** 2 + (self.pos[2] - self.path[k][2]) ** 2)
             if d_temp < d:
                 self.state_k = k
                 d = d_temp
 
-        rospy.loginfo("New path received by the controller (%d points)", len(self.traj))
+        rospy.loginfo("New path received by the controller (%d points)", len(self.path))
 
 
 
     def set_equation(self, equation_str, u_i, u_f, closed_path_flag, N):
-        """Callback to obtain the trajectory to be followed by the robot
-        :param data: trajectory ROS message
+        """Callback to obtain the path to be followed by the robot
+        :param data: path ROS message
         """
         # self.reset()
 
@@ -400,8 +400,8 @@ class distancefield_class():
     def field_from_points(self, pos):
 
         x, y, z = pos
-        local_traj = self.traj
-        size_traj = len(local_traj)
+        local_path = self.path
+        size_path = len(local_path)
         reached_endpoint = False
 
         # Compute the closest ponit on the curve
@@ -411,16 +411,16 @@ class distancefield_class():
         k_vec = k_vec + [self.state_k + 1 + i for i in range(self.state_k_delta)]
         for k in range(len(k_vec)):
             if k_vec[k] < 0:
-                k_vec[k] = k_vec[k] + size_traj
-            if k_vec[k] >= size_traj:
-                k_vec[k] = k_vec[k] - size_traj
+                k_vec[k] = k_vec[k] + size_path
+            if k_vec[k] >= size_path:
+                k_vec[k] = k_vec[k] - size_path
 
 
         # iterate over the k_vec indices to get the closest point
         D = float("inf")
-        k_min = size_traj
+        k_min = size_path
         for k in k_vec:
-            D_temp = math.sqrt((x - local_traj[k][0]) ** 2 + (y - local_traj[k][1]) ** 2 + (z - local_traj[k][2]) ** 2)
+            D_temp = math.sqrt((x - local_path[k][0]) ** 2 + (y - local_path[k][1]) ** 2 + (z - local_path[k][2]) ** 2)
             if D_temp < D:
                 k_min = k
                 D = D_temp
@@ -429,11 +429,11 @@ class distancefield_class():
         # print ("self.state_k: ", self.state_k)
 
         # compute the distance vector
-        D_vec = [x - local_traj[k_min][0], y - local_traj[k_min][1], z - local_traj[k_min][2]]
+        D_vec = [x - local_path[k_min][0], y - local_path[k_min][1], z - local_path[k_min][2]]
         # print("self.pos: ", self.pos)
         # print("x, y, z: ", x, y, z)
         # print("D_vec: ", D_vec)
-        # print("local_traj[k][2]: ", local_traj[k][2])
+        # print("local_path[k][2]: ", local_path[k][2])
         # print("")
         # compute the gradient of the distance Function
         grad_D = [D_vec[0] / (D + 0.000001), D_vec[1] / (D + 0.000001), D_vec[2] / (D + 0.000001)]
@@ -444,18 +444,18 @@ class distancefield_class():
         if self.closed_path_flag:
             # consider that the first point and the last are neighbors
             if k1 == -1:
-                k1 = size_traj - 1
-            if k2 == size_traj:
+                k1 = size_path - 1
+            if k2 == size_path:
                 k2 = 0
         else:
             # consider that the first point and the last are distant apart
             if k1 == -1:
                 k1 = 0
-            if k2 == size_traj:
-                k2 = size_traj - 1
+            if k2 == size_path:
+                k2 = size_path - 1
 
         # numerically compute the tangent vector and normalize it
-        T = [local_traj[k2][0] - local_traj[k1][0], local_traj[k2][1] - local_traj[k1][1], local_traj[k2][2] - local_traj[k1][2]]
+        T = [local_path[k2][0] - local_path[k1][0], local_path[k2][1] - local_path[k1][1], local_path[k2][2] - local_path[k1][2]]
         norm_T = math.sqrt(T[0] ** 2 + T[1] ** 2 + T[2] ** 2) + 0.000001
         
         #Possibly invert the direcion that the curve is followed
@@ -519,9 +519,9 @@ class distancefield_class():
 
         # Stop the robot if the it reached the end of a open path
         if not self.closed_path_flag:
-            if k_min == size_traj - 1:
-                rospy.logwarn("CHECK THIS: k_min:%s size_traj-1:%s self.pos:%s local_traj[k_min]:%s", 
-                    k_min, size_traj - 1, self.pos, local_traj[k_min])
+            if k_min == size_path - 1:
+                rospy.logwarn("CHECK THIS: k_min:%s size_path-1:%s self.pos:%s local_path[k_min]:%s", 
+                    k_min, size_path - 1, self.pos, local_path[k_min])
 
                 Vx = 0
                 Vy = 0
@@ -582,58 +582,58 @@ class distancefield_class():
 
 
     @staticmethod
-    def insert_points(original_traj, qty_to_insert, closed_path_flag):
+    def insert_points(original_path, qty_to_insert, closed_path_flag):
         """Insert points in the received path
-        :param original_traj: original trajectory
+        :param original_path: original path
         :param qty_to_insert: number of points to insert between two pair of points
         :param closed_path_flag: boolean to define if its going to be
                                  insertion of points between last and first
-        :return: a new trajectory with the interpolated paths
+        :return: a new path with the interpolated paths
         """
-        new_traj = []
-        traj_size = len(original_traj)
+        new_path = []
+        path_size = len(original_path)
 
         if closed_path_flag:
             # Insert points between last and first
-            for i in range(traj_size):
-                new_traj.append(original_traj[i])
+            for i in range(path_size):
+                new_path.append(original_path[i])
 
-                iM = (i + 1) % traj_size
+                iM = (i + 1) % path_size
                 for j in range(1, qty_to_insert + 1):
                     alpha = j / (qty_to_insert + 1.0)
-                    px = (1 - alpha) * original_traj[i][0] + alpha * original_traj[iM][0]
-                    py = (1 - alpha) * original_traj[i][1] + alpha * original_traj[iM][1]
-                    pz = (1 - alpha) * original_traj[i][2] + alpha * original_traj[iM][2]
-                    new_traj.append((px, py, pz))
+                    px = (1 - alpha) * original_path[i][0] + alpha * original_path[iM][0]
+                    py = (1 - alpha) * original_path[i][1] + alpha * original_path[iM][1]
+                    pz = (1 - alpha) * original_path[i][2] + alpha * original_path[iM][2]
+                    new_path.append((px, py, pz))
 
         else:
             # Do not insert points between last and first
-            for i in range(traj_size - 1):
-                new_traj.append(original_traj[i])
+            for i in range(path_size - 1):
+                new_path.append(original_path[i])
                 iM = i + 1
                 for j in range(1, qty_to_insert + 1):
                     alpha = j / (qty_to_insert + 1.0)
-                    px = (1 - alpha) * original_traj[i][0] + alpha * original_traj[iM][0]
-                    py = (1 - alpha) * original_traj[i][1] + alpha * original_traj[iM][1]
-                    pz = (1 - alpha) * original_traj[i][2] + alpha * original_traj[iM][2]
-                    new_traj.append((px, py, pz))
+                    px = (1 - alpha) * original_path[i][0] + alpha * original_path[iM][0]
+                    py = (1 - alpha) * original_path[i][1] + alpha * original_path[iM][1]
+                    pz = (1 - alpha) * original_path[i][2] + alpha * original_path[iM][2]
+                    new_path.append((px, py, pz))
 
-        return new_traj
+        return new_path
 
 
 
     @staticmethod
-    def filter_path(original_traj, filter_path_n_average, closed_path_flag):
+    def filter_path(original_path, filter_path_n_average, closed_path_flag):
         """Filter the path using an average filter
-        :param original_traj: original trajectory
+        :param original_path: original path
         :param filter_path_n_average:
         :param closed_path_flag: boolean to define if its going to be
                                  insertion of points between last and first
         :return: a filtered list of points
         """
-        size_original_traj = len(original_traj)
+        size_original_path = len(original_path)
 
-        if filter_path_n_average > size_original_traj:
+        if filter_path_n_average > size_original_path:
             rospy.logwarn("Parameter 'filter_path_n_average' seems to be too high! (%d)", filter_path_n_average)
 
         # Force the a odd number, for symmetry
@@ -647,37 +647,37 @@ class distancefield_class():
             ids.append(i - half)
 
         # Initialize a new list with zeros
-        new_traj = []
-        for i in range(size_original_traj):
-            new_traj.append((0.0, 0.0, 0.0))
+        new_path = []
+        for i in range(size_original_path):
+            new_path.append((0.0, 0.0, 0.0))
 
         # For each point in the path compute the average of the point and its neighbors
         if closed_path_flag:
             # Consider a "circular" filter
-            for i in range(size_original_traj):
+            for i in range(size_original_path):
                 for j in ids:
-                    k = (i + j) % size_original_traj
-                    px = new_traj[i][0] + original_traj[k][0] * float(1.0 / filter_path_n_average)
-                    py = new_traj[i][1] + original_traj[k][1] * float(1.0 / filter_path_n_average)
-                    pz = new_traj[i][2] + original_traj[k][2] * float(1.0 / filter_path_n_average)
-                    new_traj[i] = (px, py, pz)
+                    k = (i + j) % size_original_path
+                    px = new_path[i][0] + original_path[k][0] * float(1.0 / filter_path_n_average)
+                    py = new_path[i][1] + original_path[k][1] * float(1.0 / filter_path_n_average)
+                    pz = new_path[i][2] + original_path[k][2] * float(1.0 / filter_path_n_average)
+                    new_path[i] = (px, py, pz)
         else:
             # Consider a standard filter
-            for i in range(size_original_traj):
+            for i in range(size_original_path):
                 count = 0
                 for j in ids:
                     k = (i + j)
                     # Decrease the number of elements in the extremities
-                    if 0 <= k < size_original_traj:
+                    if 0 <= k < size_original_path:
                         count = count + 1
-                        px = new_traj[i][0] + original_traj[k][0]
-                        py = new_traj[i][1] + original_traj[k][1]
-                        pz = new_traj[i][2] + original_traj[k][2]
-                        new_traj[i] = (px, py, pz)
+                        px = new_path[i][0] + original_path[k][0]
+                        py = new_path[i][1] + original_path[k][1]
+                        pz = new_path[i][2] + original_path[k][2]
+                        new_path[i] = (px, py, pz)
 
-                avg_px = new_traj[i][0] / float(count)
-                avg_py = new_traj[i][1] / float(count)
-                avg_pz = new_traj[i][2] / float(count)
-                new_traj[i] = (avg_px, avg_py, avg_pz)
+                avg_px = new_path[i][0] / float(count)
+                avg_py = new_path[i][1] / float(count)
+                avg_pz = new_path[i][2] / float(count)
+                new_path[i] = (avg_px, avg_py, avg_pz)
 
-        return new_traj
+        return new_path

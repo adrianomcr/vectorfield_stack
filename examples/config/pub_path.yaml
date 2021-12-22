@@ -43,7 +43,7 @@ equation: "[2*cos(u), 2.0*sin(u), 0.0]"
 
 #Flag to indicate if the path is closed or not
 closed_path_flag: True
-#Number of points to be inserted in between each pais of points of the received trajectory
+#Number of points to be inserted in between each pais of points of the received path
 insert_n_points: 1
 #Number of points to use in the average filter (it is forced to be an odd number) - if 0 the path is not filtered
 filter_path_n_average: 1

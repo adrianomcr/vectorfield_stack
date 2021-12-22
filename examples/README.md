@@ -35,7 +35,7 @@ Everything can be configured via ROS parameters.
 
 - `closed_path_flag` (`bool`): flag to indicate if the path is closed or not
 
-- `insert_n_points` (`int`): number of points to be inserted in between each pair of points of the received trajectory
+- `insert_n_points` (`int`): number of points to be inserted in between each pair of points of the received path
 
 - `filter_path_n_average` (`int`): number of points to use in the average filter (it is forced to be an odd number) - if 0 the path is not filtered
 

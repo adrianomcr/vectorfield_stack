@@ -7,13 +7,13 @@
     </node>
     
 
-    <!--Run the node that will generate an example trajectory-->
+    <!--Run the node that will generate an example path-->
     <node pkg = "robotsim" name = "robot" type = "drone_sim.py" args="" output="screen">
         <rosparam command="load" file="$(find robotsim)/config/drone_sim.yaml" />
     </node>
 
 
-    <!--Run the node that will generate an example trajectory-->
+    <!--Run the node that will generate an example path-->
     <node pkg = "examples" name = "path_generator" type = "example_path.py" args="" output="screen">
         <rosparam command="load" file="$(find examples)/config/pub_path.yaml" />
     </node>

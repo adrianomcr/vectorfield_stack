@@ -134,7 +134,7 @@ class simple_node(object):
         # publishers
         self.pub_cmd_vel = rospy.Publisher(self.cmd_vel_topic_name, Twist, queue_size=1)
         # self.pub_rviz_ref = rospy.Publisher("/visualization_ref_vel", Marker, queue_size=1)
-        # self.pub_rviz_curve = rospy.Publisher("/visualization_trajectory", MarkerArray, queue_size=1)
+        # self.pub_rviz_curve = rospy.Publisher("/visualization_path", MarkerArray, queue_size=1)
 
         # # subscribers
         rospy.Subscriber(self.path_topic_name, Path, self.callback_path)
@@ -154,8 +154,6 @@ class simple_node(object):
         else:
             raise AssertionError("Invalid value for pose_topic_type:%s".format(self.pose_topic_type))
 
-        # # timers
-        # rospy.Timer(rospy.Duration(2), self.publish_trajectory_cb)
 
         rospy.loginfo("Vector field control configured:")
         rospy.loginfo("vr: %s, kf: %s", self.vr, self.kf)
@@ -168,38 +166,30 @@ class simple_node(object):
         rospy.loginfo("flag_follow_obstacle:%s, epsilon:%s, switch_dist:%s",
                       self.flag_follow_obstacle, self.epsilon, self.switch_dist)
 
-    # def publish_trajectory_cb(self, event):
-    #     """Publish the curve being followed at an interval
-    #     """
-    #     traj = self.vec_field_obj.get_traj()
-    #     if traj and len(traj) > 0:
-    #         rviz_helper.send_marker_array_to_rviz(traj, self.pub_rviz_curve)
-
-
 
     def callback_closest(self,data):
         self.closest = [data.x, data.y, data.z]
         # print ("callback_closest")
 
     def callback_path(self, data):
-        """Callback to obtain the trajectory to be followed by the robot
-        :param data: trajectory ROS message
+        """Callback to obtain the path to be followed by the robot
+        :param data: path ROS message
         """
 
-        traj_points = []
+        path_points = []
         for k in range(len(data.path.points)):
             p = data.path.points[k]
-            traj_points.append((p.x, p.y, p.z))
+            path_points.append((p.x, p.y, p.z))
 
-        rospy.loginfo("New path received (%d points) is closed?:%s", len(traj_points), data.closed_path_flag)
+        rospy.loginfo("New path received (%d points) is closed?:%s", len(path_points), data.closed_path_flag)
 
-        self.vec_field_obj.set_trajectory(traj_points, data.insert_n_points, data.filter_path_n_average,data.closed_path_flag)
+        self.vec_field_obj.set_path(path_points, data.insert_n_points, data.filter_path_n_average,data.closed_path_flag)
 
 
 
     def callback_path_equation(self, data):
-        """Callback to obtain the trajectory to be followed by the robot
-        :param data: trajectory ROS message
+        """Callback to obtain the path to be followed by the robot
+        :param data: path ROS message
         """
 
         rospy.loginfo("New path received (equation) is closed?:%s", data.closed_path_flag)
@@ -275,19 +265,19 @@ class simple_node(object):
     #     self.vec_field_obj.set_obstacle_point((data.x, data.y))
 
 
-    # def callback_trajectory(self, data):
-    #     """Callback to obtain the trajectory to be followed by the robot
-    #     :param data: trajectory ROS message
+    # def callback_path(self, data):
+    #     """Callback to obtain the path to be followed by the robot
+    #     :param data: path ROS message
     #     """
 
-    #     traj_points = []
+    #     path_points = []
     #     for k in range(len(data.path.points)):
     #         p = data.path.points[k]
-    #         traj_points.append((p.x, p.y))
+    #         path_points.append((p.x, p.y))
 
-    #     rospy.loginfo("New path received (%d points) is closed?:%s", len(traj_points), data.closed_path_flag)
+    #     rospy.loginfo("New path received (%d points) is closed?:%s", len(path_points), data.closed_path_flag)
 
-    #     self.vec_field_obj.set_trajectory(traj_points, data.insert_n_points, data.filter_path_n_average,
+    #     self.vec_field_obj.set_path(path_points, data.insert_n_points, data.filter_path_n_average,
     #                                       data.closed_path_flag)
 
 

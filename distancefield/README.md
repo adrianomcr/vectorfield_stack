@@ -22,7 +22,7 @@ This package has two additional ROS messages. They are used to represent paths i
 This message represents a path in the form of a sequence of points. The message fields are below:
 
 - `closed_path_flag` (`bool`):  Flag to indicate if the path is closed or not
-- `insert_n_points` (`int64`): Number of points to be inserted in between each pair of points of the received trajectory
+- `insert_n_points` (`int64`): Number of points to be inserted in between each pair of points of the received path
 - `filter_path_n_average` (`int64`): Number of points to use in the average filter (it is forced to be an odd number) - if 0 the path is not filtered
 - `path` (`geometry_msgs/Polygon`): Points of the path. Uses a list of lists [[x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>], [x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>], [x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>], ...]
 
@@ -42,9 +42,9 @@ This message represents a path in the form of a parametric equation. The message
 
 This class is an implementation of the Euclidean distance vector field.
 
-The curve that will be followed can be defined in 2 ways; (i) by using a sequence of points; or (ii) by using a parametric equation. See the methods `set_trajectory` and `set_equation`.
+The curve that will be followed can be defined in 2 ways; (i) by using a sequence of points; or (ii) by using a parametric equation. See the methods `set_path` and `set_equation`.
 
-A simple way to use this class is to define an object (consctructor method `distancefield_class`), set the curve (`set_trajectory` or `set_equation`) and compute the vector field at a given point of space (method `compute_field_at_p`).
+A simple way to use this class is to define an object (consctructor method `distancefield_class`), set the curve (`set_path` or `set_equation`) and compute the vector field at a given point of space (method `compute_field_at_p`).
 
 The available methods are listed below.
 
@@ -76,11 +76,11 @@ Method to set the 3D position (point) of the closest point that belongs to an ob
 
 Method that returns true if the vector field is already set up.
 
-#### `set_trajectory(self, traj, insert_n_points, filter_path_n_average, closed_path_flag):`
+#### `set_path(self, path, insert_n_points, filter_path_n_average, closed_path_flag):`
 
-Method to set the trajectory to be followed by using a sequence of points. It has the following arguments:
+Method to set the path to be followed by using a sequence of points. It has the following arguments:
 
-- `traj[N][3]` (`float`): List of N 3D points representing the path to be followed.
+- `path[N][3]` (`float`): List of N 3D points representing the path to be followed.
 
 - `insert_n_points (`int`)`: Number of points to be inserted in between two consecutive points.
 
@@ -92,7 +92,7 @@ Method to set the trajectory to be followed by using a sequence of points. It ha
 
 #### `set_equation(self, equation_str, u_i, u_f, closed_path_flag, N):`
 
-Method to set the trajectory to be followed by using a parametric equation. It has the following arguments:
+Method to set the path to be followed by using a parametric equation. It has the following arguments:
 
 - `equation_str` (`string`): String with the parametric equation writtenaccording to python syntax. Example for an ellipse: `"[[2.0*cos(u)],[1.0*sin(u)],[0.0]]"`
 
@@ -154,14 +154,14 @@ Method that returns the vector field computed at the point previously defined wi
 Method to compute the norm of a vector represented as an array `arr`.
 
 
-#### `@staticmethod insert_points(original_traj, qty_to_insert, closed_path_flag):`
+#### `@staticmethod insert_points(original_path, qty_to_insert, closed_path_flag):`
 
-Method to returns a sequence of points `original_traj` with `qty_to_insert` inserted points in between each pair of original points. The `closed_path_flag` is `True` if the path is closed.
+Method to returns a sequence of points `original_path` with `qty_to_insert` inserted points in between each pair of original points. The `closed_path_flag` is `True` if the path is closed.
 
 
-#### `@staticmethod filter_path(original_traj, filter_path_n_average, closed_path_flag):`
+#### `@staticmethod filter_path(original_path, filter_path_n_average, closed_path_flag):`
 
-Method that returns the `original_traj` smoothened with an average filter with parameter `filter_path_n_average`.
+Method that returns the `original_path` smoothened with an average filter with parameter `filter_path_n_average`.
 
 
 

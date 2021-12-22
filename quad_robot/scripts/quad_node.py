@@ -154,7 +154,7 @@ class quad_node(object):
         # self.pub_cmd_vel = rospy.Publisher(self.cmd_vel_topic_name, Twist, queue_size=1)
         self.pub_acrorate = rospy.Publisher(self.acrorate_cmd_topic_name, Quaternion, queue_size=1)
         # self.pub_rviz_ref = rospy.Publisher("/visualization_ref_vel", Marker, queue_size=1)
-        # self.pub_rviz_curve = rospy.Publisher("/visualization_trajectory", MarkerArray, queue_size=1)
+        # self.pub_rviz_curve = rospy.Publisher("/visualization_path", MarkerArray, queue_size=1)
 
         # # subscribers
         rospy.Subscriber(self.path_topic_name, Path, self.callback_path)
@@ -170,8 +170,6 @@ class quad_node(object):
         else:
             raise AssertionError("Invalid value for pose_topic_type:%s".format(self.pose_topic_type))
 
-        # # timers
-        # rospy.Timer(rospy.Duration(2), self.publish_trajectory_cb)
 
         rospy.loginfo("Vector field control configured:")
         rospy.loginfo("vr: %f, kf: %f", self.vr, self.kf)
@@ -200,24 +198,24 @@ class quad_node(object):
 
 
     def callback_path(self, data):
-        """Callback to obtain the trajectory to be followed by the robot
-        :param data: trajectory ROS message
+        """Callback to obtain the path to be followed by the robot
+        :param data: path ROS message
         """
 
-        traj_points = []
+        path_points = []
         for k in range(len(data.path.points)):
             p = data.path.points[k]
-            traj_points.append((p.x, p.y, p.z))
+            path_points.append((p.x, p.y, p.z))
 
-        rospy.loginfo("New path received (%d points) is closed?:%s", len(traj_points), data.closed_path_flag)
+        rospy.loginfo("New path received (%d points) is closed?:%s", len(path_points), data.closed_path_flag)
 
-        self.quad_robot_obj.vec_field_obj.set_trajectory(traj_points, data.insert_n_points, data.filter_path_n_average,data.closed_path_flag)
+        self.quad_robot_obj.vec_field_obj.set_path(path_points, data.insert_n_points, data.filter_path_n_average,data.closed_path_flag)
 
 
 
     def callback_path_equation(self, data):
-        """Callback to obtain the trajectory to be followed by the robot
-        :param data: trajectory ROS message
+        """Callback to obtain the path to be followed by the robot
+        :param data: path ROS message
         """
 
         rospy.loginfo("New path received (equation) is closed?:%s", data.closed_path_flag)
