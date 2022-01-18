@@ -179,7 +179,7 @@ class distancefield_class():
 
 
         eq_aux = self.equation_str.replace("u","u_trick[0]")
-        print("\33[96m" + eq_aux + "\33[0m")
+        # print("\33[96m" + eq_aux + "\33[0m")
         
         global exp_as_func
         global u_trick
