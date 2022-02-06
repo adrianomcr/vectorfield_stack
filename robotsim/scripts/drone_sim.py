@@ -343,7 +343,7 @@ class drone_node(object):
             #Publis robots pose
             pose_msg.position.x = self.state[0]
             pose_msg.position.y = self.state[1]
-            pose_msg.position.y = self.state[2]
+            pose_msg.position.z = self.state[2]
             pose_msg.orientation.x = self.state[4]
             pose_msg.orientation.y = self.state[5]
             pose_msg.orientation.z = self.state[6]
