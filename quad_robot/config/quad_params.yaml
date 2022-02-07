@@ -1,14 +1,14 @@
 
 
 vector_field:
-    vr: 1.0 # reference forward speed for the vector field
-    kf: 2.0 # convergence gain of the vector field
+    vr: 0.8 # reference forward speed for the vector field
+    kf: 3.0 # convergence gain of the vector field
     reverse_direction: False # flag to invert the direction the curve will be followed
 
 quadrobot:
     m: 1.0 # mass
-    kv: 3.0 # gain of the velocity error
-    kw: 4.0 # gain of the orientation error
+    kv: 4.0 #3.0 # gain of the velocity error
+    kw: 8.0 #4.0 # gain of the orientation error
 
 topics:
     pose_topic_name: "drone/odom" # name of the topic in which the pose will be obtained
@@ -20,6 +20,7 @@ topics:
 #Collision avoidance considering the closest point in the body frame - specific for ground robots
 obstacle_avoidance:
     flag_follow_obstacle: True # flag to enable the robot to follow an obstacle when it s blocking the vector field
-    epsilon: 0.5 # reference distance between the robot and the path being followed
-    switch_dist: 0.7 # distance from which the robot will start to follow the obstacle
-    obstacle_point_topic_name: "drone/closest_point_body" # name of the topic in which the laser data will be obtained
+    epsilon: 0.3 # reference distance between the robot and the path being followed
+    switch_dist_0: 0.5 # distance from which the robot will start to be influenced by the obstacle
+    switch_dist: 0.7 # distance from which the robot will start to follow the obstacle completely
+    obstacle_point_topic_name: "drone/closest_point_world" # name of the topic in which the laser data will be obtained

@@ -6,7 +6,7 @@ import math
 from enum import Enum
 from itertools import groupby
 import numpy as np
-from math import pi, sqrt, cos, sin, tan, acos, asin, atan
+from math import pi, sqrt, cos, sin, tan, acos, asin, atan, atan2
 
 from threading import Thread
 
@@ -18,13 +18,14 @@ from distancefield.distancefield_class import distancefield_class
 class quadrobot_class():
 
 
-    def __init__(self, vr, kf, reverse_direction, flag_follow_obstacle, epsilon, switch_dist, m, Kv, Kw):
+    def __init__(self, vr, kf, reverse_direction, flag_follow_obstacle, epsilon, switch_dist_0, switch_dist, m, Kv, Kw):
 
         # base variables
         self.state = [0, 0, 0]
 
         #Obstacle follower parameters
         self.epsilon = epsilon
+        self.switch_dist_0 = switch_dist_0
         self.switch_dist = switch_dist
         self.closest_world = [0,0,0]
         self.flag_follow_obstacle = flag_follow_obstacle
@@ -52,7 +53,7 @@ class quadrobot_class():
         self.D_hist = 1000 #temp
 
         #Vector field object
-        self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
+        self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist)
 
 
 
@@ -319,13 +320,26 @@ class quadrobot_class():
         z_b = [R[0][2], R[1][2], R[2][2]];
         z_hat = [0, 0, 1];
 
-        psi_r = 0
-        psi_r_M = 0
-        psi_r_m = 0
+        
+
+
 
 
         Vx, Vy, Vz, flag = self.vec_field_obj.compute_field_at_p(pos)
         f = [Vx, Vy, Vz]
+
+        pos_M = [pos[0]+vel[0]*delta_t, pos[1]+vel[1]*delta_t, pos[2]+vel[2]*delta_t]
+        pos_m = [pos[0]-vel[0]*delta_t, pos[1]-vel[1]*delta_t, pos[2]-vel[2]*delta_t]
+        VxM, VyM, VzM, flag = self.vec_field_obj.compute_field_at_p(pos_M)
+        Vxm, Vym, Vzm, flag = self.vec_field_obj.compute_field_at_p(pos_m)
+
+        psi_r = atan2(Vy,Vx)
+        psi_r_M = atan2(VyM,VxM)
+        psi_r_m = atan2(Vym,Vxm)
+
+        # psi_r = 0
+        # psi_r_M = 0
+        # psi_r_m = 0
 
         # Computation of reference orientation
         a_r = self.get_acc_ref(pos,vel);

@@ -47,6 +47,7 @@ class quad_node(object):
         # Obstacle avoidance variables
         self.flag_follow_obstacle = None
         self.epsilon = None
+        self.switch_dist_0 = None
         self.switch_dist = None
         self.closest = [1000,1000,1000]
         self.closest_world = [1000,1000,1000]
@@ -70,7 +71,7 @@ class quad_node(object):
         self.init_node()
 
         # distance field controller
-        self.quad_robot_obj = quadrobot_class.quadrobot_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist, self.m, self.kv, self.kw)
+        self.quad_robot_obj = quadrobot_class.quadrobot_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist, self.m, self.kv, self.kw)
 
 
 
@@ -147,6 +148,7 @@ class quad_node(object):
 
         self.flag_follow_obstacle = rospy.get_param("~obstacle_avoidance/flag_follow_obstacle", False)
         self.epsilon = rospy.get_param("~obstacle_avoidance/epsilon", 0.5)
+        self.switch_dist_0 = rospy.get_param("~obstacle_avoidance/switch_dist_0", 1.5)
         self.switch_dist = rospy.get_param("~obstacle_avoidance/switch_dist", 1.0)
         self.obstacle_point_topic_name = rospy.get_param("~obstacle_avoidance/obstacle_point_topic_name", "/closest_obstacle_point")
 
@@ -161,7 +163,8 @@ class quad_node(object):
         rospy.Subscriber(self.path_equation_topic_name, PathEq, self.callback_path_equation)
 
         if(self.flag_follow_obstacle):
-            rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest_body)
+            # rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest_body)
+            rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest)
         # rospy.Subscriber(self.obstacle_point_topic_name, Point, self.obstacle_point_cb)
 
 
@@ -195,6 +198,14 @@ class quad_node(object):
         theta = atan2(data.y,data.x)
 
         self.closest_world = [self.state[0]+r*cos(self.state[2]+theta), self.state[1]+r*sin(self.state[2]+theta), 0.0+data.z]
+
+
+    def callback_closest(self,data):
+        self.closest = [data.x, data.y, data.z]
+
+
+        self.closest_world = [self.closest[0], self.closest[1], self.closest[2]]
+
 
 
     def callback_path(self, data):
