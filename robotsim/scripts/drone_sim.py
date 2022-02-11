@@ -237,8 +237,17 @@ class drone_node(object):
         t_0 = rospy.Time.now().to_sec()
         count0 = 0
 
+
+        time_now = rospy.Time.now().to_sec()
+
         count_freq = 0
         while not rospy.is_shutdown():
+
+            time_last = time_now
+            time_now = rospy.Time.now().to_sec()
+            time_step = time_now-time_last
+
+            time_step = 1.0/self.freq
 
             # if ((rospy.Time.now().to_sec() - t_last) < 1.0/self.freq):
             #     print ("a: %f" % (rospy.Time.now().to_sec() - t_last))
@@ -313,29 +322,32 @@ class drone_node(object):
 
 
 
+
+
+
             #Model integration
-            self.state[0] = self.state[0] + vel_w[0]*(1.0/self.freq)
-            self.state[1] = self.state[1] + vel_w[1]*(1.0/self.freq)
-            self.state[2] = self.state[2] + vel_w[2]*(1.0/self.freq)
+            self.state[0] = self.state[0] + vel_w[0]*time_step
+            self.state[1] = self.state[1] + vel_w[1]*time_step
+            self.state[2] = self.state[2] + vel_w[2]*time_step
 
             # self.state[3] = self.state[3] + quat_dot[0]*(1.0/self.freq)
             # self.state[4] = self.state[4] + quat_dot[1]*(1.0/self.freq)
             # self.state[5] = self.state[5] + quat_dot[2]*(1.0/self.freq)
             # self.state[6] = self.state[6] + quat_dot[3]*(1.0/self.freq)
             q_new = [0,0,0,0]
-            q_new[0] = self.state[3] + quat_dot[0]*(1.0/self.freq)
-            q_new[1] = self.state[4] + quat_dot[1]*(1.0/self.freq)
-            q_new[2] = self.state[5] + quat_dot[2]*(1.0/self.freq)
-            q_new[3] = self.state[6] + quat_dot[3]*(1.0/self.freq)
+            q_new[0] = self.state[3] + quat_dot[0]*time_step
+            q_new[1] = self.state[4] + quat_dot[1]*time_step
+            q_new[2] = self.state[5] + quat_dot[2]*time_step
+            q_new[3] = self.state[6] + quat_dot[3]*time_step
             q_new = self.normalize(q_new)
             self.state[3] = q_new[0]
             self.state[4] = q_new[1]
             self.state[5] = q_new[2]
             self.state[6] = q_new[3]
             
-            self.state[7] = self.state[7] + acc[0]*(1.0/self.freq)
-            self.state[8] = self.state[8] + acc[1]*(1.0/self.freq)
-            self.state[9] = self.state[9] + acc[2]*(1.0/self.freq)
+            self.state[7] = self.state[7] + acc[0]*time_step
+            self.state[8] = self.state[8] + acc[1]*time_step
+            self.state[9] = self.state[9] + acc[2]*time_step
 
 
 
