@@ -247,7 +247,7 @@ class drone_node(object):
             time_now = rospy.Time.now().to_sec()
             time_step = time_now-time_last
 
-            time_step = 1.0/self.freq
+            #time_step = 1.0/self.freq
 
             # if ((rospy.Time.now().to_sec() - t_last) < 1.0/self.freq):
             #     print ("a: %f" % (rospy.Time.now().to_sec() - t_last))
