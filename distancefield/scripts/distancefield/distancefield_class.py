@@ -15,7 +15,7 @@ class distancefield_class():
 
 
     # def __init__(self, v_r, k_f, epsilon, switch_dist, is_forward_motion_flag, flag_follow_obstacle):
-    def __init__(self, v_r, k_f, reverse_direction, flag_follow_obstacle, epsilon, switch_dist):
+    def __init__(self, v_r, k_f, reverse_direction, flag_follow_obstacle, epsilon, switch_dist_0, switch_dist):
 
         global u_trick
         global exp_as_func
@@ -44,6 +44,7 @@ class distancefield_class():
 
         #Obstacle follower parameters
         self.epsilon = epsilon
+        self.switch_dist_0 = switch_dist_0
         self.switch_dist = switch_dist
         self.closest_world = [0,0,0]
         self.flag_follow_obstacle = flag_follow_obstacle
@@ -364,7 +365,8 @@ class distancefield_class():
             # print (Do, self.D_hist)
 
 
-            if(Do<self.switch_dist and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
+
+            if(Do<self.switch_dist_0 and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
                 D_vec2 = [-(closest_vec[0] - closest_hat[0]*self.epsilon), -(closest_vec[1] - closest_hat[1]*self.epsilon), -(closest_vec[2] - closest_hat[2]*self.epsilon)]
                 D2 = math.sqrt(D_vec2[0]**2 + D_vec2[1]**2 + D_vec2[2]**2)
                 grad_D2 = [D_vec2[0]/D2, D_vec2[1]/D2, D_vec2[2]/D2]
@@ -373,21 +375,53 @@ class distancefield_class():
                 H2 = math.sqrt(1 - G2 ** 2)  # circulation
 
                 # alpha = 1.0-Do/self.switch_dist #used for a smooth transition
+                # alpha = 1
+                # T_dot_gad_D2 = T[0]*grad_D2[0] + T[1]*grad_D2[1] + T[2]*grad_D2[2]
+                # T2 = [T[0] - alpha*T_dot_gad_D2*grad_D2[0], T[1] - alpha*T_dot_gad_D2*grad_D2[1], T[2] - alpha*T_dot_gad_D2*grad_D2[2]]
+                # norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
+                # T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
+
+
                 alpha = 1
-                # print(alpha)
-                T_dot_gad_D2 = T[0]*grad_D2[0] + T[1]*grad_D2[1] + T[2]*grad_D2[2]
-                T2 = [T[0] - alpha*T_dot_gad_D2*grad_D2[0], T[1] - alpha*T_dot_gad_D2*grad_D2[1], T[2] - alpha*T_dot_gad_D2*grad_D2[2]]
+                V = [Vx/self.v_r, Vy/self.v_r, Vz/self.v_r]
+                V_dot_gad_D2 = V[0]*grad_D2[0] + V[1]*grad_D2[1] + V[2]*grad_D2[2]
+                T2 = [V[0] - alpha*V_dot_gad_D2*grad_D2[0], V[1] - alpha*V_dot_gad_D2*grad_D2[1], V[2] - alpha*V_dot_gad_D2*grad_D2[2]]
                 norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
                 T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
 
                 # print(T2)
                 # print(T2[0]*grad_D2[0] + T2[1]*grad_D2[1] + T2[2]*grad_D2[2])
 
-                Vx = self.v_r * (G2 * grad_D2[0] + H2 * T2[0])
-                Vy = self.v_r * (G2 * grad_D2[1] + H2 * T2[1])
-                Vz = self.v_r * (G2 * grad_D2[2] + H2 * T2[2])
+                Vx_o = self.v_r * (G2 * grad_D2[0] + H2 * T2[0])
+                Vy_o = self.v_r * (G2 * grad_D2[1] + H2 * T2[1])
+                Vz_o = self.v_r * (G2 * grad_D2[2] + H2 * T2[2])
+                # Vx = Vx_o
+                # Vy = Vy_o
+                # Vz = Vz_o
 
-                # print("Close to obstacle")
+                # print "V_dot_gad_D2", V_dot_gad_D2
+                # print "T", T
+                # print "T2", T2
+
+                # a = 1/0
+
+                # print "A"
+                if(Do<self.switch_dist):
+                    Vx = Vx_o
+                    Vy = Vy_o
+                    Vz = Vz_o
+                    # print "B"
+                else:
+                    # print "C"
+                    theta = (Do-self.switch_dist)/(self.switch_dist_0-self.switch_dist)
+                    # print theta
+                    Vx = theta*Vx + (1-theta)*Vx_o
+                    Vy = theta*Vy + (1-theta)*Vy_o
+                    Vz = theta*Vz + (1-theta)*Vz_o
+                    norma = sqrt(Vx**2 + Vy**2 + Vz**2)
+                    Vx = self.v_r*Vx/norma
+                    Vy = self.v_r*Vy/norma
+                    Vz = self.v_r*Vz/norma
 
 
         return Vx, Vy, Vz, reached_endpoint
@@ -489,8 +523,8 @@ class distancefield_class():
                 self.D_hist = Do
             # print (Do, self.D_hist)
 
-
-            if(Do<self.switch_dist and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
+            print "D"
+            if(Do<self.switch_dist_0 and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
                 D_vec2 = [-(closest_vec[0] - closest_hat[0]*self.epsilon), -(closest_vec[1] - closest_hat[1]*self.epsilon), -(closest_vec[2] - closest_hat[2]*self.epsilon)]
                 D2 = math.sqrt(D_vec2[0]**2 + D_vec2[1]**2 + D_vec2[2]**2)
                 grad_D2 = [D_vec2[0]/D2, D_vec2[1]/D2, D_vec2[2]/D2]
@@ -499,22 +533,44 @@ class distancefield_class():
                 H2 = math.sqrt(1 - G2 ** 2)  # circulation
 
 
-                # alpha = 1.0-Do/self.switch_dist #used for a smooth transition
+                # # alpha = 1.0-Do/self.switch_dist #used for a smooth transition
+                # alpha = 1
+                # # print(alpha)
+                # T_dot_gad_D2 = T[0]*grad_D2[0] + T[1]*grad_D2[1] + T[2]*grad_D2[2]
+                # T2 = [T[0] - alpha*T_dot_gad_D2*grad_D2[0], T[1] - alpha*T_dot_gad_D2*grad_D2[1], T[2] - alpha*T_dot_gad_D2*grad_D2[2]]
+                # norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
+                # T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
+
                 alpha = 1
-                # print(alpha)
-                T_dot_gad_D2 = T[0]*grad_D2[0] + T[1]*grad_D2[1] + T[2]*grad_D2[2]
-                T2 = [T[0] - alpha*T_dot_gad_D2*grad_D2[0], T[1] - alpha*T_dot_gad_D2*grad_D2[1], T[2] - alpha*T_dot_gad_D2*grad_D2[2]]
+                V = [Vx/self.v_r, Vy/self.v_r, Vz/self.v_r]
+                V_dot_gad_D2 = V[0]*grad_D2[0] + V[1]*grad_D2[1] + V[2]*grad_D2[2]
+                T2 = [V[0] - alpha*V_dot_gad_D2*grad_D2[0], V[1] - alpha*V_dot_gad_D2*grad_D2[1], V[2] - alpha*V_dot_gad_D2*grad_D2[2]]
                 norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
                 T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
 
                 # print(T2)
                 # print(T2[0]*grad_D2[0] + T2[1]*grad_D2[1] + T2[2]*grad_D2[2])
 
-                Vx = self.v_r * (G2 * grad_D2[0] + H2 * T2[0])
-                Vy = self.v_r * (G2 * grad_D2[1] + H2 * T2[1])
-                Vz = self.v_r * (G2 * grad_D2[2] + H2 * T2[2])
+                Vx_o = self.v_r * (G2 * grad_D2[0] + H2 * T2[0])
+                Vy_o = self.v_r * (G2 * grad_D2[1] + H2 * T2[1])
+                Vz_o = self.v_r * (G2 * grad_D2[2] + H2 * T2[2])
 
-                # print("Close to obstacle")
+                print "C"
+                if(Do<self.switch_dist):
+                    Vx = Vx_o
+                    Vy = Vy_o
+                    Vz = Vz_o
+                    print "A"
+                else:
+                    print "B"
+                    theta = (Do-self.switch_dist)/(self.switch_dist_0-self.switch_dist)
+                    Vx = theta*Vx + (1-theta)*Vx_o
+                    Vy = theta*Vy + (1-theta)*Vy_o
+                    Vz = theta*Vz + (1-theta)*Vz_o
+                    norma = sqrt(Vx**2 + Vy**2 + Vz**2)
+                    Vx = self.v_r*Vx/norma
+                    Vy = self.v_r*Vy/norma
+                    Vz = self.v_r*Vz/norma
 
 
         # Stop the robot if the it reached the end of a open path

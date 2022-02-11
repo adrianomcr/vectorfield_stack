@@ -355,7 +355,7 @@ class drone_node(object):
             #Publis robots pose
             pose_msg.position.x = self.state[0]
             pose_msg.position.y = self.state[1]
-            pose_msg.position.y = self.state[2]
+            pose_msg.position.z = self.state[2]
             pose_msg.orientation.x = self.state[4]
             pose_msg.orientation.y = self.state[5]
             pose_msg.orientation.z = self.state[6]
@@ -758,7 +758,7 @@ class drone_node(object):
 
                 #Publish robots history to rviz
                 delta = 0.05
-                approx_len = 3.0
+                approx_len = 40.0
                 if(sqrt((self.state[0]-self.history[-1][0])**2+(self.state[1]-self.history[-1][1])**2+(self.state[2]-self.history[-1][2])**2) > delta):
                     self.history.append([self.state[0],self.state[1],self.state[2]])
                     # print(len(self.history))
