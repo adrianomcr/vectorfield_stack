@@ -54,6 +54,7 @@ class differential_node(object):
         # Obstacle avoidance variables
         self.flag_follow_obstacle = None
         self.epsilon = None
+        self.switch_dist_0 = None
         self.switch_dist = None
         self.closest = [1000,1000,1000]
         self.closest_world = [1000,1000,1000]
@@ -77,7 +78,7 @@ class differential_node(object):
         # distance field controller
         # if(self.flag_follow_obstacle):
         # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
-        self.ground_robot_obj = groundrobot_class.groundrobot_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist, self.d_feedback, self.move_backwards)
+        self.ground_robot_obj = groundrobot_class.groundrobot_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist, self.d_feedback, self.move_backwards)
         # else:
             # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, 0, 0)
 
@@ -170,6 +171,7 @@ class differential_node(object):
 
         self.flag_follow_obstacle = rospy.get_param("~obstacle_avoidance/flag_follow_obstacle", False)
         self.epsilon = rospy.get_param("~obstacle_avoidance/epsilon", 0.5)
+        self.switch_dist_0 = rospy.get_param("~obstacle_avoidance/switch_dist_0", 1.0)
         self.switch_dist = rospy.get_param("~obstacle_avoidance/switch_dist", 1.0)
         self.obstacle_point_body_topic_name = rospy.get_param("~obstacle_avoidance/obstacle_point_body_topic_name", "/closest_obstacle_point")
 

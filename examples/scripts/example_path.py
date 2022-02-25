@@ -540,43 +540,43 @@ def read_params():
     global u_i, u_f, equation_str
 
     # Obtain the parameters
-    try:
-        curve_number = int(rospy.get_param("~N_curve"));
-        number_of_samples = int(rospy.get_param("~N_points"));
-        a = float(rospy.get_param("~a"));
-        b = float(rospy.get_param("~b"));
-        phi = float(rospy.get_param("~phi"))*(3.1415926535/180.0);
-        cx = float(rospy.get_param("~cx"));
-        cy = float(rospy.get_param("~cy"));
-        closed_path_flag = bool(rospy.get_param("~closed_path_flag"))
-        insert_n_points = int(rospy.get_param("~insert_n_points"))
-        filter_path_n_average = int(rospy.get_param("~filter_path_n_average"))
+    # try:
+    curve_number = int(rospy.get_param("~N_curve"));
+    number_of_samples = int(rospy.get_param("~N_points"));
+    a = float(rospy.get_param("~a"));
+    b = float(rospy.get_param("~b"));
+    phi = float(rospy.get_param("~phi"))*(3.1415926535/180.0);
+    cx = float(rospy.get_param("~cx"));
+    cy = float(rospy.get_param("~cy"));
+    closed_path_flag = bool(rospy.get_param("~closed_path_flag"))
+    insert_n_points = int(rospy.get_param("~insert_n_points"))
+    filter_path_n_average = int(rospy.get_param("~filter_path_n_average"))
 
-        # u_lim = rospy.get_param("~u_lim")
-        u_i = float(rospy.get_param("~u_i"))
-        u_f = float(rospy.get_param("~u_f"))
-        equation_str = rospy.get_param("~equation")
+    # u_lim = rospy.get_param("~u_lim")
+    u_i = float(rospy.get_param("~u_i"))
+    u_f = float(rospy.get_param("~u_f"))
+    equation_str = rospy.get_param("~equation")
 
-        # u_i = eval("u_i")
-        # u_i = eval("u_i")
+    # u_i = eval("u_i")
+    # u_i = eval("u_i")
 
-        # print ("u_lim: ", u_lim)
-        print ("u_i: ", u_i)
-        print ("u_f: ", u_f)
-        print ("equation_str: ", equation_str)
+    # print ("u_lim: ", u_lim)
+    print ("u_i: ", u_i)
+    print ("u_f: ", u_f)
+    print ("equation_str: ", equation_str)
 
-        print("\n\33[92mParameters loaded:\33[0m")
-        print("\33[94mnumber_of_samples: " +  str(number_of_samples) +"\33[0m")
-        print("\33[94ma: " +  str(a) +"\33[0m")
-        print("\33[94mb: " + str(b) +"\33[0m")
-        print("\33[94mphi: " + str(phi) +"\33[0m")
-        print("\33[94mcx: " + str(cx) +"\33[0m")
-        print("\33[94mcy: " + str(cy) +"\33[0m")
-        print("\33[94mclosed_path_flag: " + str(closed_path_flag) +"\33[0m")
-        print("\33[94minsert_n_points: " + str(insert_n_points) +"\33[0m")
-        print("\33[94mfilter_path_n_average: " +  str(filter_path_n_average) +"\33[0m")
-    except:
-        print ("\33[41mProblem occurred when trying to read the parameters!: example_path.py\33[0m")
+    print("\n\33[92mParameters loaded:\33[0m")
+    print("\33[94mnumber_of_samples: " +  str(number_of_samples) +"\33[0m")
+    print("\33[94ma: " +  str(a) +"\33[0m")
+    print("\33[94mb: " + str(b) +"\33[0m")
+    print("\33[94mphi: " + str(phi) +"\33[0m")
+    print("\33[94mcx: " + str(cx) +"\33[0m")
+    print("\33[94mcy: " + str(cy) +"\33[0m")
+    print("\33[94mclosed_path_flag: " + str(closed_path_flag) +"\33[0m")
+    print("\33[94minsert_n_points: " + str(insert_n_points) +"\33[0m")
+    print("\33[94mfilter_path_n_average: " +  str(filter_path_n_average) +"\33[0m")
+    # except:
+    #     print ("\33[41mProblem occurred when trying to read the parameters!: example_path.py\33[0m")
 
 
 

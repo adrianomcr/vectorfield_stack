@@ -758,7 +758,7 @@ class drone_node(object):
 
                 #Publish robots history to rviz
                 delta = 0.05
-                approx_len = 40.0
+                approx_len = 5.0
                 if(sqrt((self.state[0]-self.history[-1][0])**2+(self.state[1]-self.history[-1][1])**2+(self.state[2]-self.history[-1][2])**2) > delta):
                     self.history.append([self.state[0],self.state[1],self.state[2]])
                     # print(len(self.history))

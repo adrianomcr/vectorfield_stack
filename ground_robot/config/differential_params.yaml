@@ -20,5 +20,6 @@ topics:
 obstacle_avoidance:
     flag_follow_obstacle: True # flag to enable the robot to follow an obstacle when it s blocking the vector field
     epsilon: 0.35 # reference distance between the robot and the path being followed
+    switch_dist_0: 0.8 # distance from which the robot will start to follow the obstacle
     switch_dist: 0.6 # distance from which the robot will start to follow the obstacle
     obstacle_point_body_topic_name: "differential/closest_point_body" # name of the topic in which the laser data will be obtained

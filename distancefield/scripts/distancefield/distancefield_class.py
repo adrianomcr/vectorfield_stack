@@ -523,7 +523,7 @@ class distancefield_class():
                 self.D_hist = Do
             # print (Do, self.D_hist)
 
-            print "D"
+            # print "D"
             if(Do<self.switch_dist_0 and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
                 D_vec2 = [-(closest_vec[0] - closest_hat[0]*self.epsilon), -(closest_vec[1] - closest_hat[1]*self.epsilon), -(closest_vec[2] - closest_hat[2]*self.epsilon)]
                 D2 = math.sqrt(D_vec2[0]**2 + D_vec2[1]**2 + D_vec2[2]**2)
@@ -555,14 +555,14 @@ class distancefield_class():
                 Vy_o = self.v_r * (G2 * grad_D2[1] + H2 * T2[1])
                 Vz_o = self.v_r * (G2 * grad_D2[2] + H2 * T2[2])
 
-                print "C"
+                # print "C"
                 if(Do<self.switch_dist):
                     Vx = Vx_o
                     Vy = Vy_o
                     Vz = Vz_o
-                    print "A"
+                    # print "A"
                 else:
-                    print "B"
+                    # print "B"
                     theta = (Do-self.switch_dist)/(self.switch_dist_0-self.switch_dist)
                     Vx = theta*Vx + (1-theta)*Vx_o
                     Vy = theta*Vy + (1-theta)*Vy_o

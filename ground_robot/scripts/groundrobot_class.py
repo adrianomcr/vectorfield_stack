@@ -15,13 +15,14 @@ from distancefield.distancefield_class import distancefield_class
 class groundrobot_class():
 
 
-    def __init__(self, vr, kf, reverse_direction, flag_follow_obstacle, epsilon, switch_dist, d, move_backwards):
+    def __init__(self, vr, kf, reverse_direction, flag_follow_obstacle, epsilon, switch_dist_0, switch_dist, d, move_backwards):
 
         # base variables
         self.state = [0, 0, 0]
 
         #Obstacle follower parameters
         self.epsilon = epsilon
+        self.switch_dist_0 = switch_dist_0
         self.switch_dist = switch_dist
         self.closest_world = [0,0,0]
         self.flag_follow_obstacle = flag_follow_obstacle
@@ -44,7 +45,8 @@ class groundrobot_class():
 
         #Vector field object
         # self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, False, 0.5, 1.0)
-        self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
+        # self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
+        self.vec_field_obj = distancefield_class(vr, kf, reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist)
 
 
 

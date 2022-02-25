@@ -43,6 +43,7 @@ class simple_node(object):
         # pObstacle avoidance variables
         self.flag_follow_obstacle = None
         self.epsilon = None
+        self.switch_dist_0 = None
         self.switch_dist = None
         self.obstacle_point_topic_name = None
         self.closest = [1000,1000,1000]
@@ -62,11 +63,9 @@ class simple_node(object):
 
         # distance field controller
         # if(self.flag_follow_obstacle):
-        self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
+        self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist)
         # else:
             # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, 0, 0)
-
-
 
 
     def run(self):
@@ -128,6 +127,7 @@ class simple_node(object):
 
         self.flag_follow_obstacle = rospy.get_param("~obstacle_avoidance/flag_follow_obstacle", False)
         self.epsilon = rospy.get_param("~obstacle_avoidance/epsilon", 0.5)
+        self.switch_dist_0 = rospy.get_param("~obstacle_avoidance/switch_dist_0", 1.0)
         self.switch_dist = rospy.get_param("~obstacle_avoidance/switch_dist", 1.0)
         self.obstacle_point_topic_name = rospy.get_param("~obstacle_avoidance/obstacle_point_topic_name", "/closest_obstacle_point")
 
