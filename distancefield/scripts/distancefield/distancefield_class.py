@@ -7,14 +7,14 @@ from enum import Enum
 from itertools import groupby
 from math import pi, sqrt, cos, sin, tan, atan
 
+import distancefield.paths_class as pth
+import math_utils.math_utils as MU
+
 global exp_as_func
 global u_trick
-# u_trick = [0]
 
 class distancefield_class():
 
-
-    # def __init__(self, v_r, k_f, epsilon, switch_dist, is_forward_motion_flag, flag_follow_obstacle):
     def __init__(self, v_r, k_f, reverse_direction, flag_follow_obstacle, epsilon, switch_dist_0, switch_dist):
 
         global u_trick
@@ -22,8 +22,6 @@ class distancefield_class():
 
         # base variables
         self.pos = [0, 0, 0]
-        #self.rpy = [0, 0, 0]
-        #self.quat = [1, 0, 0, 0]
         self.path = []
         self.state_k = 0
         self.state_k_delta = 10
@@ -52,17 +50,8 @@ class distancefield_class():
         # controller constants
         self.v_r = v_r
         self.k_f = k_f
-        # self.d_feedback = d_feedback
 
-        # flags
-        # self.is_forward_motion_flag = is_forward_motion_flag
-        # self.flag_follow_obstacle = flag_follow_obstacle
-        # self.closed_path_flag = False
         self.reverse_direction = reverse_direction
-
-        # # obstacle avoidance point information
-        # self.delta_m = 1000.0  # minimum distance
-        # self.phi_m = 0.0  # angle minimum distance (body frame)
 
         self.D_hist = 1000 #temp
 
@@ -70,18 +59,13 @@ class distancefield_class():
 
     def set_pos(self, pos):
         self.pos = pos
-        # self.rpy = rpy
-        # self.quat = quat
 
 
     def set_closest(self, point):
         self.closest_world = point
-        # self.rpy = rpy
-        # self.quat = quat
 
 
     def is_ready(self):
-
 
         if (self.flag_from_equation):
             return exp_as_func
@@ -90,10 +74,12 @@ class distancefield_class():
 
 
     def set_path(self, path, insert_n_points, filter_path_n_average, closed_path_flag):
-        """Callback to obtain the path to be followed by the robot
-        :param data: path ROS message
+        """Method to set the path to be followed
+        path: sequence of points
+        insert_n_points: number of points to be inserted
+        filter_path_n_average: parameter for the verage filter
+        closed_path_flag: flag to that indicates the path is closed
         """
-        # self.reset()
 
         self.flag_from_equation = False
 
@@ -145,10 +131,8 @@ class distancefield_class():
 
         self.state_u_delta = (self.u_f-self.u_i)/50.0
 
-
         du = self.u_f/N
         u = self.u_i-du
-
 
         # Loop to sample the curve
         self.equation_samples = [[],[],[]]
@@ -198,29 +182,10 @@ class distancefield_class():
         global exp_as_func
         global u_trick
 
-        # r = eval(self.equation_str) #slow?
-
         u_trick[0] = u
         r = exp_as_func() #fast
 
-        # print (self.exp_as_func)
-
         return r
-
-
-
-    # @staticmethod
-    # def get_norm(self, arr):
-
-
-    #     n = 0
-    #     for k in range(len(arr)):
-    #         n = n + arr[k]**2
-
-    #     n = sqrt(n)
-
-    #     return n
-
 
 
     def golden_search(self,pos,al,bl):
@@ -232,24 +197,22 @@ class distancefield_class():
         GOLD = 0.6180339887
 
 
-        s_a = bl - GOLD*(bl-al);
-        s_b = al + GOLD*(bl-al);
+        s_a = bl - GOLD*(bl-al)
+        s_b = al + GOLD*(bl-al)
 
-        ra = self.sample_curve(s_a);
-        dist_vec = [x-ra[0], y-ra[1], z-ra[2]];
-        # func_a = sqrt(dist_vec[0]**2 + dist_vec[1]**2 + dist_vec[2]**2)
-        func_a = self.get_norm(dist_vec)
+        ra = self.sample_curve(s_a)
+        dist_vec = [x-ra[0], y-ra[1], z-ra[2]]
+        func_a = MU.get_norm(dist_vec)
 
-        rb = self.sample_curve(s_b);
-        dist_vec = [x-rb[0], y-rb[1], z-rb[2]];
-        # func_b = sqrt(dist_vec[0]**2 + dist_vec[1]**2 + dist_vec[2]**2)
-        func_b = self.get_norm(dist_vec)
+        rb = self.sample_curve(s_b)
+        dist_vec = [x-rb[0], y-rb[1], z-rb[2]]
+        func_b = MU.get_norm(dist_vec)
 
 
-        k=0;
+        k=0
         while(bl-al > 0.00001):
 
-            k = k+1;
+            k = k+1
             if (k==50):
                 break
 
@@ -265,45 +228,25 @@ class distancefield_class():
 
             ra = self.sample_curve(s_a)
             dist_vec = [x-ra[0], y-ra[1], z-ra[2]]
-            func_a = self.get_norm(dist_vec)
+            func_a = MU.get_norm(dist_vec)
 
             rb = self.sample_curve(s_b)
             dist_vec = [x-rb[0], y-rb[1], z-rb[2]]
-            func_b = self.get_norm(dist_vec)
+            func_b = MU.get_norm(dist_vec)
     
-        u_star = (al+bl)/2;
-        # print (k)
+        u_star = (al+bl)/2
 
         return u_star
-
-
-
-
-
-
-    # def get_GH_follower(self, delta):
-
-    #     # Gain functions
-    #     G_ = -(2 / math.pi) * math.atan(self.k_f * delta)  # convergence
-    #     H_ = math.sqrt(1 - G_ ** 2)  # circulation
-    #     return G_, H_
-
-
-
-
-
+    
 
 
     def field_from_equation(self, pos):
-
-        # print("\33[95mfield_from_equation\33[0m")
 
         x = pos[0]
         y = pos[1]
         z = pos[2]
 
         reached_endpoint = False
-
 
         u_star = self.golden_search(pos,self.state_u-self.state_u_delta,self.state_u+self.state_u_delta)
         self.state_u = u_star
@@ -316,20 +259,16 @@ class distancefield_class():
         point_star = self.sample_curve(u_star)
 
         D_vec = [x - point_star[0], y - point_star[1], z - point_star[2]]
-        D = self.get_norm(D_vec)
+        D = MU.get_norm(D_vec)
         # compute the gradient of the distance Function
         grad_D = [D_vec[0] / (D + 0.000001), D_vec[1] / (D + 0.000001), D_vec[2] / (D + 0.000001)]
 
-
-
-        
         point_M = self.sample_curve(u_star+0.0001)
         point_m = self.sample_curve(u_star-0.0001)
 
-
         # numerically compute the tangent vector and normalize it
         T = [point_M[0] - point_m[0], point_M[1] - point_m[1], point_M[2] - point_m[2]]
-        norm_T = self.get_norm(T)
+        norm_T = MU.get_norm(T)
         # math.sqrt(T[0] ** 2 + T[1] ** 2 + T[2] ** 2) + 0.000001
 
         #Possibly invert the direcion that the curve is followed
@@ -337,8 +276,6 @@ class distancefield_class():
             T = [-T[0] / norm_T, -T[1] / norm_T, -T[2] / norm_T]
         else:
             T = [T[0] / norm_T, T[1] / norm_T, T[2] / norm_T]
-
-
 
         # Gain functions
         G = -(2 / math.pi) * math.atan(self.k_f * D)  # convergence
@@ -350,9 +287,7 @@ class distancefield_class():
         Vz = self.v_r * (G * grad_D[2] + H * T[2])
 
 
-        # print (self.flag_follow_obstacle)
         if(self.flag_follow_obstacle):
-            # print(self.closest_world)
 
             closest_vec = [self.closest_world[0]-self.pos[0], self.closest_world[1]-self.pos[1], self.closest_world[2]-self.pos[2]]
 
@@ -362,8 +297,6 @@ class distancefield_class():
 
             if (Do < self.D_hist):
                 self.D_hist = Do
-            # print (Do, self.D_hist)
-
 
 
             if(Do<self.switch_dist_0 and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
@@ -374,14 +307,6 @@ class distancefield_class():
                 G2 = -(2 / math.pi) * math.atan(self.k_f * D2)  # convergence
                 H2 = math.sqrt(1 - G2 ** 2)  # circulation
 
-                # alpha = 1.0-Do/self.switch_dist #used for a smooth transition
-                # alpha = 1
-                # T_dot_gad_D2 = T[0]*grad_D2[0] + T[1]*grad_D2[1] + T[2]*grad_D2[2]
-                # T2 = [T[0] - alpha*T_dot_gad_D2*grad_D2[0], T[1] - alpha*T_dot_gad_D2*grad_D2[1], T[2] - alpha*T_dot_gad_D2*grad_D2[2]]
-                # norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
-                # T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
-
-
                 alpha = 1
                 V = [Vx/self.v_r, Vy/self.v_r, Vz/self.v_r]
                 V_dot_gad_D2 = V[0]*grad_D2[0] + V[1]*grad_D2[1] + V[2]*grad_D2[2]
@@ -389,21 +314,9 @@ class distancefield_class():
                 norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
                 T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
 
-                # print(T2)
-                # print(T2[0]*grad_D2[0] + T2[1]*grad_D2[1] + T2[2]*grad_D2[2])
-
                 Vx_o = self.v_r * (G2 * grad_D2[0] + H2 * T2[0])
                 Vy_o = self.v_r * (G2 * grad_D2[1] + H2 * T2[1])
                 Vz_o = self.v_r * (G2 * grad_D2[2] + H2 * T2[2])
-                # Vx = Vx_o
-                # Vy = Vy_o
-                # Vz = Vz_o
-
-                # print "V_dot_gad_D2", V_dot_gad_D2
-                # print "T", T
-                # print "T2", T2
-
-                # a = 1/0
 
                 # print "A"
                 if(Do<self.switch_dist):
@@ -423,10 +336,7 @@ class distancefield_class():
                     Vy = self.v_r*Vy/norma
                     Vz = self.v_r*Vz/norma
 
-
         return Vx, Vy, Vz, reached_endpoint
-
-
 
 
 
@@ -449,7 +359,6 @@ class distancefield_class():
             if k_vec[k] >= size_path:
                 k_vec[k] = k_vec[k] - size_path
 
-
         # iterate over the k_vec indices to get the closest point
         D = float("inf")
         k_min = size_path
@@ -460,16 +369,8 @@ class distancefield_class():
                 D = D_temp
         self.state_k = k_min  # index of the closest point
 
-        # print ("self.state_k: ", self.state_k)
-
         # compute the distance vector
         D_vec = [x - local_path[k_min][0], y - local_path[k_min][1], z - local_path[k_min][2]]
-        # print("self.pos: ", self.pos)
-        # print("x, y, z: ", x, y, z)
-        # print("D_vec: ", D_vec)
-        # print("local_path[k][2]: ", local_path[k][2])
-        # print("")
-        # compute the gradient of the distance Function
         grad_D = [D_vec[0] / (D + 0.000001), D_vec[1] / (D + 0.000001), D_vec[2] / (D + 0.000001)]
 
         # compute neighbors of k_min
@@ -498,7 +399,6 @@ class distancefield_class():
         else:
             T = [T[0] / norm_T, T[1] / norm_T, T[2] / norm_T]
 
-
         # Gain functions
         G = -(2 / math.pi) * math.atan(self.k_f * D)  # convergence
         H = math.sqrt(1 - G ** 2)  # circulation
@@ -508,10 +408,7 @@ class distancefield_class():
         Vy = self.v_r * (G * grad_D[1] + H * T[1])
         Vz = self.v_r * (G * grad_D[2] + H * T[2])
 
-
-        # print (self.flag_follow_obstacle)
         if(self.flag_follow_obstacle):
-            # print(self.closest_world)
 
             closest_vec = [self.closest_world[0]-self.pos[0], self.closest_world[1]-self.pos[1], self.closest_world[2]-self.pos[2]]
 
@@ -521,9 +418,7 @@ class distancefield_class():
 
             if (Do < self.D_hist):
                 self.D_hist = Do
-            # print (Do, self.D_hist)
 
-            # print "D"
             if(Do<self.switch_dist_0 and (closest_vec[0]*Vx+closest_vec[1]*Vy+closest_vec[2]*Vz)>0):
                 D_vec2 = [-(closest_vec[0] - closest_hat[0]*self.epsilon), -(closest_vec[1] - closest_hat[1]*self.epsilon), -(closest_vec[2] - closest_hat[2]*self.epsilon)]
                 D2 = math.sqrt(D_vec2[0]**2 + D_vec2[1]**2 + D_vec2[2]**2)
@@ -532,15 +427,6 @@ class distancefield_class():
                 G2 = -(2 / math.pi) * math.atan(self.k_f * D2)  # convergence
                 H2 = math.sqrt(1 - G2 ** 2)  # circulation
 
-
-                # # alpha = 1.0-Do/self.switch_dist #used for a smooth transition
-                # alpha = 1
-                # # print(alpha)
-                # T_dot_gad_D2 = T[0]*grad_D2[0] + T[1]*grad_D2[1] + T[2]*grad_D2[2]
-                # T2 = [T[0] - alpha*T_dot_gad_D2*grad_D2[0], T[1] - alpha*T_dot_gad_D2*grad_D2[1], T[2] - alpha*T_dot_gad_D2*grad_D2[2]]
-                # norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
-                # T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
-
                 alpha = 1
                 V = [Vx/self.v_r, Vy/self.v_r, Vz/self.v_r]
                 V_dot_gad_D2 = V[0]*grad_D2[0] + V[1]*grad_D2[1] + V[2]*grad_D2[2]
@@ -548,21 +434,15 @@ class distancefield_class():
                 norm_T2 = math.sqrt(T2[0]**2 + T2[1]**2 + T2[2]**2)
                 T2 = [T2[0]/norm_T2, T2[1]/norm_T2, T2[2]/norm_T2]
 
-                # print(T2)
-                # print(T2[0]*grad_D2[0] + T2[1]*grad_D2[1] + T2[2]*grad_D2[2])
-
                 Vx_o = self.v_r * (G2 * grad_D2[0] + H2 * T2[0])
                 Vy_o = self.v_r * (G2 * grad_D2[1] + H2 * T2[1])
                 Vz_o = self.v_r * (G2 * grad_D2[2] + H2 * T2[2])
 
-                # print "C"
                 if(Do<self.switch_dist):
                     Vx = Vx_o
                     Vy = Vy_o
                     Vz = Vz_o
-                    # print "A"
                 else:
-                    # print "B"
                     theta = (Do-self.switch_dist)/(self.switch_dist_0-self.switch_dist)
                     Vx = theta*Vx + (1-theta)*Vx_o
                     Vy = theta*Vy + (1-theta)*Vy_o
@@ -583,7 +463,6 @@ class distancefield_class():
                 Vy = 0
                 Vz = 0
                 reached_endpoint = True
-                # self.reset()
 
         return Vx, Vy, Vz, reached_endpoint
 
@@ -594,9 +473,9 @@ class distancefield_class():
 
 
     def compute_field_at_p(self, pos):
-        """Compute the vector field that will guide the robot through a path
+        """Compute the vector field at position pos) 
         :return:
-            Vx, Vy, reached_endpoint
+            Vx, Vy, Vz, reached_endpoint
         """
 
         if (self.flag_from_equation):
@@ -608,32 +487,15 @@ class distancefield_class():
         return Vx, Vy, Vz, reached_endpoint
 
 
-
-
-
     def vec_field_path(self):
-
+        """Compute the vector field at current position
+        :return:
+            Vx, Vy, Vz, reached_endpoint
+        """
 
         Vx, Vy, Vz, reached_endpoint = self.compute_field_at_p(self.pos)
 
         return Vx, Vy, Vz, reached_endpoint
-
-
-
-
-
-
-
-    @staticmethod
-    def get_norm(arr):
-
-        n = 0
-        for k in range(len(arr)):
-            n = n + arr[k]**2
-
-        n = sqrt(n)
-
-        return n
 
 
 
@@ -646,6 +508,7 @@ class distancefield_class():
                                  insertion of points between last and first
         :return: a new path with the interpolated paths
         """
+
         new_path = []
         path_size = len(original_path)
 
@@ -687,6 +550,7 @@ class distancefield_class():
                                  insertion of points between last and first
         :return: a filtered list of points
         """
+
         size_original_path = len(original_path)
 
         if filter_path_n_average > size_original_path:

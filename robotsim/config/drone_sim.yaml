@@ -11,8 +11,10 @@ robot_m: 1.0
 # robot_b: 0.11
 # robot_r: 0.075
 
-obtscles_pos: [[-1.5,-0.9,0.2],[2,3.2,0.5],[1.0,1.7,0.2]]
-obtscles_r: [0.2, 0.2, 0.2]
+#obtscles_pos: [[-1.5,-0.9,0.2],[2,3.2,0.5],[1.0,1.7,0.2]]
+#obtscles_r: [0.2, 0.2, 0.2]
+obtscles_pos: [[20,20,20]]
+obtscles_r: [1]
 
 # obtscles_pos: [[0,0,0]]
 # obtscles_r: [2.2]

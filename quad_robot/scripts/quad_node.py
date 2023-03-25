@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-
 import rospy
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Twist, Pose, Point, Quaternion
@@ -13,20 +11,15 @@ from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, atan2
 import numpy as np
 
-
 import time
-
-# from distancefield.import_me_if_you_can import say_it_works
-
 
 from distancefield.msg import Path, PathEq
 import quadrobot_class
-import distancefield.distancefield_class
-
+import math_utils.math_utils as MU
 
 class quad_node(object):
     """
-    Navigation control using Action Server
+    ROS node to control a quadcopter on the AcroRate mode
     """
 
 
@@ -99,8 +92,6 @@ class quad_node(object):
                 if(self.flag_follow_obstacle):
                     self.quad_robot_obj.vec_field_obj.set_closest(self.closest_world)
 
-                # self.quad_robot_obj.control_step()
-                # self.quad_robot_obj.control_step_parallel()
                 self.quad_robot_obj.control_step()
                 [tau, omega] = self.quad_robot_obj.get_acrorate()
 
@@ -109,10 +100,6 @@ class quad_node(object):
                 acrorate_msg.y = omega[1]
                 acrorate_msg.z = omega[2]
                 self.pub_acrorate.publish(acrorate_msg)
-
-                # [vr,vl] = self.quad_robot_obj.get_wheels_skidsteer(self.a, self.b)
-                # wheels_msg.data = [vr,vr,vl,vl]
-                # self.pub_cmd_wheels.publish(wheels_msg)
 
             else:
                 rospy.loginfo_once("\33[93mWaiting path message\33[0m")
@@ -178,8 +165,6 @@ class quad_node(object):
         rospy.loginfo("vr: %f, kf: %f", self.vr, self.kf)
         rospy.loginfo("m: %f, kv: %f, kf: %f", self.m, self.kv, self.kv)
         rospy.loginfo("reverse_direction:%s", self.reverse_direction)
-        # rospy.loginfo("pose_topic_name:%s, pose_topic_type:%s, cmd_vel_topic_name:%s, cmd_wheels_topic_name:%s",
-                      # self.pose_topic_name, self.pose_topic_type, self.cmd_vel_topic_name, self.cmd_wheels_topic_name)
         rospy.loginfo("pose_topic_name:%s, pose_topic_type:%s, acrorate_cmd_topic_name:%s",
                       self.pose_topic_name, self.pose_topic_type, self.acrorate_cmd_topic_name)
         rospy.loginfo("flag_follow_obstacle:%s",
@@ -245,7 +230,7 @@ class quad_node(object):
 
         vel_b = [data.twist.twist.linear.x, data.twist.twist.linear.y, data.twist.twist.linear.z]
 
-        R_bw = self.quat2rotm(quat)
+        R_bw = MU.quat2rotm(quat)
         vel_w = np.matrix(R_bw)*np.matrix(vel_b).transpose()
         vel_w = vel_w.transpose().tolist()[0]
 
@@ -263,30 +248,8 @@ class quad_node(object):
         self.state[9] = vel_w[2]
         
 
-    # Unit quaternion to rotation matrix
-    def quat2rotm(self,q):
-        # w x y z
-
-        qw = q[0]
-        qx = q[1]
-        qy = q[2]
-        qz = q[3]
-
-        Rot = [[1-2*(qy*qy+qz*qz), 2*(qx*qy-qz*qw), 2*(qx*qz+qy*qw)],
-               [2*(qx*qy+qz*qw), 1-2*(qx*qx+qz*qz), 2*(qy*qz-qx*qw)],
-               [2*(qx*qz-qy*qw), 2*(qy*qz+qx*qw), 1-2*(qx*qx+qy*qy)]]; #this was checked on matlab
-               
-        return Rot
-
 
 if __name__ == '__main__':
-
-
-
-    # print("MELECA 1")
-    # say_it_works()
-    # print("MELECA 2")
-
 
     node = quad_node()
     node.run()

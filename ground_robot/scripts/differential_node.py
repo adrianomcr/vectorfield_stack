@@ -13,35 +13,21 @@ from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, atan2
 
 
-# from distancefield.import_me_if_you_can import say_it_works
-
-
-# import rviz_helper
-# import vec_field_controller
 from distancefield.msg import Path, PathEq
-# import distancefield_class
-# import distancefield
-# from distancefield import distancefield_class
-# import distancefield.distancefield_class
 import groundrobot_class
-
-import distancefield.distancefield_class
 
 
 class differential_node(object):
     """
-    Navigation control using Action Server
+    ROS node to control a differential robot
     """
-
 
     def __init__(self):
 
         self.freq = 50.0  # Frequency of field computation in Hz
 
-        self.state = [0, 0, 0]  # Robot position and orientation
-        # self.pos = [0, 0, 0]  # Robot position and orientation
-        # self.rpy = [0, 0, 0]
-        #self.rpy = [1, 0, 0, 0]
+        self.state = [0, 0, 0]  # Robot position
+
 
         self.reverse_direction = False
 

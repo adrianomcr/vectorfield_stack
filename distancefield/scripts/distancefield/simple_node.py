@@ -1,26 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
-
 import rospy
 from geometry_msgs.msg import Twist, Pose, Point
 from nav_msgs.msg import Odometry
-# from tf.transformations import euler_from_quaternion
-# from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin
 
-# import rviz_helper
-# import vec_field_controller
 from distancefield.msg import Path, PathEq
 import distancefield_class
 
 
-
 class simple_node(object):
     """
-    Navigation control using Action Server
+    ROS node to control a simple integrator robot
     """
 
 
@@ -29,8 +21,6 @@ class simple_node(object):
         self.freq = 50.0  # Frequency of field computation in Hz
 
         self.pos = [0, 0, 0]  # Robot position and orientation
-        # self.rpy = [0, 0, 0]
-        #self.rpy = [1, 0, 0, 0]
 
         self.reverse_direction = False
 
@@ -71,6 +61,7 @@ class simple_node(object):
     def run(self):
         """Execute the controller loop
         """
+
         rate = rospy.Rate(self.freq)
 
         vel_msg = Twist()
@@ -143,8 +134,6 @@ class simple_node(object):
         if(self.flag_follow_obstacle):
             rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest)
 
-        # rospy.Subscriber(self.obstacle_point_topic_name, Point, self.obstacle_point_cb)
-
         if self.pose_topic_type == "TFMessage":
             rospy.Subscriber(self.pose_topic_name, TFMessage, self.tf_cb)
         elif self.pose_topic_type == "Pose":
@@ -169,7 +158,6 @@ class simple_node(object):
 
     def callback_closest(self,data):
         self.closest = [data.x, data.y, data.z]
-        # print ("callback_closest")
 
     def callback_path(self, data):
         """Callback to obtain the path to be followed by the robot
@@ -206,16 +194,8 @@ class simple_node(object):
             if T.child_frame_id == frame_id:
                 pos = (T.transform.translation.x, T.transform.translation.y, T.transform.translation.z)
 
-                # x_q = T.transform.rotation.x
-                # y_q = T.transform.rotation.y
-                # z_q = T.transform.rotation.z
-                # w_q = T.transform.rotation.w
-                # rpy = euler_from_quaternion([x_q, y_q, z_q, w_q])
-
-                # self.vec_field_obj.set_pos(pos)
-                # self.vec_field_obj.set_pos(pos, rpy)
                 self.pos = pos
-                # self.rpy = rpy
+
                 break
 
     def pose_cb(self, data):
@@ -224,16 +204,8 @@ class simple_node(object):
         """
         pos = (data.position.x, data.position.y, data.position.z)
 
-        # x_q = data.orientation.x
-        # y_q = data.orientation.y
-        # z_q = data.orientation.z
-        # w_q = data.orientation.w
-        # rpy = euler_from_quaternion([x_q, y_q, z_q, w_q])
-
-        # self.vec_field_obj.set_pos(pos)
-        # self.vec_field_obj.set_pos(pos, rpy)
         self.pos = pos
-        # self.rpy = rpy
+
 
     def odometry_cb(self, data):
         """Callback to get the pose from odometry data
@@ -241,48 +213,10 @@ class simple_node(object):
         """
         pos = (data.pose.pose.position.x, data.pose.pose.position.y, data.pose.pose.position.z)
 
-        # x_q = data.pose.pose.orientation.x
-        # y_q = data.pose.pose.orientation.y
-        # z_q = data.pose.pose.orientation.z
-        # w_q = data.pose.pose.orientation.w
-        # rpy = euler_from_quaternion([x_q, y_q, z_q, w_q])
-
-        #Consider the position of the control point, instead of the robot's center
-        # pos = (pos[0] + self.d_feedback*cos(rpy[2]), pos[1] + self.d_feedback*sin(rpy[2]), pos[2])
-
-
-        # self.vec_field_obj.set_pos(pos, rpy)
-        # self.vec_field_obj.set_pos(pos)
         self.pos = pos
-        # self.rpy = rpy
-
-
-    # def obstacle_point_cb(self, data):
-    #     """Callback to get the closest point obtained with the lidar
-    #     used for obstacle avoidance
-    #     :param data: point message
-    #     """
-    #     self.vec_field_obj.set_obstacle_point((data.x, data.y))
-
-
-    # def callback_path(self, data):
-    #     """Callback to obtain the path to be followed by the robot
-    #     :param data: path ROS message
-    #     """
-
-    #     path_points = []
-    #     for k in range(len(data.path.points)):
-    #         p = data.path.points[k]
-    #         path_points.append((p.x, p.y))
-
-    #     rospy.loginfo("New path received (%d points) is closed?:%s", len(path_points), data.closed_path_flag)
-
-    #     self.vec_field_obj.set_path(path_points, data.insert_n_points, data.filter_path_n_average,
-    #                                       data.closed_path_flag)
-
-
 
 
 if __name__ == '__main__':
+
     node = simple_node()
     node.run()

@@ -16,10 +16,11 @@ import numpy as np
 #import scipy.spatial
 
 
+import math_utils.math_utils as MU
 
 class drone_node(object):
     """
-    Navigation control using Action Server
+    Drone AcroRate dynamics simulator
     """
 
 
@@ -72,93 +73,6 @@ class drone_node(object):
         return f
 
 
-    # Unit quaternion to rotation matrix
-    def quat2rotm(self,q):
-        # w x y z
-
-        qw = q[0]
-        qx = q[1]
-        qy = q[2]
-        qz = q[3]
-
-        Rot = [[1-2*(qy*qy+qz*qz), 2*(qx*qy-qz*qw), 2*(qx*qz+qy*qw)],
-               [2*(qx*qy+qz*qw), 1-2*(qx*qx+qz*qz), 2*(qy*qz-qx*qw)],
-               [2*(qx*qz-qy*qw), 2*(qy*qz+qx*qw), 1-2*(qx*qx+qy*qy)]]; #this was checked on matlab
-               
-        return Rot
-
-
-    def angle2rotm(self, rpy):
-
-        phi = rpy[0];
-        theta = rpy[1];
-        psi = rpy[2];
-        # Get rotation matrix
-        Rot << [[(cos(theta)*cos(psi)), (sin(phi)*sin(theta)*cos(psi)-cos(phi)*sin(psi)), (cos(phi)*sin(theta)*cos(psi)+sin(phi)*sin(psi))],
-                [(cos(theta)*sin(psi)), (sin(phi)*sin(theta)*sin(psi)+cos(phi)*cos(psi)), (cos(phi)*sin(theta)*sin(psi)-sin(phi)*cos(psi))],
-                [(-sin(theta)), (sin(phi)*cos(theta)), (cos(phi)*cos(theta))]]
-
-        return Rot;
-
-
-    #Function to convert euler angles to a quaternion
-    def eul2quat(self, ang_in):
-
-        cy = cos(ang_in[2] * 0.5); #yaw
-        sy = sin(ang_in[2] * 0.5); #yaw
-        cp = cos(ang_in[1] * 0.5); #pitch
-        sp = sin(ang_in[1] * 0.5); #pitch
-        cr = cos(ang_in[0] * 0.5); #roll
-        sr = sin(ang_in[0] * 0.5); #roll
-
-        q_out = [1,0,0,0]
-        q_out[0] = cy * cp * cr + sy * sp * sr;
-        q_out[1] = cy * cp * sr - sy * sp * cr;
-        q_out[2] = sy * cp * sr + cy * sp * cr;
-        q_out[3] = sy * cp * cr - cy * sp * sr;
-
-        return q_out
-
-
-
-
-    #Function to convert rotation matrix to a quaternion
-    def rotm2quat(self, R):
-
-        tr = R[0][0]+R[1][1]+R[2][2];
-
-        if (tr > 0):
-            S = sqrt(tr+1.0) * 2; # S=4*qw 
-            qw = 0.25 * S;
-            qx = (R[2][1] - R[1][2]) / S;
-            qy = (R[0][2] - R[2][0]) / S; 
-            qz = (R[1][0] - R[0][1]) / S; 
-        elif ((R[0][0] > R[1][1]) and (R[0][0] > R[2][2])):
-            S = sqrt(1.0 + R[0][0] - R[1][1] - R[2][2]) * 2; # S=4*qx 
-            qw = (R[2][1] - R[1][2]) / S;
-            qx = 0.25 * S;
-            qy = (R[0][1] + R[1][0]) / S; 
-            qz = (R[0][2] + R[2][0]) / S; 
-        elif (R[1][1] > R[2][2]):
-            S = sqrt(1.0 + R[1][1] - R[0][0] - R[2][2]) * 2; # S=4*qy
-            qw = (R[0][2] - R[2][0]) / S;
-            qx = (R[0][1] + R[1][0]) / S; 
-            qy = 0.25 * S;
-            qz = (R[1][2] + R[2][1]) / S; 
-        else:
-            S = sqrt(1.0 + R[2][2] - R[0][0] - R[1][1]) * 2; # S=4*qz
-            qw = (R[1][0] - R[0][1]) / S;
-            qx = (R[0][2] + R[2][0]) / S;
-            qy = (R[1][2] + R[2][1]) / S;
-            qz = 0.25 * S;
-
-        if(qw>0):
-            q = [qw,qx,qy,qz]
-        else:
-            q = [-qw,-qx,-qy,-qz]
-
-        return q
-
 
 
 
@@ -172,7 +86,7 @@ class drone_node(object):
         # print ("al=%d, ac=%d, bl=%d, bc=%d" % (al,ac,bl,bc))
 
 
-        C = [];
+        C = []
         for i in range(al):
             C.append([])
             for j in range(bc):
@@ -270,7 +184,7 @@ class drone_node(object):
             quat_bw = [self.state[3], self.state[4], self.state[5], self.state[6]]
             vel_b = [self.state[7], self.state[8], self.state[9]]
 
-            R_bw = self.quat2rotm(quat_bw)
+            R_bw = MU.quat2rotm(quat_bw)
 
             vel_w = np.matrix(R_bw)*(np.matrix(vel_b).transpose())
             vel_w = vel_w.transpose().tolist()[0]
@@ -278,7 +192,6 @@ class drone_node(object):
 
 
             omega_b = [self.omega[0], self.omega[1], self.omega[2]]
-            # omega_w = self.lin(self.multiply(R_bw,self.col(omega_b)))[0]
             omega_w = np.matrix(R_bw)*(np.matrix(omega_b).transpose())
             omega_w = omega_w.transpose().tolist()[0]
             # print(omega_w)
@@ -294,18 +207,6 @@ class drone_node(object):
 
             quat_dot = self.quat_derivative(quat_bw, omega_w)
 
-
-            # A = [[1,2,3],[4,5,6],[7,8,9]]
-            # B = [[1,2],[1,2],[1,2]]
-            # C = self.multiply(A,B)
-            # print(np.matrix(A))
-            # print(np.matrix(B))
-            # print(np.matrix(C))
-
-            # print("\33[96momega_b = [%f, %f, %f]\33[0m" % (self.omega[0],self.omega[1],self.omega[2]))
-            # print("\33[96momega_w = [%f, %f, %f]\33[0m" % (omega_w[0],omega_w[1],omega_w[2]))
-            # print("\33[96mquat_dot = [%f, %f, %f, %f]\33[0m" % (quat_dot[0],quat_dot[1],quat_dot[2],quat_dot[3]))
-            # print("")
 
             g_vec_body = np.matrix(R_bw).transpose()*(np.matrix([0,0,9.81]).transpose())
             g_vec_body = g_vec_body.transpose().tolist()[0]
@@ -330,10 +231,6 @@ class drone_node(object):
             self.state[1] = self.state[1] + vel_w[1]*time_step
             self.state[2] = self.state[2] + vel_w[2]*time_step
 
-            # self.state[3] = self.state[3] + quat_dot[0]*(1.0/self.freq)
-            # self.state[4] = self.state[4] + quat_dot[1]*(1.0/self.freq)
-            # self.state[5] = self.state[5] + quat_dot[2]*(1.0/self.freq)
-            # self.state[6] = self.state[6] + quat_dot[3]*(1.0/self.freq)
             q_new = [0,0,0,0]
             q_new[0] = self.state[3] + quat_dot[0]*time_step
             q_new[1] = self.state[4] + quat_dot[1]*time_step
@@ -431,7 +328,7 @@ class drone_node(object):
 
                 p_cw = [[close_point_world[0]],[close_point_world[1]],[close_point_world[2]],[1]]
                 # print("a")
-                H_bw = self.quat2rotm(quat_bw)
+                H_bw = MU.quat2rotm(quat_bw)
                 # print("b")
                 H_bw[0].append(pos[0])
                 H_bw[1].append(pos[1])
@@ -485,7 +382,7 @@ class drone_node(object):
 
                 R0 = [[cos(pi/4),-sin(pi/4),0],[sin(pi/4),cos(pi/4),0],[0, 0, 1]]
                 Rarm1 = (np.matrix(R_bw)*np.matrix(R0)).tolist()
-                qarm1 = self.rotm2quat(Rarm1)
+                qarm1 = MU.rotm2quat(Rarm1)
                 #Publish robot marker to rviz
                 marker_arm1 = Marker()
                 marker_arm1.header.frame_id = "world"
@@ -523,7 +420,7 @@ class drone_node(object):
                 R0 = [[cos(pi/4),-sin(pi/4),0],[sin(pi/4),cos(pi/4),0],[0, 0, 1]]
                 # R0 = [[1,0,0],[0,1,0],[0, 0, 1]]
                 Rarm2 = (np.matrix(R_bw)*np.matrix(R0)).tolist()
-                qarm2 = self.rotm2quat(Rarm2)
+                qarm2 = MU.rotm2quat(Rarm2)
                 #Publish robot marker to rviz
                 marker_arm2 = Marker()
                 marker_arm2.header.frame_id = "world"
@@ -761,8 +658,6 @@ class drone_node(object):
                 approx_len = 5.0
                 if(sqrt((self.state[0]-self.history[-1][0])**2+(self.state[1]-self.history[-1][1])**2+(self.state[2]-self.history[-1][2])**2) > delta):
                     self.history.append([self.state[0],self.state[1],self.state[2]])
-                    # print(len(self.history))
-                    # print("meleca")
                     if(len(self.history)*delta > approx_len):
                         self.history.pop(0)
 
@@ -915,7 +810,6 @@ class drone_node(object):
         # wz = 0
 
         vel = [vx, wz]
-        # print ("\33[96m[vx, wz] = [%f, %f]\33[0m" % (vx, wz))
 
 
         self.vel = vel
