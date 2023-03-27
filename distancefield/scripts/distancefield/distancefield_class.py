@@ -7,7 +7,6 @@ from enum import Enum
 from itertools import groupby
 from math import pi, sqrt, cos, sin, tan, atan
 
-import distancefield.paths_class as pth
 import math_utils.math_utils as MU
 
 global exp_as_func

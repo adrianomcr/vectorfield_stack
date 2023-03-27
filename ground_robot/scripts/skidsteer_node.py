@@ -69,14 +69,8 @@ class skidsteer_node(object):
 
         self.init_node()
 
-        # distance field controller
-        # if(self.flag_follow_obstacle):
-        # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
+        # Distance field object
         self.ground_robot_obj = groundrobot_class.groundrobot_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist, self.d_feedback, self.move_backwards)
-        # else:
-            # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, 0, 0)
-
-
 
 
     def run(self):

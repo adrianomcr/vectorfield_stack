@@ -8,8 +8,6 @@ from itertools import groupby
 import numpy as np
 from math import pi, sqrt, cos, sin, tan, acos, asin, atan, atan2
 
-from threading import Thread
-
 #import distancefield
 from distancefield.distancefield_class import distancefield_class
 import math_utils.math_utils as MU
@@ -76,7 +74,7 @@ class quadrobot_class():
         J[1][0] = (fx[1]-f0[1])/delta; J[1][1] = (fy[1]-f0[1])/delta; J[1][2] = (fz[1]-f0[1])/delta
         J[2][0] = (fx[2]-f0[2])/delta; J[2][1] = (fy[2]-f0[2])/delta; J[2][2] = (fz[2]-f0[2])/delta
 
-        print()
+        print(J)
         print('')
         return J
 
@@ -155,6 +153,8 @@ class quadrobot_class():
         a_r = self.get_acc_ref(pos,vel)
         Rr =  self.get_orientation_ref(a_r, psi_r)
 
+        print ("ar: ", a_r)
+        print ("z_b: ", z_b)
         dot_ar_zb = a_r[0]*z_b[0] + a_r[1]*z_b[1] + a_r[2]*z_b[2]
         self.tau = self.m*dot_ar_zb
 
@@ -188,10 +188,9 @@ class quadrobot_class():
         S_w = S_w.tolist()
         ####################
 
-        omega_d = [S_w[2][1]-S_w[1][2], S_w[0][2]-S_w[2][0], S_w[1][0]-S_w[0][1]]
-        omega_d = [-omega_d[0]/2.0, -omega_d[1]/2.0, -omega_d[2]/2.0]
-        # print ("omega_d: [%f, %f, %f]" % (omega_d[0],omega_d[1],omega_d[2]))
-        # omega_d = [0,0,0]
+        omega_d = [S_w[2][1]-S_w[1][2], S_w[0][2]-S_w[2][0], S_w[1][0]-S_w[0][1]] #?
+        omega_d = [-omega_d[0]/2.0, -omega_d[1]/2.0, -omega_d[2]/2.0] #?
+        omega_d = [0,0,0]
 
         axis, alpha = MU.rotm2axang(Re)
 
@@ -223,9 +222,7 @@ class quadrobot_class():
 
     def set_state(self, state):
         self.state = state
-        
-        # print("state: ")
-        # print(state)
+
         self.vec_field_obj.set_pos([state[0], state[1], state[2]])
 
 
@@ -233,6 +230,7 @@ class quadrobot_class():
         self.state[0] = pos[0]
         self.state[1] = pos[1]
         self.state[2] = pos[2]
+        self.vec_field_obj.set_pos([pos[0], pos[1], pos[2]])
 
     def set_quat(self, quat):
         self.state[3] = quat[0]

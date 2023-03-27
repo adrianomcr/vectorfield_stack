@@ -63,7 +63,7 @@ class quad_node(object):
 
         self.init_node()
 
-        # distance field controller
+        # Distance field object
         self.quad_robot_obj = quadrobot_class.quadrobot_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist, self.m, self.kv, self.kw)
 
 

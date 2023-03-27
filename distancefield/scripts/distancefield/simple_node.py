@@ -51,12 +51,8 @@ class simple_node(object):
 
         self.init_node()
 
-        # distance field controller
-        # if(self.flag_follow_obstacle):
+        # Distance field object
         self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist)
-        # else:
-            # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, 0, 0)
-
 
     def run(self):
         """Execute the controller loop
