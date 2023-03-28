@@ -1,25 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 import rospy
 from geometry_msgs.msg import Twist, Pose, Point
 from nav_msgs.msg import Odometry
-# from tf.transformations import euler_from_quaternion
-# from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt
-
-# import rviz_helper
-# import vec_field_controller
-# from distancefield.msg import Path
-# import distancefield_class
-
 
 
 class integrator_node(object):
     """
-    Navigation control using Action Server
+    Inegrator dynamics simulator
     """
 
 
@@ -40,8 +30,6 @@ class integrator_node(object):
         self.pub_pose = None
         self.pub_rviz_robot = None
         self.pub_rviz_obst = None
-
-
 
         self.init_node()
 
@@ -225,8 +213,6 @@ class integrator_node(object):
             approx_len = 3.0
             if(sqrt((self.pos[0]-self.history[-1][0])**2+(self.pos[1]-self.history[-1][1])**2+(self.pos[2]-self.history[-1][2])**2) > delta):
                 self.history.append([self.pos[0],self.pos[1],self.pos[2]])
-                # print(len(self.history))
-                # print("meleca")
                 if(len(self.history)*delta > approx_len):
                     self.history.pop(0)
 

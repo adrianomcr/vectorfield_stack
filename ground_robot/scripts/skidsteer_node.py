@@ -23,7 +23,7 @@ import distancefield.distancefield_class
 
 class skidsteer_node(object):
     """
-    Navigation control using Action Server
+    ROS node to control a skid-steer robot
     """
 
 
@@ -31,10 +31,7 @@ class skidsteer_node(object):
 
         self.freq = 50.0  # Frequency of field computation in Hz
 
-        self.state = [0, 0, 0]  # Robot position and orientation
-        # self.pos = [0, 0, 0]  # Robot position and orientation
-        # self.rpy = [0, 0, 0]
-        #self.rpy = [1, 0, 0, 0]
+        self.state = [0, 0, 0]  # Robot position
 
         self.reverse_direction = False
 
@@ -72,14 +69,8 @@ class skidsteer_node(object):
 
         self.init_node()
 
-        # distance field controller
-        # if(self.flag_follow_obstacle):
-        # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist)
+        # Distance field object
         self.ground_robot_obj = groundrobot_class.groundrobot_class(self.vr, self.kf, self.reverse_direction, self.flag_follow_obstacle, self.epsilon, self.switch_dist_0, self.switch_dist, self.d_feedback, self.move_backwards)
-        # else:
-            # self.vec_field_obj = distancefield_class.distancefield_class(self.vr, self.kf, self.reverse_direction, 0, 0)
-
-
 
 
     def run(self):
@@ -167,9 +158,6 @@ class skidsteer_node(object):
         if(self.flag_follow_obstacle):
             rospy.Subscriber(self.obstacle_point_topic_name, Point, self.callback_closest_body)
 
-
-        # rospy.Subscriber(self.obstacle_point_topic_name, Point, self.obstacle_point_cb)
-
         if self.pose_topic_type == "TFMessage":
             rospy.Subscriber(self.pose_topic_name, TFMessage, self.tf_cb)
         elif self.pose_topic_type == "Pose":
@@ -185,8 +173,6 @@ class skidsteer_node(object):
         rospy.loginfo("d: %s, move_backwards: %s", self.d_feedback, self.move_backwards)
         rospy.loginfo("a: %s, b: %s", self.a, self.b)
         rospy.loginfo("reverse_direction:%s", self.reverse_direction)
-        # rospy.loginfo("pose_topic_name:%s, pose_topic_type:%s, cmd_vel_topic_name:%s, cmd_wheels_topic_name:%s",
-                      # self.pose_topic_name, self.pose_topic_type, self.cmd_vel_topic_name, self.cmd_wheels_topic_name)
         rospy.loginfo("pose_topic_name:%s, pose_topic_type:%s, cmd_wheels_topic_name:%s",
                       self.pose_topic_name, self.pose_topic_type, self.cmd_wheels_topic_name)
         rospy.loginfo("flag_follow_obstacle:%s",
@@ -197,7 +183,6 @@ class skidsteer_node(object):
 
     def callback_closest_body(self,data):
         self.closest = [data.x, data.y, data.z]
-
 
         # COMPUTE WORLD POINT FROM THE BODY POINT
         r = sqrt(data.x*data.x + data.y*data.y)
@@ -280,23 +265,12 @@ class skidsteer_node(object):
         #Consider the position of the control point, instead of the robot's center
         # pos = (pos[0] + self.d_feedback*cos(rpy[2]), pos[1] + self.d_feedback*sin(rpy[2]), pos[2])
 
-
-        # self.vec_field_obj.set_pos(pos, rpy)
-        # self.vec_field_obj.set_pos(pos)
         self.pos = pos
-        # self.rpy = rpy
 
 
 
 
 if __name__ == '__main__':
-
-
-
-    # print("MELECA 1")
-    # say_it_works()
-    # print("MELECA 2")
-
 
     node = skidsteer_node()
     node.run()

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-
 import rospy
 from geometry_msgs.msg import Twist, Pose, Point
 from nav_msgs.msg import Odometry
@@ -11,14 +9,13 @@ from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, pi
 import numpy as np
-# import scipy as sp
-# import scipy.spatial
+
 
 
 
 class differential_node(object):
     """
-    Navigation control using Action Server
+    Differential drive robot simulator
     """
 
 
@@ -118,7 +115,6 @@ class differential_node(object):
 
 
             #Compute closest point - with respect to the robots frame
-
             p_cw = [[close_point_world[0]],[close_point_world[1]],[1]]
             H_bw = np.matrix([[cos(self.state[2]),-sin(self.state[2]), self.state[0]],[sin(self.state[2]),cos(self.state[2]), self.state[1]],[0, 0, 1]])
             p_cb = H_bw**(-1)*p_cw
@@ -127,9 +123,6 @@ class differential_node(object):
             point_msg2.y = p_cb[1,0]
             point_msg2.z = self.robot_height/2.0
             self.pub_closest_body.publish(point_msg2)
-            # print ("\33[95mp_cb = [%f, %f]\33[0m" % (point_msg2.x, point_msg2.y))
-
-
 
             #########################################
 
@@ -349,8 +342,6 @@ class differential_node(object):
             approx_len = 3.0
             if(sqrt((self.state[0]-self.history[-1][0])**2+(self.state[1]-self.history[-1][1])**2) > delta):
                 self.history.append([self.state[0],self.state[1]])
-                # print(len(self.history))
-                # print("meleca")
                 if(len(self.history)*delta > approx_len):
                     self.history.pop(0)
 
@@ -428,9 +419,6 @@ class differential_node(object):
         self.pub_rviz_closest = rospy.Publisher("/differential/closest_marker", Marker, queue_size=1)
         self.pub_rviz_obst = rospy.Publisher("/differential/obstacles", MarkerArray, queue_size=1)
         self.pub_rviz_hist = rospy.Publisher("/differential/history", MarkerArray, queue_size=1)
-
-
-        # self.pub_rviz_robot_w1 = rospy.Publisher("/differential/robot_w1", Marker, queue_size=1)
 
         # subscribers
         rospy.Subscriber("/differential/cmd_vel", Twist, self.callback_vel)

@@ -2,7 +2,7 @@
 #Parameters for the espeleo_planning package
 
 # Curve number
-N_curve: 3
+N_curve: 0
 # 0 -> Generic parametric equation
 # 1 -> Ellipse
 # 2 -> Eigth like curve

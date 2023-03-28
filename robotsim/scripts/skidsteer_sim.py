@@ -16,7 +16,7 @@ import numpy as np
 
 class skidsteer_node(object):
     """
-    Navigation control using Action Server
+    SkidSteer robot simulator
     """
 
 
@@ -123,7 +123,6 @@ class skidsteer_node(object):
             point_msg2.y = p_cb[1,0]
             point_msg2.z = self.robot_height/2.0
             self.pub_closest_body.publish(point_msg2)
-            # print ("\33[95mp_cb = [%f, %f]\33[0m" % (point_msg2.x, point_msg2.y))
 
 
 
@@ -184,14 +183,6 @@ class skidsteer_node(object):
             marker_w1.pose.position.y = self.state[1] + self.robot_a*sin(self.state[2]) + self.robot_b*cos(self.state[2])
             marker_w1.pose.position.z = self.robot_r
             # Orientation of the marker
-            # qw3 = [cos(psi/2)*cos(pi/4), cos(psi/2)*sin(pi/4), sin(psi/2)*sin(pi/4), sin(psi/2)*cos(pi/4)]
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
-            # qw1 = Rw1.as_quat()
-            # marker_w1.pose.orientation.x = qw1[0]
-            # marker_w1.pose.orientation.y = qw1[1]
-            # marker_w1.pose.orientation.z = qw1[2]
-            # marker_w1.pose.orientation.w = qw1[3]
             marker_w1.pose.orientation.x = cos(self.state[2]/2.0)*sin(pi/4)
             marker_w1.pose.orientation.y = sin(self.state[2]/2.0)*sin(pi/4)
             marker_w1.pose.orientation.z = sin(self.state[2]/2.0)*cos(pi/4)
@@ -222,9 +213,6 @@ class skidsteer_node(object):
             marker_w2.pose.position.y = self.state[1] - self.robot_a*sin(self.state[2]) + self.robot_b*cos(self.state[2])
             marker_w2.pose.position.z = self.robot_r
             # Orientation of the marker
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
-            # qw1 = Rw1.as_quat()
             marker_w2.pose.orientation.x = cos(self.state[2]/2.0)*sin(pi/4)
             marker_w2.pose.orientation.y = sin(self.state[2]/2.0)*sin(pi/4)
             marker_w2.pose.orientation.z = sin(self.state[2]/2.0)*cos(pi/4)
@@ -254,9 +242,6 @@ class skidsteer_node(object):
             marker_w3.pose.position.y = self.state[1] - self.robot_a*sin(self.state[2]) - self.robot_b*cos(self.state[2])
             marker_w3.pose.position.z = self.robot_r
             # Orientation of the marker
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
-            # qw1 = Rw1.as_quat()
             marker_w3.pose.orientation.x = cos(self.state[2]/2.0)*sin(pi/4)
             marker_w3.pose.orientation.y = sin(self.state[2]/2.0)*sin(pi/4)
             marker_w3.pose.orientation.z = sin(self.state[2]/2.0)*cos(pi/4)
@@ -287,9 +272,6 @@ class skidsteer_node(object):
             marker_w4.pose.position.y = self.state[1] + self.robot_a*sin(self.state[2]) - self.robot_b*cos(self.state[2])
             marker_w4.pose.position.z = self.robot_r
             # Orientation of the marker
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
-            # qw1 = Rw1.as_quat()
             marker_w4.pose.orientation.x = cos(self.state[2]/2.0)*sin(pi/4)
             marker_w4.pose.orientation.y = sin(self.state[2]/2.0)*sin(pi/4)
             marker_w4.pose.orientation.z = sin(self.state[2]/2.0)*cos(pi/4)
@@ -319,9 +301,6 @@ class skidsteer_node(object):
             marker_arrow.pose.position.y = self.state[1] - (self.robot_a*1.5/2.0)*sin(self.state[2])
             marker_arrow.pose.position.z = self.robot_a/2.0
             # Orientation of the marker
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(self.state[2]), 0, sin(self.state[2])], [sin(self.state[2]), 0, -cos(self.state[2])], [0, 1, 0]])
-            # Rw1 = sp.spatial.transform.Rotation.from_matrix([[cos(psi), 0, sin(psi)], [sin(psi), 0, -cos(psi)], [0, 1, 0]])
-            # qw1 = Rw1.as_quat()
             marker_arrow.pose.orientation.x = 0
             marker_arrow.pose.orientation.y = 0
             marker_arrow.pose.orientation.z = sin(self.state[2]/2.0)
@@ -416,8 +395,6 @@ class skidsteer_node(object):
             approx_len = 3.0
             if(sqrt((self.state[0]-self.history[-1][0])**2+(self.state[1]-self.history[-1][1])**2) > delta):
                 self.history.append([self.state[0],self.state[1]])
-                # print(len(self.history))
-                # print("meleca")
                 if(len(self.history)*delta > approx_len):
                     self.history.pop(0)
 
@@ -500,8 +477,6 @@ class skidsteer_node(object):
         self.pub_rviz_obst = rospy.Publisher("/skidsteer/obstacles", MarkerArray, queue_size=1)
         self.pub_rviz_hist = rospy.Publisher("/skidsteer/history", MarkerArray, queue_size=1)
 
-
-        # self.pub_rviz_robot_w1 = rospy.Publisher("/skidsteer/robot_w1", Marker, queue_size=1)
 
         # subscribers
         rospy.Subscriber("/skidsteer/cmd_vel", Twist, self.callback_vel)
