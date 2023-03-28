@@ -4,12 +4,6 @@
 import rospy
 from math import *
 
-# --------------------------
-# ---------- test ----------
-# --------------------------
-
-def test():
-	return 1
 
 
 # -----------------------------
@@ -322,7 +316,7 @@ def eul2quat(ang_in):
  """
 
 
-def euler2rotm(self, rpy):
+def euler2rotm(rpy):
 	#Description:
 	#Converts Euler angles to rotation matrix
 	#Euler: ZYX on local frame (Roll, Pitch, Yaw) in radians

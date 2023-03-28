@@ -26,7 +26,7 @@ class drone_node(object):
 
     def __init__(self):
 
-        self.freq = 100.0  # Frequency to simulate the simple drone robot
+        self.freq = 200.0  # Frequency to simulate the simple drone robot
 
         # self.vel = [0.0, 0.0] #vx and wz
         self.tau = 9.81
@@ -212,8 +212,9 @@ class drone_node(object):
             g_vec_body = g_vec_body.transpose().tolist()[0]
 
             F_drag = [-0.01*vel_b[0], -0.01*vel_b[1], -0.01*vel_b[2]]
+            F_drag = [0,0,0]
 
-            tau_vec = [0, 0, self.robot_m*self.tau]
+            tau_vec = [0, 0, self.tau]
 
 
             acc = [0, 0, 0]
@@ -777,6 +778,8 @@ class drone_node(object):
         self.pub_rviz_obst = rospy.Publisher("/drone/obstacles", MarkerArray, queue_size=1)
         self.pub_rviz_hist = rospy.Publisher("/drone/history", MarkerArray, queue_size=1)
 
+
+        self.tau = self.robot_m*9.81
 
         # self.pub_rviz_robot_w1 = rospy.Publisher("/drone/robot_w1", Marker, queue_size=1)
 

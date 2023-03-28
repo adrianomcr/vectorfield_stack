@@ -1,8 +1,8 @@
 
 
 vector_field:
-    vr: 0.5 # reference forward speed for the vector field
-    kf: 4.0 # convergence gain of the vector field
+    vr: 1.0 # reference forward speed for the vector field
+    kf: 3.0 # convergence gain of the vector field
     reverse_direction: False # flag to invert the direction the curve will be followed
 
 quadrobot:

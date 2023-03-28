@@ -65,17 +65,17 @@ class quadrobot_class():
         Vx,Vy,Vz,flag = self.vec_field_obj.compute_field_at_p(pz)
         fz = [Vx,Vy,Vz]
 
-        print("f0:", f0)
-        print("fx:", fx)
-        print("fy:", fy)
-        print("fz:", fz)
+        #print("f0:", f0)
+        #print("fx:", fx)
+        #print("fy:", fy)
+        #print("fz:", fz)
         
         J[0][0] = (fx[0]-f0[0])/delta; J[0][1] = (fy[0]-f0[0])/delta; J[0][2] = (fz[0]-f0[0])/delta
         J[1][0] = (fx[1]-f0[1])/delta; J[1][1] = (fy[1]-f0[1])/delta; J[1][2] = (fz[1]-f0[1])/delta
         J[2][0] = (fx[2]-f0[2])/delta; J[2][1] = (fy[2]-f0[2])/delta; J[2][2] = (fz[2]-f0[2])/delta
 
-        print(J)
-        print('')
+        #print(J)
+        #print('')
         return J
 
 
@@ -153,8 +153,8 @@ class quadrobot_class():
         a_r = self.get_acc_ref(pos,vel)
         Rr =  self.get_orientation_ref(a_r, psi_r)
 
-        print ("ar: ", a_r)
-        print ("z_b: ", z_b)
+        #print ("ar: ", a_r)
+        #print ("z_b: ", z_b)
         dot_ar_zb = a_r[0]*z_b[0] + a_r[1]*z_b[1] + a_r[2]*z_b[2]
         self.tau = self.m*dot_ar_zb
 
@@ -189,7 +189,8 @@ class quadrobot_class():
         ####################
 
         omega_d = [S_w[2][1]-S_w[1][2], S_w[0][2]-S_w[2][0], S_w[1][0]-S_w[0][1]] #?
-        omega_d = [-omega_d[0]/2.0, -omega_d[1]/2.0, -omega_d[2]/2.0] #?
+        #omega_d = [omega_d[0]/2.0, omega_d[1]/2.0, omega_d[2]/2.0] #?
+        #omega_d = [-omega_d[0]/2.0, -omega_d[1]/2.0, -omega_d[2]/2.0] #?
         omega_d = [0,0,0]
 
         axis, alpha = MU.rotm2axang(Re)

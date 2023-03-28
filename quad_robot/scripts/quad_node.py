@@ -25,7 +25,7 @@ class quad_node(object):
 
     def __init__(self):
 
-        self.freq = 70.0  # Frequency of field computation in Hz
+        self.freq = 100.0  # Frequency of field computation in Hz
 
         self.state = [0,0,0, 1,0,0,0, 0,0,0]  # Robot position and orientation
 
