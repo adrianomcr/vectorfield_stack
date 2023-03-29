@@ -73,7 +73,7 @@ class differential_node(object):
             pose_msg.position.y = self.state[1]
             pose_msg.orientation.z = sin(self.state[2]/2.0)
             pose_msg.orientation.w = cos(self.state[2]/2.0)
-            
+
             self.pub_pose.publish(pose_msg)
 
 

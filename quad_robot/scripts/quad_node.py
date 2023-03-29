@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -44,7 +44,7 @@ class quad_node(object):
         self.switch_dist = None
         self.closest = [1000,1000,1000]
         self.closest_world = [1000,1000,1000]
-        
+
 
         # obtain the parameters
         self.vr = 0.0
@@ -85,7 +85,7 @@ class quad_node(object):
 
 
             self.quad_robot_obj.set_state(self.state)
-            
+
 
             if self.quad_robot_obj.vec_field_obj.is_ready():
 
@@ -246,7 +246,7 @@ class quad_node(object):
         self.state[7] = vel_w[0]
         self.state[8] = vel_w[1]
         self.state[9] = vel_w[2]
-        
+
 
 
 if __name__ == '__main__':

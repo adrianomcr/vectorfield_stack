@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -69,7 +69,7 @@ class quadrobot_class():
         #print("fx:", fx)
         #print("fy:", fy)
         #print("fz:", fz)
-        
+
         J[0][0] = (fx[0]-f0[0])/delta; J[0][1] = (fy[0]-f0[0])/delta; J[0][2] = (fz[0]-f0[0])/delta
         J[1][0] = (fx[1]-f0[1])/delta; J[1][1] = (fy[1]-f0[1])/delta; J[1][2] = (fz[1]-f0[1])/delta
         J[2][0] = (fx[2]-f0[2])/delta; J[2][1] = (fy[2]-f0[2])/delta; J[2][2] = (fz[2]-f0[2])/delta
@@ -104,7 +104,7 @@ class quadrobot_class():
 
     # Compute a reference acceleration
     def get_acc_ref(self, pos, vel, out=[0], id=0):
-        
+
         Vx, Vy, Vz, flag = self.vec_field_obj.compute_field_at_p(pos)
         f = [Vx, Vy, Vz]
         J = self.compute_Jacobian(pos)
@@ -189,9 +189,8 @@ class quadrobot_class():
         ####################
 
         omega_d = [S_w[2][1]-S_w[1][2], S_w[0][2]-S_w[2][0], S_w[1][0]-S_w[0][1]] #?
-        #omega_d = [omega_d[0]/2.0, omega_d[1]/2.0, omega_d[2]/2.0] #?
-        #omega_d = [-omega_d[0]/2.0, -omega_d[1]/2.0, -omega_d[2]/2.0] #?
-        omega_d = [0,0,0]
+        omega_d = [omega_d[0]/2.0, omega_d[1]/2.0, omega_d[2]/2.0] #?
+        #omega_d = [0,0,0]
 
         axis, alpha = MU.rotm2axang(Re)
 
