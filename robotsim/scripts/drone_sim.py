@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -216,16 +216,15 @@ class drone_node(object):
 
             tau_vec = [0, 0, self.tau]
 
+            cross_w_vb = [0,0,0]
+            cross_w_vb[0] = omega_b[1]*vel_b[2]-omega_b[2]*vel_b[1]
+            cross_w_vb[1] = omega_b[2]*vel_b[0]-omega_b[0]*vel_b[2]
+            cross_w_vb[2] = omega_b[0]*vel_b[1]-omega_b[1]*vel_b[0]
 
             acc = [0, 0, 0]
-            acc[0] = tau_vec[0]/self.robot_m - g_vec_body[0] + F_drag[0]/self.robot_m
-            acc[1] = tau_vec[1]/self.robot_m - g_vec_body[1] + F_drag[1]/self.robot_m
-            acc[2] = tau_vec[2]/self.robot_m - g_vec_body[2] + F_drag[2]/self.robot_m
-
-
-
-
-
+            acc[0] = tau_vec[0]/self.robot_m - g_vec_body[0] + F_drag[0]/self.robot_m - cross_w_vb[0]
+            acc[1] = tau_vec[1]/self.robot_m - g_vec_body[1] + F_drag[1]/self.robot_m - cross_w_vb[1]
+            acc[2] = tau_vec[2]/self.robot_m - g_vec_body[2] + F_drag[2]/self.robot_m - cross_w_vb[2]
 
             #Model integration
             self.state[0] = self.state[0] + vel_w[0]*time_step
@@ -242,13 +241,10 @@ class drone_node(object):
             self.state[4] = q_new[1]
             self.state[5] = q_new[2]
             self.state[6] = q_new[3]
-            
+
             self.state[7] = self.state[7] + acc[0]*time_step
             self.state[8] = self.state[8] + acc[1]*time_step
             self.state[9] = self.state[9] + acc[2]*time_step
-
-
-
 
             #Publis robots pose
             pose_msg.position.x = self.state[0]
@@ -258,7 +254,7 @@ class drone_node(object):
             pose_msg.orientation.y = self.state[5]
             pose_msg.orientation.z = self.state[6]
             pose_msg.orientation.w = self.state[3]
-            
+
             self.pub_pose.publish(pose_msg)
 
 
@@ -281,7 +277,7 @@ class drone_node(object):
             odom_msg.twist.twist.angular.x = self.omega[0]
             odom_msg.twist.twist.angular.y = self.omega[1]
             odom_msg.twist.twist.angular.z = self.omega[2]
-            
+
             self.pub_odom.publish(odom_msg)
 
 
@@ -349,7 +345,7 @@ class drone_node(object):
                 #########################################
 
                 robot_marker_array = MarkerArray()
-                
+
                 #Publish robot marker to rviz
                 marker_robot = Marker()
                 marker_robot.header.frame_id = "world"
@@ -602,7 +598,7 @@ class drone_node(object):
                 marker_arrow.color.g = 0.0
                 marker_arrow.color.b = 1.0
                 # Position of the marker
-                marker_arrow.pose.position.x = self.state[0] 
+                marker_arrow.pose.position.x = self.state[0]
                 marker_arrow.pose.position.y = self.state[1]
                 marker_arrow.pose.position.z = self.state[2]
                 # Orientation of the marker

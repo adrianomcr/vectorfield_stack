@@ -164,7 +164,7 @@ class distancefield_class():
 
         eq_aux = self.equation_str.replace("u","u_trick[0]")
         # print("\33[96m" + eq_aux + "\33[0m")
-        
+
         global exp_as_func
         global u_trick
         u_trick = [0]
@@ -232,11 +232,11 @@ class distancefield_class():
             rb = self.sample_curve(s_b)
             dist_vec = [x-rb[0], y-rb[1], z-rb[2]]
             func_b = MU.get_norm(dist_vec)
-    
+
         u_star = (al+bl)/2
 
         return u_star
-    
+
 
 
     def field_from_equation(self, pos):
@@ -391,7 +391,7 @@ class distancefield_class():
         # numerically compute the tangent vector and normalize it
         T = [local_path[k2][0] - local_path[k1][0], local_path[k2][1] - local_path[k1][1], local_path[k2][2] - local_path[k1][2]]
         norm_T = math.sqrt(T[0] ** 2 + T[1] ** 2 + T[2] ** 2) + 0.000001
-        
+
         #Possibly invert the direcion that the curve is followed
         if(self.reverse_direction):
             T = [-T[0] / norm_T, -T[1] / norm_T, -T[2] / norm_T]
@@ -455,7 +455,7 @@ class distancefield_class():
         # Stop the robot if the it reached the end of a open path
         if not self.closed_path_flag:
             if k_min == size_path - 1:
-                rospy.logwarn("CHECK THIS: k_min:%s size_path-1:%s self.pos:%s local_path[k_min]:%s", 
+                rospy.logwarn("CHECK THIS: k_min:%s size_path-1:%s self.pos:%s local_path[k_min]:%s",
                     k_min, size_path - 1, self.pos, local_path[k_min])
 
                 Vx = 0
@@ -472,7 +472,7 @@ class distancefield_class():
 
 
     def compute_field_at_p(self, pos):
-        """Compute the vector field at position pos) 
+        """Compute the vector field at position pos)
         :return:
             Vx, Vy, Vz, reached_endpoint
         """
@@ -481,7 +481,7 @@ class distancefield_class():
             Vx, Vy, Vz, reached_endpoint = self.field_from_equation(pos)
         else:
             Vx, Vy, Vz, reached_endpoint = self.field_from_points(pos)
-        
+
 
         return Vx, Vy, Vz, reached_endpoint
 
