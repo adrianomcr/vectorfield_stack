@@ -37,7 +37,7 @@ u_i: 0
 u_f: 6.283185307179586
 # equation: "[2*(u-pi), 0, 0.0]"
 # quation: "[2*cos(u), 2.0*sin(u), 0.2*sin(u)]"
-equation: "[2*cos(u), 2.0*sin(u), 0.2*cos(6*u)]"
+equation: "[2*cos(u), 2*sin(u), 0.2*cos(6*u)]"
 # equation: "[2*cos(u)*sin(u), 1.5*sin(u), cos(1*u)/5.0]"
 # equation: "[2*cos(u_trick[0]), 2.0*sin(u_trick[0]), 0.0]"
 

@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-
-
 import rospy
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Twist, Pose, Point, Quaternion
 from nav_msgs.msg import Odometry
-from tf.transformations import euler_from_quaternion
 from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, pi
 import numpy as np
-#import scipy as sp
-#import scipy.spatial
+
 
 
 import math_utils.math_utils as MU
@@ -22,7 +17,6 @@ class drone_node(object):
     """
     Drone AcroRate dynamics simulator
     """
-
 
     def __init__(self):
 
@@ -38,19 +32,13 @@ class drone_node(object):
         self.obtscles_pos = []
         self.obtscles_r = []
 
-
         # publishers
         self.pub_pose = None
         self.pub_odom = None
         self.pub_rviz_robot = None
         self.pub_rviz_obst = None
 
-
-
         self.init_node()
-
-
-
 
 
 
@@ -74,17 +62,12 @@ class drone_node(object):
 
 
 
-
-
     def multiply(self,A,B):
 
         al = len(A)
         ac = len(A[0])
         bl = len(B)
         bc = len(B[0])
-
-        # print ("al=%d, ac=%d, bl=%d, bc=%d" % (al,ac,bl,bc))
-
 
         C = []
         for i in range(al):
@@ -106,7 +89,6 @@ class drone_node(object):
         for k in range(len(u)):
             v.append(u[k][0])
         return [v]
-
 
 
     def col(self, u):
@@ -136,21 +118,13 @@ class drone_node(object):
         """
         rate = rospy.Rate(self.freq)
 
-
         pose_msg = Pose()
         odom_msg = Odometry()
         point_msg = Point()
         point_msg2 = Point()
 
-
         count1 = 0
-
         count2 = 0
-
-        t_last = rospy.Time.now().to_sec()
-        t_0 = rospy.Time.now().to_sec()
-        count0 = 0
-
 
         time_now = rospy.Time.now().to_sec()
 
@@ -161,25 +135,6 @@ class drone_node(object):
             time_now = rospy.Time.now().to_sec()
             time_step = time_now-time_last
 
-            #time_step = 1.0/self.freq
-
-            # if ((rospy.Time.now().to_sec() - t_last) < 1.0/self.freq):
-            #     print ("a: %f" % (rospy.Time.now().to_sec() - t_last))
-            #     continue
-            # print ("b")
-            # t_last = rospy.Time.now().to_sec()
-
-            # count0 = count0 + 1
-            # print("\33[96mfreq: %f\33[0m" % ((count0)/(rospy.Time.now().to_sec()-t_0)))
-
-            # t = rospy.Time.now().to_sec() - t_0
-            # if(t < count_freq*(1.0/self.freq)):
-            #     # print ("\ta")
-            #     continue
-            # count_freq = count_freq + 1
-            # print ("b")
-            # print (t)
-
             pos = [self.state[0], self.state[1], self.state[2]]
             quat_bw = [self.state[3], self.state[4], self.state[5], self.state[6]]
             vel_b = [self.state[7], self.state[8], self.state[9]]
@@ -189,24 +144,11 @@ class drone_node(object):
             vel_w = np.matrix(R_bw)*(np.matrix(vel_b).transpose())
             vel_w = vel_w.transpose().tolist()[0]
 
-
-
             omega_b = [self.omega[0], self.omega[1], self.omega[2]]
             omega_w = np.matrix(R_bw)*(np.matrix(omega_b).transpose())
             omega_w = omega_w.transpose().tolist()[0]
-            # print(omega_w)
-
-
-            # print (np.matrix(R_bw))
-            # print (np.matrix(self.col(omega_b)))
-            # print (np.matrix(omega_w))
-
-
-            # print(np.matrix(R_bw).dot(np.matrix(omega_b).transpose()))
-            # omega_w = omega_w.transpose().tolist()[0]
 
             quat_dot = self.quat_derivative(quat_bw, omega_w)
-
 
             g_vec_body = np.matrix(R_bw).transpose()*(np.matrix([0,0,9.81]).transpose())
             g_vec_body = g_vec_body.transpose().tolist()[0]
@@ -226,11 +168,12 @@ class drone_node(object):
             acc[1] = tau_vec[1]/self.robot_m - g_vec_body[1] + F_drag[1]/self.robot_m - cross_w_vb[1]
             acc[2] = tau_vec[2]/self.robot_m - g_vec_body[2] + F_drag[2]/self.robot_m - cross_w_vb[2]
 
-            #Model integration
+            #Model integration - position
             self.state[0] = self.state[0] + vel_w[0]*time_step
             self.state[1] = self.state[1] + vel_w[1]*time_step
             self.state[2] = self.state[2] + vel_w[2]*time_step
 
+            #Model integration - orientation
             q_new = [0,0,0,0]
             q_new[0] = self.state[3] + quat_dot[0]*time_step
             q_new[1] = self.state[4] + quat_dot[1]*time_step
@@ -242,6 +185,7 @@ class drone_node(object):
             self.state[5] = q_new[2]
             self.state[6] = q_new[3]
 
+            #Model integration - body velocity
             self.state[7] = self.state[7] + acc[0]*time_step
             self.state[8] = self.state[8] + acc[1]*time_step
             self.state[9] = self.state[9] + acc[2]*time_step
@@ -256,8 +200,6 @@ class drone_node(object):
             pose_msg.orientation.w = self.state[3]
 
             self.pub_pose.publish(pose_msg)
-
-
 
             #Publis robots odomtry (with velocity)
             odom_msg.header.stamp = rospy.Time.now()
@@ -279,8 +221,6 @@ class drone_node(object):
             odom_msg.twist.twist.angular.z = self.omega[2]
 
             self.pub_odom.publish(odom_msg)
-
-
 
             count2 = count2 + 1
             if (count2 == 4):
@@ -322,11 +262,8 @@ class drone_node(object):
 
 
                 #Compute closest point - with respect to the robots frame
-
                 p_cw = [[close_point_world[0]],[close_point_world[1]],[close_point_world[2]],[1]]
-                # print("a")
                 H_bw = MU.quat2rotm(quat_bw)
-                # print("b")
                 H_bw[0].append(pos[0])
                 H_bw[1].append(pos[1])
                 H_bw[2].append(pos[2])
@@ -338,7 +275,6 @@ class drone_node(object):
                 point_msg2.y = p_cb[1,0]
                 point_msg2.z = p_cb[2,0]
                 self.pub_closest_body.publish(point_msg2)
-                # print ("\33[95mp_cb = [%f, %f]\33[0m" % (point_msg2.x, point_msg2.y))
 
 
 
@@ -402,10 +338,6 @@ class drone_node(object):
                 marker_arm1.pose.position.y = self.state[1]
                 marker_arm1.pose.position.z = self.state[2]
                 # Orientation of the marker
-                # marker_arm1.pose.orientation.x = self.state[4]
-                # marker_arm1.pose.orientation.y = self.state[5]
-                # marker_arm1.pose.orientation.z = self.state[6]
-                # marker_arm1.pose.orientation.w = self.state[3]
                 marker_arm1.pose.orientation.x = qarm1[1]
                 marker_arm1.pose.orientation.y = qarm1[2]
                 marker_arm1.pose.orientation.z = qarm1[3]
@@ -747,14 +679,8 @@ class drone_node(object):
 
         # parameters (description in yaml file)
         self.state = rospy.get_param("~state_0", 1.0)
-        # self.robot_radius = float(rospy.get_param("~robot_radius", 1.0))
         self.robot_arm_len = float(rospy.get_param("~robot_arm_len", 1.0))
         self.robot_m = float(rospy.get_param("~robot_m", 1.0))
-        # self.robot_width = float(rospy.get_param("~robot_width", 1.0))
-        # self.robot_height = float(rospy.get_param("~robot_height", 1.0))
-        # self.robot_a = float(rospy.get_param("~robot_a", 1.0))
-        # self.robot_b = float(rospy.get_param("~robot_b", 1.0))
-        # self.robot_r = float(rospy.get_param("~robot_r", 1.0))
         self.obtscles_pos = rospy.get_param("~obtscles_pos", [])
         self.obtscles_r = rospy.get_param("~obtscles_r", [])
         self.history = []
@@ -777,13 +703,9 @@ class drone_node(object):
 
         self.tau = self.robot_m*9.81
 
-        # self.pub_rviz_robot_w1 = rospy.Publisher("/drone/robot_w1", Marker, queue_size=1)
-
         # subscribers
         rospy.Subscriber("/drone/acrorate", Quaternion, self.callback_acrorate)
-        # rospy.Subscriber("/drone/wheels_speeds", Float32MultiArray, self.callback_wheels)
-
-
+        
 
 
     def callback_acrorate(self, data):
@@ -792,27 +714,6 @@ class drone_node(object):
         """
         self.tau = data.w
         self.omega = [data.x, data.y, data.z]
-
-
-
-
-
-    def callback_wheels(self, data):
-        """Callback to get the reference velocity for the robot
-        :param data: pose ROS message
-        """
-        vr = (data.data[0] + data.data[1])/2.0
-        vl = (data.data[2] + data.data[3])/2.0
-
-        vx = 0.5*(vr+vl)
-        wz = (self.robot_b/(2*(self.robot_a**2+self.robot_b**2)))*(vr-vl)
-        # wz = 0
-
-        vel = [vx, wz]
-
-
-        self.vel = vel
-
 
 
 if __name__ == '__main__':
