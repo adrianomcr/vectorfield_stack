@@ -1,10 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
 from geometry_msgs.msg import Twist, Pose, Point
 from nav_msgs.msg import Odometry
-from tf.transformations import euler_from_quaternion
 from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, pi

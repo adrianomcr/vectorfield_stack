@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -7,7 +7,6 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist, Pose, Point
 from nav_msgs.msg import Odometry
-from tf.transformations import euler_from_quaternion
 from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, atan2
@@ -15,7 +14,7 @@ from math import cos, sin, sqrt, atan2
 
 from distancefield.msg import Path, PathEq
 import groundrobot_class
-
+import math_utils.math_utils as MU
 
 class differential_node(object):
     """
@@ -268,7 +267,8 @@ class differential_node(object):
         y_q = data.orientation.y
         z_q = data.orientation.z
         w_q = data.orientation.w
-        rpy = euler_from_quaternion([x_q, y_q, z_q, w_q])
+        #rpy = euler_from_quaternion([x_q, y_q, z_q, w_q])
+        rpy = MU.quat2euler([w_q, x_q, y_q, z_q])
 
         self.state = [pos[0], pos[1], rpy[2]]
 
