@@ -213,7 +213,9 @@ class quadrobot_class():
 
         #Temporaryly induce error to debug
         if(self.tau<0):
-            a = 1/0
+            tau = 1
+            print("\33[93m[Warning] tau<0\33[0m")
+            # a = 1/0
 
 
     def get_acrorate(self):

@@ -9,6 +9,7 @@ from tf2_msgs.msg import TFMessage
 from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, sqrt, atan2
 import numpy as np
+from mavros_msgs.msg import AttitudeTarget
 
 import time
 
@@ -100,6 +101,9 @@ class quad_node(object):
                 acrorate_msg.z = omega[2]
                 self.pub_acrorate.publish(acrorate_msg)
 
+                # Publish acro rate command to PX4
+                self.mavros_acrorate_publish(tau,omega)
+
             else:
                 rospy.loginfo_once("\33[93mWaiting path message\33[0m")
 
@@ -129,6 +133,7 @@ class quad_node(object):
         self.pose_topic_name = rospy.get_param("~topics/pose_topic_name", "tf")
         self.pose_topic_type = rospy.get_param("~topics/pose_topic_type", "Odometry")
         self.acrorate_cmd_topic_name = rospy.get_param("~topics/acrorate_cmd_topic_name", "wheels_speeds")
+        self.mavros_cmd_topic_name = rospy.get_param("~topics/mavros_cmd_topic_name", "/mavros/setpoint_raw/attitude") # TODO
         self.path_topic_name = rospy.get_param("~topics/path_topic_name", "example_path")
         self.path_equation_topic_name = rospy.get_param("~topics/path_equation_topic_name", "example_path_equation")
 
@@ -141,6 +146,7 @@ class quad_node(object):
         # publishers
         # self.pub_cmd_vel = rospy.Publisher(self.cmd_vel_topic_name, Twist, queue_size=1)
         self.pub_acrorate = rospy.Publisher(self.acrorate_cmd_topic_name, Quaternion, queue_size=1)
+        self.pub_acrorate_mavros = rospy.Publisher(self.mavros_cmd_topic_name, AttitudeTarget, queue_size=1)
         # self.pub_rviz_ref = rospy.Publisher("/visualization_ref_vel", Marker, queue_size=1)
         # self.pub_rviz_curve = rospy.Publisher("/visualization_path", MarkerArray, queue_size=1)
 
@@ -171,6 +177,25 @@ class quad_node(object):
         rospy.loginfo("obstacle_point_topic_name:%s", self.obstacle_point_topic_name)
         rospy.loginfo("flag_follow_obstacle:%s, epsilon:%s, switch_dist:%s",
                       self.flag_follow_obstacle, self.epsilon, self.switch_dist)
+
+
+
+    def mavros_acrorate_publish(self,thrust,omega):
+        att_setpoint = AttitudeTarget()
+        att_setpoint.header.stamp = rospy.Time.now()
+
+        att_setpoint.type_mask = AttitudeTarget.IGNORE_ATTITUDE
+        max_thrust = 12*4
+        # max_thrust = 2*9.8*0.8
+        att_setpoint.thrust = thrust/max_thrust  # Thrust command
+        att_setpoint.body_rate.x = omega[0]  # No roll rate command
+        att_setpoint.body_rate.y = omega[1]  # No pitch rate command
+        att_setpoint.body_rate.z = omega[2]  # Yaw rate command
+        att_setpoint.orientation.w = 1.0  # Ignored quaternion
+        
+        # print(att_setpoint)
+        self.pub_acrorate_mavros.publish(att_setpoint)
+
 
     def callback_closest_body(self,data):
         self.closest = [data.x, data.y, data.z]
